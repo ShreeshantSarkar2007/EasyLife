@@ -13,9 +13,12 @@ function renderTasks() {
     tasks.forEach((task, index) => {
         const li = document.createElement("li");
         li.innerHTML = `
-            ${task}
-            <button onclick="deleteTask(${index})">❌</button>
-        `;
+    <span onclick="toggleTask(${index})"
+          style="cursor:pointer; text-decoration:${task.completed ? 'line-through' : 'none'};">
+        ${task.text}
+    </span>
+    <button onclick="deleteTask(${index})">❌</button>
+`;
         taskList.appendChild(li);
     });
 }
@@ -25,7 +28,10 @@ function addTask() {
 
     if (task === "") return;
 
-    tasks.push(task);
+    tasks.push({
+    text: task,
+    completed: false
+});
     saveTasks();
     renderTasks();
 
@@ -34,6 +40,12 @@ function addTask() {
 
 function deleteTask(index) {
     tasks.splice(index, 1);
+    saveTasks();
+    renderTasks();
+}
+
+function toggleTask(index) {
+    tasks[index].completed = !tasks[index].completed;
     saveTasks();
     renderTasks();
 }
