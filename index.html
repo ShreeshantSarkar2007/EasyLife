@@ -30,6 +30,16 @@ width:90%;
 textarea{
 height:100px;
 }
+
+li{
+margin:8px 0;
+}
+
+.delete{
+margin-left:10px;
+cursor:pointer;
+}
+
 </style>
 
 </head>
@@ -41,14 +51,17 @@ height:100px;
 
 
 <div class="card">
+
 <h2>📝 To-Do List</h2>
 
 <input id="task" placeholder="Enter task">
+
 <button onclick="addTask()">Add</button>
 
 <ul id="list"></ul>
 
 </div>
+
 
 
 <div class="card">
@@ -66,6 +79,7 @@ height:100px;
 </div>
 
 
+
 <div class="card">
 
 <h2>💰 Expense Tracker</h2>
@@ -78,6 +92,9 @@ height:100px;
 
 <script>
 
+
+// Add task permanently
+
 function addTask(){
 
 let task=document.getElementById("task").value;
@@ -86,13 +103,70 @@ if(task==""){
 return;
 }
 
-let li=document.createElement("li");
+let tasks=JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
 
-li.innerHTML=task+" ❌";
+tasks.push(task);
 
-document.getElementById("list").appendChild(li);
+localStorage.setItem("EasyLifeTasks", JSON.stringify(tasks));
+
+document.getElementById("task").value="";
+
+showTasks();
 
 }
+
+
+// Display saved tasks
+
+function showTasks(){
+
+let list=document.getElementById("list");
+
+list.innerHTML="";
+
+let tasks=JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
+
+tasks.forEach(function(task,index){
+
+let li=document.createElement("li");
+
+li.innerHTML=task;
+
+let del=document.createElement("button");
+
+del.innerHTML="❌";
+
+del.className="delete";
+
+del.onclick=function(){
+
+deleteTask(index);
+
+};
+
+li.appendChild(del);
+
+list.appendChild(li);
+
+});
+
+}
+
+
+// Delete task
+
+function deleteTask(index){
+
+let tasks=JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
+
+tasks.splice(index,1);
+
+localStorage.setItem("EasyLifeTasks", JSON.stringify(tasks));
+
+showTasks();
+
+}
+
 
 
 // Save note permanently
@@ -108,21 +182,24 @@ document.getElementById("savedNote").innerHTML="Saved: "+note;
 }
 
 
-// Load saved note when website opens
+
+// Load everything when website opens
 
 window.onload=function(){
 
-let saved=localStorage.getItem("EasyLifeNote");
+let savedNote=localStorage.getItem("EasyLifeNote");
 
-if(saved){
+if(savedNote){
 
-document.getElementById("note").value=saved;
+document.getElementById("note").value=savedNote;
 
-document.getElementById("savedNote").innerHTML="Saved: "+saved;
-
-}
+document.getElementById("savedNote").innerHTML="Saved: "+savedNote;
 
 }
+
+showTasks();
+
+};
 
 
 </script>
