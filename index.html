@@ -1,42 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyLife</title>
-    <link rel="stylesheet" href="style.css">
+<title>EasyLife</title>
+<style>
+body{
+font-family:Arial;
+background:#f2f2f2;
+padding:20px;
+}
+.card{
+background:white;
+padding:20px;
+margin:15px 0;
+border-radius:10px;
+}
+button{
+padding:8px;
+cursor:pointer;
+}
+input{
+padding:8px;
+}
+</style>
 </head>
+
 <body>
 
-    <header>
-        <h1>EasyLife</h1>
-        <p>Your Daily Life Assistant</p>
-    </header>
+<h1>🌟 EasyLife</h1>
+<p>Your Daily Life Assistant</p>
 
-    <main class="cards">
+<div class="card">
+<h2>📝 To-Do List</h2>
+<input id="task" placeholder="Enter task">
+<button onclick="addTask()">Add</button>
+<ul id="list"></ul>
+</div>
 
-        <div class="card">
-            <h2>📝 To-Do List</h2>
-            <p>Manage your daily tasks.</p>
-        </div>
+<div class="card">
+<h2>📒 Notes</h2>
+<textarea id="note" placeholder="Write your note"></textarea>
+<br><br>
+<button onclick="saveNote()">Save Note</button>
+<p id="savedNote"></p>
+</div>
 
-        <div class="card">
-            <h2>📒 Notes</h2>
-            <p>Save important notes.</p>
-        </div>
+<div class="card">
+<h2>💰 Expense Tracker</h2>
+<p>Coming Soon...</p>
+</div>
 
-        <div class="card">
-            <h2>💰 Expense Tracker</h2>
-            <p>Track your daily expenses.</p>
-        </div>
-<section class="todo">
-    <h2>📝 To-Do List</h2>
-    <input type="text" id="taskInput" placeholder="Enter a task">
-    <button onclick="addTask()">Add Task</button>
-    <ul id="taskList"></ul>
-</section>
-    </main>
 
-    <script src="script.js"></script>
+<script>
+function addTask(){
+let task=document.getElementById("task").value;
+let li=document.createElement("li");
+li.innerHTML=task+" ❌";
+document.getElementById("list").appendChild(li);
+}
+
+function saveNote(){
+let note=document.getElementById("note").value;
+document.getElementById("savedNote").innerHTML="Saved: "+note;
+}
+</script>
+
 </body>
 </html>
