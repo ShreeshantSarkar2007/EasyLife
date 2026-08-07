@@ -2,26 +2,36 @@
 <html>
 <head>
 <title>EasyLife</title>
+
 <style>
 body{
 font-family:Arial;
 background:#f2f2f2;
 padding:20px;
 }
+
 .card{
 background:white;
 padding:20px;
 margin:15px 0;
 border-radius:10px;
 }
+
 button{
 padding:8px;
 cursor:pointer;
 }
-input{
+
+input, textarea{
 padding:8px;
+width:90%;
+}
+
+textarea{
+height:100px;
 }
 </style>
+
 </head>
 
 <body>
@@ -29,40 +39,94 @@ padding:8px;
 <h1>🌟 EasyLife</h1>
 <p>Your Daily Life Assistant</p>
 
+
 <div class="card">
 <h2>📝 To-Do List</h2>
+
 <input id="task" placeholder="Enter task">
 <button onclick="addTask()">Add</button>
+
 <ul id="list"></ul>
+
 </div>
 
+
 <div class="card">
+
 <h2>📒 Notes</h2>
+
 <textarea id="note" placeholder="Write your note"></textarea>
+
 <br><br>
+
 <button onclick="saveNote()">Save Note</button>
+
 <p id="savedNote"></p>
+
 </div>
 
+
 <div class="card">
+
 <h2>💰 Expense Tracker</h2>
+
 <p>Coming Soon...</p>
+
 </div>
+
 
 
 <script>
+
 function addTask(){
+
 let task=document.getElementById("task").value;
-let li=document.createElement("li");
-li.innerHTML=task+" ❌";
-document.getElementById("list").appendChild(li);
+
+if(task==""){
+return;
 }
 
-function saveNote(){
-let note=document.getElementById("note").value;
-document.getElementById("savedNote").innerHTML="Saved: "+note;
+let li=document.createElement("li");
+
+li.innerHTML=task+" ❌";
+
+document.getElementById("list").appendChild(li);
+
 }
+
+
+// Save note permanently
+
+function saveNote(){
+
+let note=document.getElementById("note").value;
+
+localStorage.setItem("EasyLifeNote", note);
+
+document.getElementById("savedNote").innerHTML="Saved: "+note;
+
+}
+
+
+// Load saved note when website opens
+
+window.onload=function(){
+
+let saved=localStorage.getItem("EasyLifeNote");
+
+if(saved){
+
+document.getElementById("note").value=saved;
+
+document.getElementById("savedNote").innerHTML="Saved: "+saved;
+
+}
+
+}
+
+
 </script>
+
 
 </body>
 </html>
