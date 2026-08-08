@@ -20,6 +20,29 @@ margin:15px 0;
 border-radius:10px;
 }
 
+.dashboard{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.stat{
+background:#f5f5f5;
+padding:15px;
+border-radius:10px;
+text-align:center;
+}
+
+.stat h3{
+margin:5px;
+}
+
+.stat p{
+font-size:24px;
+font-weight:bold;
+margin:10px;
+}
+
 button{
 padding:8px;
 cursor:pointer;
@@ -67,6 +90,58 @@ font-weight:bold;
 <h1>🌟 EasyLife</h1>
 
 <p>Your Daily Life Assistant</p>
+
+
+<!-- ========================= -->
+<!-- DASHBOARD -->
+<!-- ========================= -->
+
+<div class="card">
+
+<h2>📊 Dashboard</h2>
+
+<p id="today"></p>
+
+<div class="dashboard">
+
+<div class="stat">
+
+<h3>📝 Tasks</h3>
+
+<p id="taskCount">0</p>
+
+</div>
+
+
+<div class="stat">
+
+<h3>📒 Notes</h3>
+
+<p id="noteCount">0</p>
+
+</div>
+
+
+<div class="stat">
+
+<h3>💰 Expenses</h3>
+
+<p id="expenseCount">0</p>
+
+</div>
+
+
+<div class="stat">
+
+<h3>💵 Total Spent</h3>
+
+<p>₹<span id="dashboardTotal">0</span></p>
+
+</div>
+
+</div>
+
+</div>
 
 
 <!-- ========================= -->
@@ -169,14 +244,15 @@ Total: ₹<span id="totalExpense">0</span>
 </div>
 
 
-<!-- ========================= -->
-<!-- SUPABASE -->
-<!-- ========================= -->
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
 <script>
 
+
+// =========================
+// SUPABASE CONNECTION
+// =========================
 
 const SUPABASE_URL =
 "https://lhxjfyzqpsmqejxfrxlg.supabase.co";
@@ -189,6 +265,30 @@ window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
+
+
+// =========================
+// DATE
+// =========================
+
+function loadDate(){
+
+const today =
+new Date();
+
+document.getElementById("today").innerHTML =
+"📅 " +
+today.toLocaleDateString(
+"en-IN",
+{
+weekday:"long",
+year:"numeric",
+month:"long",
+day:"numeric"
+}
+);
+
+}
 
 
 // =========================
@@ -205,7 +305,7 @@ document.getElementById("task")
 const message =
 document.getElementById("taskMessage");
 
-if(task === ""){
+if(task===""){
 
 message.innerHTML =
 "⚠️ Please enter a task.";
@@ -214,10 +314,7 @@ return;
 
 }
 
-message.innerHTML =
-"⏳ Saving task...";
-
-const { error } =
+const {error} =
 await supabaseClient
 .from("tasks")
 .insert({
@@ -225,8 +322,6 @@ content:task
 });
 
 if(error){
-
-console.error(error);
 
 message.innerHTML =
 "❌ Error: " +
@@ -252,7 +347,7 @@ loadTasks();
 
 async function loadTasks(){
 
-const { data,error } =
+const {data,error} =
 await supabaseClient
 .from("tasks")
 .select("content,created_at")
@@ -303,6 +398,9 @@ list.appendChild(li);
 
 });
 
+document.getElementById("taskCount").innerText =
+data.length;
+
 }
 
 
@@ -315,20 +413,11 @@ content,
 createdAt
 ){
 
-const { error } =
 await supabaseClient
 .from("tasks")
 .delete()
 .eq("content",content)
 .eq("created_at",createdAt);
-
-if(error){
-
-console.error(error);
-
-return;
-
-}
 
 loadTasks();
 
@@ -358,10 +447,7 @@ return;
 
 }
 
-message.innerHTML =
-"⏳ Saving note...";
-
-const { error } =
+const {error} =
 await supabaseClient
 .from("notes")
 .insert({
@@ -369,8 +455,6 @@ content:note
 });
 
 if(error){
-
-console.error(error);
 
 message.innerHTML =
 "❌ Error: " +
@@ -383,23 +467,24 @@ return;
 message.innerHTML =
 "✅ Note saved successfully!";
 
+loadNotes();
+
 }
 
 
 // =========================
-// LOAD NOTE
+// LOAD NOTES
 // =========================
 
 async function loadNotes(){
 
-const { data,error } =
+const {data,error} =
 await supabaseClient
 .from("notes")
 .select("content,created_at")
 .order("created_at",{
 ascending:false
-})
-.limit(1);
+});
 
 if(error){
 
@@ -409,7 +494,10 @@ return;
 
 }
 
-if(data && data.length>0){
+document.getElementById("noteCount").innerText =
+data.length;
+
+if(data.length>0){
 
 document.getElementById("note").value =
 data[0].content;
@@ -429,12 +517,10 @@ document.getElementById("savedNote").innerHTML =
 async function addExpense(){
 
 const amount =
-document.getElementById("expenseAmount")
-.value;
+document.getElementById("expenseAmount").value;
 
 const category =
-document.getElementById("expenseCategory")
-.value;
+document.getElementById("expenseCategory").value;
 
 const description =
 document.getElementById("expenseDescription")
@@ -443,7 +529,6 @@ document.getElementById("expenseDescription")
 
 const message =
 document.getElementById("expenseMessage");
-
 
 if(amount==="" || Number(amount)<=0){
 
@@ -454,11 +539,7 @@ return;
 
 }
 
-message.innerHTML =
-"⏳ Saving expense...";
-
-
-const { error } =
+const {error} =
 await supabaseClient
 .from("expenses")
 .insert({
@@ -471,10 +552,7 @@ description:description
 
 });
 
-
 if(error){
-
-console.error(error);
 
 message.innerHTML =
 "❌ Error: " +
@@ -483,7 +561,6 @@ error.message;
 return;
 
 }
-
 
 document.getElementById("expenseAmount").value="";
 
@@ -503,7 +580,7 @@ loadExpenses();
 
 async function loadExpenses(){
 
-const { data,error } =
+const {data,error} =
 await supabaseClient
 .from("expenses")
 .select(
@@ -517,28 +594,21 @@ if(error){
 
 console.error(error);
 
-document.getElementById("expenseMessage").innerHTML =
-"❌ Could not load expenses: " +
-error.message;
-
 return;
 
 }
-
 
 const list =
 document.getElementById("expenseList");
 
 list.innerHTML="";
 
-
 let total=0;
-
 
 data.forEach(function(expense){
 
-total += Number(expense.amount);
-
+total +=
+Number(expense.amount);
 
 const div =
 document.createElement("div");
@@ -546,20 +616,18 @@ document.createElement("div");
 div.className =
 "expense-item";
 
-
 div.innerHTML =
-
 "<strong>₹" +
 expense.amount +
 "</strong> - " +
 expense.category +
 "<br>" +
-(expense.description || "No description") +
+(expense.description ||
+"No description") +
 "<br>" +
 "<small>" +
 expense.expense_date +
 "</small>";
-
 
 const del =
 document.createElement("button");
@@ -570,7 +638,6 @@ del.innerHTML =
 del.className =
 "delete";
 
-
 del.onclick=function(){
 
 deleteExpense(
@@ -580,16 +647,20 @@ expense.created_at
 
 };
 
-
 div.appendChild(del);
 
 list.appendChild(div);
 
 });
 
-
 document.getElementById("totalExpense").innerText =
 total.toFixed(2);
+
+document.getElementById("dashboardTotal").innerText =
+total.toFixed(2);
+
+document.getElementById("expenseCount").innerText =
+data.length;
 
 }
 
@@ -603,20 +674,11 @@ amount,
 createdAt
 ){
 
-const { error } =
 await supabaseClient
 .from("expenses")
 .delete()
 .eq("amount",amount)
 .eq("created_at",createdAt);
-
-if(error){
-
-console.error(error);
-
-return;
-
-}
 
 loadExpenses();
 
@@ -624,12 +686,14 @@ loadExpenses();
 
 
 // =========================
-// WEBSITE LOAD
+// START WEBSITE
 // =========================
 
 window.addEventListener(
 "load",
 function(){
+
+loadDate();
 
 loadTasks();
 
