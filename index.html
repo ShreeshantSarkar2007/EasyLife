@@ -5,78 +5,226 @@
 
 <title>EasyLife</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 
+:root{
+--bg:#dff3ff;
+--card:#ffffff;
+--text:#222222;
+--muted:#666666;
+--input:#f5f5f5;
+--border:#dddddd;
+--button:#2563eb;
+--buttonText:#ffffff;
+--danger:#dc2626;
+}
+
+*{
+box-sizing:border-box;
+}
+
 body{
-font-family:Arial;
-background:#dff3ff;
+font-family:Arial,sans-serif;
+background:var(--bg);
+color:var(--text);
+padding:15px;
+margin:0;
+transition:0.3s;
+}
+
+body.dark{
+--bg:#121212;
+--card:#1e1e1e;
+--text:#f5f5f5;
+--muted:#bbbbbb;
+--input:#2a2a2a;
+--border:#444444;
+--button:#3b82f6;
+--buttonText:#ffffff;
+--danger:#ef4444;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+header{
+background:var(--card);
 padding:20px;
+border-radius:16px;
+margin-bottom:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
+}
+
+header h1{
+margin:0;
+}
+
+header p{
+margin:5px 0 0;
+color:var(--muted);
+}
+
+.themeButton{
+background:var(--button);
+color:var(--buttonText);
+border:none;
+border-radius:10px;
+padding:10px 14px;
+}
+
+nav{
+background:var(--card);
+padding:10px;
+border-radius:14px;
+margin-bottom:15px;
+display:flex;
+gap:8px;
+overflow-x:auto;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
+}
+
+nav button{
+background:transparent;
+color:var(--text);
+border:1px solid var(--border);
+border-radius:10px;
+padding:9px 13px;
+white-space:nowrap;
 }
 
 .card{
-background:white;
+background:var(--card);
 padding:20px;
 margin:15px 0;
-border-radius:10px;
+border-radius:16px;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
+}
+
+.card h2{
+margin-top:0;
 }
 
 .dashboard{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:10px;
+gap:12px;
 }
 
 .stat{
-background:#f5f5f5;
-padding:15px;
-border-radius:10px;
+background:var(--input);
+padding:18px;
+border-radius:14px;
 text-align:center;
+border:1px solid var(--border);
 }
 
 .stat h3{
-margin:5px;
+margin:5px 0;
 }
 
 .stat p{
 font-size:24px;
 font-weight:bold;
-margin:10px;
+margin:10px 0 0;
 }
 
-button{
-padding:8px;
-cursor:pointer;
-}
-
-input, textarea, select{
-padding:8px;
-width:90%;
-margin:5px 0;
+input,
+textarea,
+select{
+width:100%;
+padding:12px;
+margin:6px 0;
+border-radius:10px;
+border:1px solid var(--border);
+background:var(--input);
+color:var(--text);
+font-size:15px;
 }
 
 textarea{
-height:100px;
+height:120px;
+resize:vertical;
+}
+
+button{
+padding:10px 14px;
+border:none;
+border-radius:10px;
+background:var(--button);
+color:var(--buttonText);
+cursor:pointer;
+}
+
+button:hover{
+opacity:0.9;
+}
+
+ul{
+padding-left:20px;
 }
 
 li{
-margin:8px 0;
+margin:10px 0;
 }
 
 .delete{
 margin-left:10px;
-cursor:pointer;
+background:var(--danger);
 }
 
 .expense-item{
-padding:10px;
-margin:8px 0;
-background:#f5f5f5;
-border-radius:8px;
+padding:14px;
+margin:10px 0;
+background:var(--input);
+border:1px solid var(--border);
+border-radius:12px;
 }
 
 .total{
 font-size:22px;
 font-weight:bold;
+}
+
+.message{
+color:var(--muted);
+}
+
+.section{
+scroll-margin-top:15px;
+}
+
+footer{
+text-align:center;
+padding:20px;
+color:var(--muted);
+}
+
+@media(max-width:600px){
+
+body{
+padding:10px;
+}
+
+header{
+align-items:flex-start;
+}
+
+.dashboard{
+grid-template-columns:1fr 1fr;
+}
+
+.card{
+padding:16px;
+}
+
 }
 
 </style>
@@ -86,29 +234,73 @@ font-weight:bold;
 
 <body>
 
+<div class="container">
+
+
+<header>
+
+<div>
 
 <h1>🌟 EasyLife</h1>
 
 <p>Your Daily Life Assistant</p>
 
+</div>
 
-<!-- ========================= -->
-<!-- DASHBOARD -->
-<!-- ========================= -->
+<button
+class="themeButton"
+onclick="toggleTheme()"
+id="themeButton">
 
-<div class="card">
+🌙 Dark
+
+</button>
+
+</header>
+
+
+<nav>
+
+<button onclick="scrollToSection('dashboard')">
+📊 Dashboard
+</button>
+
+<button onclick="scrollToSection('tasks')">
+📝 Tasks
+</button>
+
+<button onclick="scrollToSection('notes')">
+📒 Notes
+</button>
+
+<button onclick="scrollToSection('expenses')">
+💰 Expenses
+</button>
+
+</nav>
+
+
+<div
+class="card section"
+id="dashboard">
 
 <h2>📊 Dashboard</h2>
 
-<p id="today"></p>
+<p
+id="today"
+class="message">
+</p>
 
 <div class="dashboard">
+
 
 <div class="stat">
 
 <h3>📝 Tasks</h3>
 
-<p id="taskCount">0</p>
+<p id="taskCount">
+0
+</p>
 
 </div>
 
@@ -117,7 +309,9 @@ font-weight:bold;
 
 <h3>📒 Notes</h3>
 
-<p id="noteCount">0</p>
+<p id="noteCount">
+0
+</p>
 
 </div>
 
@@ -126,7 +320,9 @@ font-weight:bold;
 
 <h3>💰 Expenses</h3>
 
-<p id="expenseCount">0</p>
+<p id="expenseCount">
+0
+</p>
 
 </div>
 
@@ -135,111 +331,142 @@ font-weight:bold;
 
 <h3>💵 Total Spent</h3>
 
-<p>₹<span id="dashboardTotal">0</span></p>
+<p>
+₹<span id="dashboardTotal">0</span>
+</p>
+
+</div>
+
 
 </div>
 
 </div>
 
-</div>
 
-
-<!-- ========================= -->
-<!-- TO-DO LIST -->
-<!-- ========================= -->
-
-<div class="card">
+<div
+class="card section"
+id="tasks">
 
 <h2>📝 To-Do List</h2>
 
 <input
 id="task"
-placeholder="Enter task"
->
+placeholder="Enter a task">
 
 <button onclick="addTask()">
-Add
+➕ Add Task
 </button>
 
-<ul id="list"></ul>
+<p
+id="taskMessage"
+class="message">
+</p>
 
-<p id="taskMessage"></p>
+<ul id="list"></ul>
 
 </div>
 
 
-<!-- ========================= -->
-<!-- NOTES -->
-<!-- ========================= -->
-
-<div class="card">
+<div
+class="card section"
+id="notes">
 
 <h2>📒 Notes</h2>
 
 <textarea
 id="note"
-placeholder="Write your note"
-></textarea>
-
-<br><br>
+placeholder="Write your note">
+</textarea>
 
 <button onclick="saveNote()">
-Save Note
+💾 Save Note
 </button>
 
-<p id="savedNote"></p>
+<p
+id="savedNote"
+class="message">
+</p>
 
 </div>
 
 
-<!-- ========================= -->
-<!-- EXPENSE TRACKER -->
-<!-- ========================= -->
-
-<div class="card">
+<div
+class="card section"
+id="expenses">
 
 <h2>💰 Expense Tracker</h2>
 
 <input
 id="expenseAmount"
 type="number"
-placeholder="Enter amount"
->
+placeholder="Enter amount">
 
 <select id="expenseCategory">
 
-<option value="Food">🍔 Food</option>
+<option value="Food">
+🍔 Food
+</option>
 
-<option value="Travel">🚗 Travel</option>
+<option value="Travel">
+🚗 Travel
+</option>
 
-<option value="Shopping">🛍️ Shopping</option>
+<option value="Shopping">
+🛍️ Shopping
+</option>
 
-<option value="Bills">💡 Bills</option>
+<option value="Bills">
+💡 Bills
+</option>
 
-<option value="Education">📚 Education</option>
+<option value="Education">
+📚 Education
+</option>
 
-<option value="Other">📦 Other</option>
+<option value="Other">
+📦 Other
+</option>
 
 </select>
 
 <input
 id="expenseDescription"
-placeholder="Description"
->
+placeholder="Description">
 
 <button onclick="addExpense()">
-Add Expense
+➕ Add Expense
 </button>
 
-<p id="expenseMessage"></p>
-
-<p class="total">
-Total: ₹<span id="totalExpense">0</span>
+<p
+id="expenseMessage"
+class="message">
 </p>
 
-<h3>📋 Expense History</h3>
+<p class="total">
 
-<div id="expenseList"></div>
+Total:
+₹<span id="totalExpense">
+0
+</span>
+
+</p>
+
+<h3>
+📋 Expense History
+</h3>
+
+<div id="expenseList">
+</div>
+
+</div>
+
+
+<footer>
+
+🌟 EasyLife — Your Daily Life Assistant
+
+</footer>
+
 
 </div>
 
@@ -249,10 +476,6 @@ Total: ₹<span id="totalExpense">0</span>
 
 <script>
 
-
-// =========================
-// SUPABASE CONNECTION
-// =========================
 
 const SUPABASE_URL =
 "https://lhxjfyzqpsmqejxfrxlg.supabase.co";
@@ -267,17 +490,78 @@ SUPABASE_KEY
 );
 
 
-// =========================
-// DATE
-// =========================
+function loadTheme(){
+
+const theme =
+localStorage.getItem(
+"EasyLifeTheme"
+);
+
+if(theme==="dark"){
+
+document.body.classList.add("dark");
+
+document.getElementById(
+"themeButton"
+).innerHTML="☀️ Light";
+
+}
+
+}
+
+
+function toggleTheme(){
+
+document.body.classList.toggle("dark");
+
+if(
+document.body.classList.contains("dark")
+){
+
+localStorage.setItem(
+"EasyLifeTheme",
+"dark"
+);
+
+document.getElementById(
+"themeButton"
+).innerHTML="☀️ Light";
+
+}else{
+
+localStorage.setItem(
+"EasyLifeTheme",
+"light"
+);
+
+document.getElementById(
+"themeButton"
+).innerHTML="🌙 Dark";
+
+}
+
+}
+
+
+function scrollToSection(id){
+
+document.getElementById(id)
+.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
 
 function loadDate(){
 
 const today =
 new Date();
 
-document.getElementById("today").innerHTML =
-"📅 " +
+document.getElementById(
+"today"
+).innerHTML=
+"📅 "+
 today.toLocaleDateString(
 "en-IN",
 {
@@ -291,30 +575,32 @@ day:"numeric"
 }
 
 
-// =========================
-// ADD TASK
-// =========================
-
 async function addTask(){
 
 const task =
-document.getElementById("task")
-.value
+document.getElementById(
+"task"
+).value
 .trim();
 
 const message =
-document.getElementById("taskMessage");
+document.getElementById(
+"taskMessage"
+);
 
 if(task===""){
 
-message.innerHTML =
+message.innerHTML=
 "⚠️ Please enter a task.";
 
 return;
 
 }
 
-const {error} =
+message.innerHTML=
+"⏳ Saving task...";
+
+const {error}=
 await supabaseClient
 .from("tasks")
 .insert({
@@ -323,17 +609,19 @@ content:task
 
 if(error){
 
-message.innerHTML =
-"❌ Error: " +
+message.innerHTML=
+"❌ Error: "+
 error.message;
 
 return;
 
 }
 
-document.getElementById("task").value="";
+document.getElementById(
+"task"
+).value="";
 
-message.innerHTML =
+message.innerHTML=
 "✅ Task saved!";
 
 loadTasks();
@@ -341,19 +629,20 @@ loadTasks();
 }
 
 
-// =========================
-// LOAD TASKS
-// =========================
-
 async function loadTasks(){
 
-const {data,error} =
+const {data,error}=
 await supabaseClient
 .from("tasks")
-.select("content,created_at")
-.order("created_at",{
+.select(
+"content,created_at"
+)
+.order(
+"created_at",
+{
 ascending:false
-});
+}
+);
 
 if(error){
 
@@ -363,27 +652,37 @@ return;
 
 }
 
-const list =
-document.getElementById("list");
+const list=
+document.getElementById(
+"list"
+);
 
 list.innerHTML="";
 
-data.forEach(function(task){
+data.forEach(
+function(task){
 
-const li =
-document.createElement("li");
+const li=
+document.createElement(
+"li"
+);
 
-li.textContent =
+li.textContent=
 task.content;
 
-const del =
-document.createElement("button");
+const del=
+document.createElement(
+"button"
+);
 
-del.innerHTML="❌";
+del.innerHTML=
+"❌ Delete";
 
-del.className="delete";
+del.className=
+"delete";
 
-del.onclick=function(){
+del.onclick=
+function(){
 
 deleteTask(
 task.content,
@@ -396,17 +695,16 @@ li.appendChild(del);
 
 list.appendChild(li);
 
-});
+}
+);
 
-document.getElementById("taskCount").innerText =
+document.getElementById(
+"taskCount"
+).innerText=
 data.length;
 
 }
 
-
-// =========================
-// DELETE TASK
-// =========================
 
 async function deleteTask(
 content,
@@ -416,38 +714,46 @@ createdAt
 await supabaseClient
 .from("tasks")
 .delete()
-.eq("content",content)
-.eq("created_at",createdAt);
+.eq(
+"content",
+content
+)
+.eq(
+"created_at",
+createdAt
+);
 
 loadTasks();
 
 }
 
 
-// =========================
-// SAVE NOTE
-// =========================
-
 async function saveNote(){
 
-const note =
-document.getElementById("note")
-.value
+const note=
+document.getElementById(
+"note"
+).value
 .trim();
 
-const message =
-document.getElementById("savedNote");
+const message=
+document.getElementById(
+"savedNote"
+);
 
 if(note===""){
 
-message.innerHTML =
+message.innerHTML=
 "⚠️ Please write a note first.";
 
 return;
 
 }
 
-const {error} =
+message.innerHTML=
+"⏳ Saving note...";
+
+const {error}=
 await supabaseClient
 .from("notes")
 .insert({
@@ -456,15 +762,15 @@ content:note
 
 if(error){
 
-message.innerHTML =
-"❌ Error: " +
+message.innerHTML=
+"❌ Error: "+
 error.message;
 
 return;
 
 }
 
-message.innerHTML =
+message.innerHTML=
 "✅ Note saved successfully!";
 
 loadNotes();
@@ -472,19 +778,20 @@ loadNotes();
 }
 
 
-// =========================
-// LOAD NOTES
-// =========================
-
 async function loadNotes(){
 
-const {data,error} =
+const {data,error}=
 await supabaseClient
 .from("notes")
-.select("content,created_at")
-.order("created_at",{
+.select(
+"content,created_at"
+)
+.order(
+"created_at",
+{
 ascending:false
-});
+}
+);
 
 if(error){
 
@@ -494,15 +801,21 @@ return;
 
 }
 
-document.getElementById("noteCount").innerText =
+document.getElementById(
+"noteCount"
+).innerText=
 data.length;
 
 if(data.length>0){
 
-document.getElementById("note").value =
+document.getElementById(
+"note"
+).value=
 data[0].content;
 
-document.getElementById("savedNote").innerHTML =
+document.getElementById(
+"savedNote"
+).innerHTML=
 "✅ Saved note loaded.";
 
 }
@@ -510,36 +823,45 @@ document.getElementById("savedNote").innerHTML =
 }
 
 
-// =========================
-// ADD EXPENSE
-// =========================
-
 async function addExpense(){
 
-const amount =
-document.getElementById("expenseAmount").value;
+const amount=
+document.getElementById(
+"expenseAmount"
+).value;
 
-const category =
-document.getElementById("expenseCategory").value;
+const category=
+document.getElementById(
+"expenseCategory"
+).value;
 
-const description =
-document.getElementById("expenseDescription")
-.value
+const description=
+document.getElementById(
+"expenseDescription"
+).value
 .trim();
 
-const message =
-document.getElementById("expenseMessage");
+const message=
+document.getElementById(
+"expenseMessage"
+);
 
-if(amount==="" || Number(amount)<=0){
+if(
+amount==="" ||
+Number(amount)<=0
+){
 
-message.innerHTML =
+message.innerHTML=
 "⚠️ Enter a valid amount.";
 
 return;
 
 }
 
-const {error} =
+message.innerHTML=
+"⏳ Saving expense...";
+
+const {error}=
 await supabaseClient
 .from("expenses")
 .insert({
@@ -554,19 +876,23 @@ description:description
 
 if(error){
 
-message.innerHTML =
-"❌ Error: " +
+message.innerHTML=
+"❌ Error: "+
 error.message;
 
 return;
 
 }
 
-document.getElementById("expenseAmount").value="";
+document.getElementById(
+"expenseAmount"
+).value="";
 
-document.getElementById("expenseDescription").value="";
+document.getElementById(
+"expenseDescription"
+).value="";
 
-message.innerHTML =
+message.innerHTML=
 "✅ Expense saved!";
 
 loadExpenses();
@@ -574,21 +900,20 @@ loadExpenses();
 }
 
 
-// =========================
-// LOAD EXPENSES
-// =========================
-
 async function loadExpenses(){
 
-const {data,error} =
+const {data,error}=
 await supabaseClient
 .from("expenses")
 .select(
 "amount,category,description,expense_date,created_at"
 )
-.order("created_at",{
+.order(
+"created_at",
+{
 ascending:false
-});
+}
+);
 
 if(error){
 
@@ -598,47 +923,57 @@ return;
 
 }
 
-const list =
-document.getElementById("expenseList");
+const list=
+document.getElementById(
+"expenseList"
+);
 
 list.innerHTML="";
 
 let total=0;
 
-data.forEach(function(expense){
+data.forEach(
+function(expense){
 
-total +=
+total+=
 Number(expense.amount);
 
-const div =
-document.createElement("div");
+const div=
+document.createElement(
+"div"
+);
 
-div.className =
+div.className=
 "expense-item";
 
-div.innerHTML =
-"<strong>₹" +
-expense.amount +
-"</strong> - " +
-expense.category +
-"<br>" +
-(expense.description ||
-"No description") +
-"<br>" +
-"<small>" +
-expense.expense_date +
+div.innerHTML=
+"<strong>₹"+
+expense.amount+
+"</strong> - "+
+expense.category+
+"<br>"+
+(
+expense.description ||
+"No description"
+)+
+"<br>"+
+"<small>"+
+expense.expense_date+
 "</small>";
 
-const del =
-document.createElement("button");
+const del=
+document.createElement(
+"button"
+);
 
-del.innerHTML =
+del.innerHTML=
 "❌ Delete";
 
-del.className =
+del.className=
 "delete";
 
-del.onclick=function(){
+del.onclick=
+function(){
 
 deleteExpense(
 expense.amount,
@@ -651,23 +986,26 @@ div.appendChild(del);
 
 list.appendChild(div);
 
-});
+}
+);
 
-document.getElementById("totalExpense").innerText =
+document.getElementById(
+"totalExpense"
+).innerText=
 total.toFixed(2);
 
-document.getElementById("dashboardTotal").innerText =
+document.getElementById(
+"dashboardTotal"
+).innerText=
 total.toFixed(2);
 
-document.getElementById("expenseCount").innerText =
+document.getElementById(
+"expenseCount"
+).innerText=
 data.length;
 
 }
 
-
-// =========================
-// DELETE EXPENSE
-// =========================
 
 async function deleteExpense(
 amount,
@@ -677,21 +1015,25 @@ createdAt
 await supabaseClient
 .from("expenses")
 .delete()
-.eq("amount",amount)
-.eq("created_at",createdAt);
+.eq(
+"amount",
+amount
+)
+.eq(
+"created_at",
+createdAt
+);
 
 loadExpenses();
 
 }
 
 
-// =========================
-// START WEBSITE
-// =========================
-
 window.addEventListener(
 "load",
 function(){
+
+loadTheme();
 
 loadDate();
 
@@ -702,6 +1044,7 @@ loadNotes();
 loadExpenses();
 
 });
+
 
 </script>
 
