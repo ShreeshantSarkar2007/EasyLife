@@ -25,9 +25,10 @@ padding:8px;
 cursor:pointer;
 }
 
-input, textarea{
+input, textarea, select{
 padding:8px;
 width:90%;
+margin:5px 0;
 }
 
 textarea{
@@ -43,6 +44,18 @@ margin-left:10px;
 cursor:pointer;
 }
 
+.expense-item{
+padding:10px;
+margin:8px 0;
+background:#f5f5f5;
+border-radius:8px;
+}
+
+.total{
+font-size:22px;
+font-weight:bold;
+}
+
 </style>
 
 </head>
@@ -56,7 +69,9 @@ cursor:pointer;
 <p>Your Daily Life Assistant</p>
 
 
+<!-- ========================= -->
 <!-- TO-DO LIST -->
+<!-- ========================= -->
 
 <div class="card">
 
@@ -78,7 +93,9 @@ Add
 </div>
 
 
+<!-- ========================= -->
 <!-- NOTES -->
+<!-- ========================= -->
 
 <div class="card">
 
@@ -100,18 +117,61 @@ Save Note
 </div>
 
 
+<!-- ========================= -->
 <!-- EXPENSE TRACKER -->
+<!-- ========================= -->
 
 <div class="card">
 
 <h2>💰 Expense Tracker</h2>
 
-<p>Coming Soon...</p>
+<input
+id="expenseAmount"
+type="number"
+placeholder="Enter amount"
+>
+
+<select id="expenseCategory">
+
+<option value="Food">🍔 Food</option>
+
+<option value="Travel">🚗 Travel</option>
+
+<option value="Shopping">🛍️ Shopping</option>
+
+<option value="Bills">💡 Bills</option>
+
+<option value="Education">📚 Education</option>
+
+<option value="Other">📦 Other</option>
+
+</select>
+
+<input
+id="expenseDescription"
+placeholder="Description"
+>
+
+<button onclick="addExpense()">
+Add Expense
+</button>
+
+<p id="expenseMessage"></p>
+
+<p class="total">
+Total: ₹<span id="totalExpense">0</span>
+</p>
+
+<h3>📋 Expense History</h3>
+
+<div id="expenseList"></div>
 
 </div>
 
 
+<!-- ========================= -->
 <!-- SUPABASE -->
+<!-- ========================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -145,7 +205,6 @@ document.getElementById("task")
 const message =
 document.getElementById("taskMessage");
 
-
 if(task === ""){
 
 message.innerHTML =
@@ -155,18 +214,15 @@ return;
 
 }
 
-
 message.innerHTML =
 "⏳ Saving task...";
-
 
 const { error } =
 await supabaseClient
 .from("tasks")
 .insert({
-content: task
+content:task
 });
-
 
 if(error){
 
@@ -180,8 +236,7 @@ return;
 
 }
 
-
-document.getElementById("task").value = "";
+document.getElementById("task").value="";
 
 message.innerHTML =
 "✅ Task saved!";
@@ -197,40 +252,26 @@ loadTasks();
 
 async function loadTasks(){
 
-const { data, error } =
+const { data,error } =
 await supabaseClient
 .from("tasks")
-.select("content, created_at")
-.order("created_at", {
+.select("content,created_at")
+.order("created_at",{
 ascending:false
 });
-
 
 if(error){
 
 console.error(error);
 
-document.getElementById("taskMessage").innerHTML =
-"❌ Could not load tasks: " +
-error.message;
-
 return;
 
 }
-
 
 const list =
 document.getElementById("list");
 
-list.innerHTML = "";
-
-
-if(!data){
-
-return;
-
-}
-
+list.innerHTML="";
 
 data.forEach(function(task){
 
@@ -240,19 +281,14 @@ document.createElement("li");
 li.textContent =
 task.content;
 
-
 const del =
 document.createElement("button");
 
-del.innerHTML =
-"❌";
+del.innerHTML="❌";
 
-del.className =
-"delete";
+del.className="delete";
 
-
-del.onclick =
-function(){
+del.onclick=function(){
 
 deleteTask(
 task.content,
@@ -260,7 +296,6 @@ task.created_at
 );
 
 };
-
 
 li.appendChild(del);
 
@@ -284,25 +319,16 @@ const { error } =
 await supabaseClient
 .from("tasks")
 .delete()
-.eq("content", content)
-.eq("created_at", createdAt);
-
+.eq("content",content)
+.eq("created_at",createdAt);
 
 if(error){
 
 console.error(error);
 
-document.getElementById("taskMessage").innerHTML =
-"❌ Could not delete task: " +
-error.message;
-
 return;
 
 }
-
-
-document.getElementById("taskMessage").innerHTML =
-"✅ Task deleted.";
 
 loadTasks();
 
@@ -323,8 +349,7 @@ document.getElementById("note")
 const message =
 document.getElementById("savedNote");
 
-
-if(note === ""){
+if(note===""){
 
 message.innerHTML =
 "⚠️ Please write a note first.";
@@ -333,16 +358,117 @@ return;
 
 }
 
-
 message.innerHTML =
 "⏳ Saving note...";
-
 
 const { error } =
 await supabaseClient
 .from("notes")
 .insert({
-content: note
+content:note
+});
+
+if(error){
+
+console.error(error);
+
+message.innerHTML =
+"❌ Error: " +
+error.message;
+
+return;
+
+}
+
+message.innerHTML =
+"✅ Note saved successfully!";
+
+}
+
+
+// =========================
+// LOAD NOTE
+// =========================
+
+async function loadNotes(){
+
+const { data,error } =
+await supabaseClient
+.from("notes")
+.select("content,created_at")
+.order("created_at",{
+ascending:false
+})
+.limit(1);
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+if(data && data.length>0){
+
+document.getElementById("note").value =
+data[0].content;
+
+document.getElementById("savedNote").innerHTML =
+"✅ Saved note loaded.";
+
+}
+
+}
+
+
+// =========================
+// ADD EXPENSE
+// =========================
+
+async function addExpense(){
+
+const amount =
+document.getElementById("expenseAmount")
+.value;
+
+const category =
+document.getElementById("expenseCategory")
+.value;
+
+const description =
+document.getElementById("expenseDescription")
+.value
+.trim();
+
+const message =
+document.getElementById("expenseMessage");
+
+
+if(amount==="" || Number(amount)<=0){
+
+message.innerHTML =
+"⚠️ Enter a valid amount.";
+
+return;
+
+}
+
+message.innerHTML =
+"⏳ Saving expense...";
+
+
+const { error } =
+await supabaseClient
+.from("expenses")
+.insert({
+
+amount:Number(amount),
+
+category:category,
+
+description:description
+
 });
 
 
@@ -359,40 +485,40 @@ return;
 }
 
 
+document.getElementById("expenseAmount").value="";
+
+document.getElementById("expenseDescription").value="";
+
 message.innerHTML =
-"✅ Note saved successfully!";
+"✅ Expense saved!";
 
-
-// Keep the saved note visible
-
-document.getElementById("note").value =
-note;
+loadExpenses();
 
 }
 
 
 // =========================
-// LOAD LATEST NOTE
+// LOAD EXPENSES
 // =========================
 
-async function loadNotes(){
+async function loadExpenses(){
 
-const { data, error } =
+const { data,error } =
 await supabaseClient
-.from("notes")
-.select("content, created_at")
-.order("created_at", {
+.from("expenses")
+.select(
+"amount,category,description,expense_date,created_at"
+)
+.order("created_at",{
 ascending:false
-})
-.limit(1);
-
+});
 
 if(error){
 
 console.error(error);
 
-document.getElementById("savedNote").innerHTML =
-"❌ Could not load notes: " +
+document.getElementById("expenseMessage").innerHTML =
+"❌ Could not load expenses: " +
 error.message;
 
 return;
@@ -400,21 +526,105 @@ return;
 }
 
 
-if(data && data.length > 0){
+const list =
+document.getElementById("expenseList");
 
-document.getElementById("note").value =
-data[0].content;
+list.innerHTML="";
 
-document.getElementById("savedNote").innerHTML =
-"✅ Saved note loaded.";
 
-}
+let total=0;
+
+
+data.forEach(function(expense){
+
+total += Number(expense.amount);
+
+
+const div =
+document.createElement("div");
+
+div.className =
+"expense-item";
+
+
+div.innerHTML =
+
+"<strong>₹" +
+expense.amount +
+"</strong> - " +
+expense.category +
+"<br>" +
+(expense.description || "No description") +
+"<br>" +
+"<small>" +
+expense.expense_date +
+"</small>";
+
+
+const del =
+document.createElement("button");
+
+del.innerHTML =
+"❌ Delete";
+
+del.className =
+"delete";
+
+
+del.onclick=function(){
+
+deleteExpense(
+expense.amount,
+expense.created_at
+);
+
+};
+
+
+div.appendChild(del);
+
+list.appendChild(div);
+
+});
+
+
+document.getElementById("totalExpense").innerText =
+total.toFixed(2);
 
 }
 
 
 // =========================
-// WHEN WEBSITE OPENS
+// DELETE EXPENSE
+// =========================
+
+async function deleteExpense(
+amount,
+createdAt
+){
+
+const { error } =
+await supabaseClient
+.from("expenses")
+.delete()
+.eq("amount",amount)
+.eq("created_at",createdAt);
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+loadExpenses();
+
+}
+
+
+// =========================
+// WEBSITE LOAD
 // =========================
 
 window.addEventListener(
@@ -424,6 +634,8 @@ function(){
 loadTasks();
 
 loadNotes();
+
+loadExpenses();
 
 });
 
