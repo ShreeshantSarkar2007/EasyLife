@@ -40,7 +40,6 @@ margin-left:10px;
 cursor:pointer;
 }
 </style>
-
 </head>
 
 <body>
@@ -60,7 +59,6 @@ cursor:pointer;
 
 </div>
 
-
 <div class="card">
 
 <h2>📒 Notes</h2>
@@ -75,7 +73,6 @@ cursor:pointer;
 
 </div>
 
-
 <div class="card">
 
 <h2>💰 Expense Tracker</h2>
@@ -83,7 +80,6 @@ cursor:pointer;
 <p>Coming Soon...</p>
 
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -95,15 +91,14 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_4o82RmTdkM9f5j5negCsKg_wmZYZGtW";
 
-const supabaseClient = window.supabase.createClient(
+const supabaseClient =
+window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
 
 
-// =========================
 // TO-DO LIST
-// =========================
 
 function addTask(){
 
@@ -187,52 +182,40 @@ showTasks();
 }
 
 
-// =========================
 // SAVE NOTE
-// =========================
 
 async function saveNote(){
 
-const noteBox =
-document.getElementById("note");
+let note =
+document.getElementById("note").value.trim();
 
-const message =
+let message =
 document.getElementById("savedNote");
-
-const note =
-noteBox.value.trim();
 
 if(note === ""){
 
 message.innerHTML =
-"⚠️ Please write something first.";
+"⚠️ Please write a note first.";
 
 return;
 
 }
 
-message.innerHTML =
-"⏳ Saving...";
+message.innerHTML = "⏳ Saving...";
 
-try{
-
-const result = await supabaseClient
+const { error } =
+await supabaseClient
 .from("notes")
 .insert({
 content: note
 });
 
-console.log("Supabase result:", result);
+if(error){
 
-if(result.error){
-
-console.error(
-"Supabase error:",
-result.error
-);
+console.error(error);
 
 message.innerHTML =
-"❌ Error: " + result.error.message;
+"❌ Error: " + error.message;
 
 return;
 
@@ -241,83 +224,47 @@ return;
 message.innerHTML =
 "✅ Note saved successfully!";
 
-noteBox.value = "";
-
-}
-catch(error){
-
-console.error(
-"Unexpected error:",
-error
-);
-
-message.innerHTML =
-"❌ Error: " + error.message;
-
-}
-
 }
 
 
-// =========================
-// LOAD LATEST NOTE
-// =========================
+// LOAD NOTES
 
-async function loadNote(){
+async function loadNotes(){
 
-try{
-
-const result = await supabaseClient
+const { data, error } =
+await supabaseClient
 .from("notes")
-.select("content, created_at")
+.select("id, content, created_at")
 .order("created_at", {
 ascending:false
-})
-.limit(1);
+});
 
-console.log(
-"Load result:",
-result
-);
+if(error){
 
-if(result.error){
+console.error(error);
 
-console.error(
-"Load error:",
-result.error
-);
+document.getElementById("savedNote").innerHTML =
+"❌ Could not load notes: " +
+error.message;
 
 return;
 
 }
 
-if(result.data &&
-result.data.length > 0){
+if(data && data.length > 0){
 
 document.getElementById("note").value =
-result.data[0].content;
+data[0].content;
 
 document.getElementById("savedNote").innerHTML =
-"✅ Last saved note loaded.";
-
-}
-
-}
-catch(error){
-
-console.error(
-"Unexpected load error:",
-error
-);
+"✅ Saved note loaded.";
 
 }
 
 }
 
 
-// =========================
 // PAGE LOAD
-// =========================
 
 window.addEventListener(
 "load",
@@ -325,7 +272,7 @@ function(){
 
 showTasks();
 
-loadNote();
+loadNotes();
 
 });
 
