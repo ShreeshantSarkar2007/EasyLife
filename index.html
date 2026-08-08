@@ -60,6 +60,7 @@ cursor:pointer;
 
 </div>
 
+
 <div class="card">
 
 <h2>📒 Notes</h2>
@@ -73,6 +74,7 @@ cursor:pointer;
 <p id="savedNote"></p>
 
 </div>
+
 
 <div class="card">
 
@@ -93,7 +95,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
 "sb_publishable_4o82RmTdkM9f5j5negCsKg_wmZYZGtW";
 
-const supabase = window.supabase.createClient(
+const supabaseClient = window.supabase.createClient(
 SUPABASE_URL,
 SUPABASE_KEY
 );
@@ -106,9 +108,9 @@ SUPABASE_KEY
 function addTask(){
 
 let task =
-document.getElementById("task").value;
+document.getElementById("task").value.trim();
 
-if(task==""){
+if(task === ""){
 return;
 }
 
@@ -122,7 +124,7 @@ localStorage.setItem(
 JSON.stringify(tasks)
 );
 
-document.getElementById("task").value="";
+document.getElementById("task").value = "";
 
 showTasks();
 
@@ -134,7 +136,7 @@ function showTasks(){
 let list =
 document.getElementById("list");
 
-list.innerHTML="";
+list.innerHTML = "";
 
 let tasks =
 JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
@@ -144,16 +146,16 @@ tasks.forEach(function(task,index){
 let li =
 document.createElement("li");
 
-li.innerHTML=task;
+li.textContent = task;
 
 let del =
 document.createElement("button");
 
-del.innerHTML="❌";
+del.innerHTML = "❌";
 
-del.className="delete";
+del.className = "delete";
 
-del.onclick=function(){
+del.onclick = function(){
 
 deleteTask(index);
 
@@ -186,66 +188,127 @@ showTasks();
 
 
 // =========================
-// NOTES
+// SAVE NOTE
 // =========================
 
 async function saveNote(){
 
-let note =
-document.getElementById("note").value.trim();
+const noteBox =
+document.getElementById("note");
 
-if(note==""){
+const message =
+document.getElementById("savedNote");
+
+const note =
+noteBox.value.trim();
+
+if(note === ""){
+
+message.innerHTML =
+"⚠️ Please write something first.";
+
 return;
+
 }
 
-const { data, error } = await supabase
+message.innerHTML =
+"⏳ Saving...";
+
+try{
+
+const result = await supabaseClient
 .from("notes")
-.insert([
-{
-content:note
-}
-]);
+.insert({
+content: note
+});
 
-if(error){
+console.log("Supabase result:", result);
 
-console.error(error);
+if(result.error){
 
-document.getElementById("savedNote").innerHTML =
-"❌ Error saving note";
+console.error(
+"Supabase error:",
+result.error
+);
+
+message.innerHTML =
+"❌ Error: " + result.error.message;
 
 return;
 
 }
 
-document.getElementById("savedNote").innerHTML =
+message.innerHTML =
 "✅ Note saved successfully!";
 
+noteBox.value = "";
+
+}
+catch(error){
+
+console.error(
+"Unexpected error:",
+error
+);
+
+message.innerHTML =
+"❌ Error: " + error.message;
+
 }
 
+}
+
+
+// =========================
+// LOAD LATEST NOTE
+// =========================
 
 async function loadNote(){
 
-const { data, error } = await supabase
+try{
+
+const result = await supabaseClient
 .from("notes")
-.select("*")
-.order("created_at",{ascending:false})
+.select("content, created_at")
+.order("created_at", {
+ascending:false
+})
 .limit(1);
 
-if(error){
+console.log(
+"Load result:",
+result
+);
 
-console.error(error);
+if(result.error){
+
+console.error(
+"Load error:",
+result.error
+);
 
 return;
 
 }
 
-if(data && data.length>0){
+if(result.data &&
+result.data.length > 0){
 
 document.getElementById("note").value =
-data[0].content;
+result.data[0].content;
 
 document.getElementById("savedNote").innerHTML =
-"Last saved note loaded.";
+"✅ Last saved note loaded.";
+
+}
+
+}
+catch(error){
+
+console.error(
+"Unexpected load error:",
+error
+);
 
 }
 
@@ -256,13 +319,15 @@ document.getElementById("savedNote").innerHTML =
 // PAGE LOAD
 // =========================
 
-window.onload=function(){
+window.addEventListener(
+"load",
+function(){
 
 showTasks();
 
 loadNote();
 
-};
+});
 
 </script>
 
