@@ -39,7 +39,6 @@ margin:8px 0;
 margin-left:10px;
 cursor:pointer;
 }
-
 </style>
 
 </head>
@@ -48,7 +47,6 @@ cursor:pointer;
 
 <h1>🌟 EasyLife</h1>
 <p>Your Daily Life Assistant</p>
-
 
 <div class="card">
 
@@ -61,8 +59,6 @@ cursor:pointer;
 <ul id="list"></ul>
 
 </div>
-
-
 
 <div class="card">
 
@@ -78,8 +74,6 @@ cursor:pointer;
 
 </div>
 
-
-
 <div class="card">
 
 <h2>💰 Expense Tracker</h2>
@@ -89,25 +83,44 @@ cursor:pointer;
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
+const SUPABASE_URL =
+"https://lhxjfyzqpsmqejxfrxlg.supabase.co";
 
-// Add task permanently
+const SUPABASE_KEY =
+"sb_publishable_4o82RmTdkM9f5j5negCsKg_wmZYZGtW";
+
+const supabase = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
+
+
+// =========================
+// TO-DO LIST
+// =========================
 
 function addTask(){
 
-let task=document.getElementById("task").value;
+let task =
+document.getElementById("task").value;
 
 if(task==""){
 return;
 }
 
-let tasks=JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
+let tasks =
+JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
 
 tasks.push(task);
 
-localStorage.setItem("EasyLifeTasks", JSON.stringify(tasks));
+localStorage.setItem(
+"EasyLifeTasks",
+JSON.stringify(tasks)
+);
 
 document.getElementById("task").value="";
 
@@ -116,23 +129,25 @@ showTasks();
 }
 
 
-// Display saved tasks
-
 function showTasks(){
 
-let list=document.getElementById("list");
+let list =
+document.getElementById("list");
 
 list.innerHTML="";
 
-let tasks=JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
+let tasks =
+JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
 
 tasks.forEach(function(task,index){
 
-let li=document.createElement("li");
+let li =
+document.createElement("li");
 
 li.innerHTML=task;
 
-let del=document.createElement("button");
+let del =
+document.createElement("button");
 
 del.innerHTML="❌";
 
@@ -153,57 +168,103 @@ list.appendChild(li);
 }
 
 
-// Delete task
-
 function deleteTask(index){
 
-let tasks=JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
+let tasks =
+JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
 
 tasks.splice(index,1);
 
-localStorage.setItem("EasyLifeTasks", JSON.stringify(tasks));
+localStorage.setItem(
+"EasyLifeTasks",
+JSON.stringify(tasks)
+);
 
 showTasks();
 
 }
 
 
+// =========================
+// NOTES
+// =========================
 
-// Save note permanently
+async function saveNote(){
 
-function saveNote(){
+let note =
+document.getElementById("note").value.trim();
 
-let note=document.getElementById("note").value;
+if(note==""){
+return;
+}
 
-localStorage.setItem("EasyLifeNote", note);
+const { data, error } = await supabase
+.from("notes")
+.insert([
+{
+content:note
+}
+]);
 
-document.getElementById("savedNote").innerHTML="Saved: "+note;
+if(error){
+
+console.error(error);
+
+document.getElementById("savedNote").innerHTML =
+"❌ Error saving note";
+
+return;
+
+}
+
+document.getElementById("savedNote").innerHTML =
+"✅ Note saved successfully!";
 
 }
 
 
+async function loadNote(){
 
-// Load everything when website opens
+const { data, error } = await supabase
+.from("notes")
+.select("*")
+.order("created_at",{ascending:false})
+.limit(1);
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+if(data && data.length>0){
+
+document.getElementById("note").value =
+data[0].content;
+
+document.getElementById("savedNote").innerHTML =
+"Last saved note loaded.";
+
+}
+
+}
+
+
+// =========================
+// PAGE LOAD
+// =========================
 
 window.onload=function(){
 
-let savedNote=localStorage.getItem("EasyLifeNote");
-
-if(savedNote){
-
-document.getElementById("note").value=savedNote;
-
-document.getElementById("savedNote").innerHTML="Saved: "+savedNote;
-
-}
-
 showTasks();
+
+loadNote();
 
 };
 
-
 </script>
-
 
 </body>
 </html>
