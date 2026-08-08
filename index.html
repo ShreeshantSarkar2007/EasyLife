@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <title>EasyLife</title>
 
 <style>
+
 body{
 font-family:Arial;
 background:#f2f2f2;
@@ -39,39 +42,65 @@ margin:8px 0;
 margin-left:10px;
 cursor:pointer;
 }
+
 </style>
+
 </head>
+
 
 <body>
 
+
 <h1>🌟 EasyLife</h1>
+
 <p>Your Daily Life Assistant</p>
+
+
+<!-- TO-DO LIST -->
 
 <div class="card">
 
 <h2>📝 To-Do List</h2>
 
-<input id="task" placeholder="Enter task">
+<input
+id="task"
+placeholder="Enter task"
+>
 
-<button onclick="addTask()">Add</button>
+<button onclick="addTask()">
+Add
+</button>
 
 <ul id="list"></ul>
 
+<p id="taskMessage"></p>
+
 </div>
+
+
+<!-- NOTES -->
 
 <div class="card">
 
 <h2>📒 Notes</h2>
 
-<textarea id="note" placeholder="Write your note"></textarea>
+<textarea
+id="note"
+placeholder="Write your note"
+></textarea>
 
 <br><br>
 
-<button onclick="saveNote()">Save Note</button>
+<button onclick="saveNote()">
+Save Note
+</button>
 
 <p id="savedNote"></p>
 
 </div>
+
+
+<!-- EXPENSE TRACKER -->
 
 <div class="card">
 
@@ -81,9 +110,13 @@ cursor:pointer;
 
 </div>
 
+
+<!-- SUPABASE -->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+
 
 const SUPABASE_URL =
 "https://lhxjfyzqpsmqejxfrxlg.supabase.co";
@@ -98,63 +131,136 @@ SUPABASE_KEY
 );
 
 
-// TO-DO LIST
+// =========================
+// ADD TASK
+// =========================
 
-function addTask(){
+async function addTask(){
 
-let task =
-document.getElementById("task").value.trim();
+const task =
+document.getElementById("task")
+.value
+.trim();
+
+const message =
+document.getElementById("taskMessage");
+
 
 if(task === ""){
+
+message.innerHTML =
+"⚠️ Please enter a task.";
+
 return;
+
 }
 
-let tasks =
-JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
 
-tasks.push(task);
+message.innerHTML =
+"⏳ Saving task...";
 
-localStorage.setItem(
-"EasyLifeTasks",
-JSON.stringify(tasks)
-);
+
+const { error } =
+await supabaseClient
+.from("tasks")
+.insert({
+content: task
+});
+
+
+if(error){
+
+console.error(error);
+
+message.innerHTML =
+"❌ Error: " +
+error.message;
+
+return;
+
+}
+
 
 document.getElementById("task").value = "";
 
-showTasks();
+message.innerHTML =
+"✅ Task saved!";
+
+loadTasks();
 
 }
 
 
-function showTasks(){
+// =========================
+// LOAD TASKS
+// =========================
 
-let list =
+async function loadTasks(){
+
+const { data, error } =
+await supabaseClient
+.from("tasks")
+.select("content, created_at")
+.order("created_at", {
+ascending:false
+});
+
+
+if(error){
+
+console.error(error);
+
+document.getElementById("taskMessage").innerHTML =
+"❌ Could not load tasks: " +
+error.message;
+
+return;
+
+}
+
+
+const list =
 document.getElementById("list");
 
 list.innerHTML = "";
 
-let tasks =
-JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
 
-tasks.forEach(function(task,index){
+if(!data){
 
-let li =
+return;
+
+}
+
+
+data.forEach(function(task){
+
+const li =
 document.createElement("li");
 
-li.textContent = task;
+li.textContent =
+task.content;
 
-let del =
+
+const del =
 document.createElement("button");
 
-del.innerHTML = "❌";
+del.innerHTML =
+"❌";
 
-del.className = "delete";
+del.className =
+"delete";
 
-del.onclick = function(){
 
-deleteTask(index);
+del.onclick =
+function(){
+
+deleteTask(
+task.content,
+task.created_at
+);
 
 };
+
 
 li.appendChild(del);
 
@@ -165,32 +271,58 @@ list.appendChild(li);
 }
 
 
-function deleteTask(index){
+// =========================
+// DELETE TASK
+// =========================
 
-let tasks =
-JSON.parse(localStorage.getItem("EasyLifeTasks")) || [];
+async function deleteTask(
+content,
+createdAt
+){
 
-tasks.splice(index,1);
+const { error } =
+await supabaseClient
+.from("tasks")
+.delete()
+.eq("content", content)
+.eq("created_at", createdAt);
 
-localStorage.setItem(
-"EasyLifeTasks",
-JSON.stringify(tasks)
-);
 
-showTasks();
+if(error){
+
+console.error(error);
+
+document.getElementById("taskMessage").innerHTML =
+"❌ Could not delete task: " +
+error.message;
+
+return;
 
 }
 
 
+document.getElementById("taskMessage").innerHTML =
+"✅ Task deleted.";
+
+loadTasks();
+
+}
+
+
+// =========================
 // SAVE NOTE
+// =========================
 
 async function saveNote(){
 
-let note =
-document.getElementById("note").value.trim();
+const note =
+document.getElementById("note")
+.value
+.trim();
 
-let message =
+const message =
 document.getElementById("savedNote");
+
 
 if(note === ""){
 
@@ -201,7 +333,10 @@ return;
 
 }
 
-message.innerHTML = "⏳ Saving...";
+
+message.innerHTML =
+"⏳ Saving note...";
+
 
 const { error } =
 await supabaseClient
@@ -210,34 +345,46 @@ await supabaseClient
 content: note
 });
 
+
 if(error){
 
 console.error(error);
 
 message.innerHTML =
-"❌ Error: " + error.message;
+"❌ Error: " +
+error.message;
 
 return;
 
 }
 
+
 message.innerHTML =
 "✅ Note saved successfully!";
+
+
+// Keep the saved note visible
+document.getElementById("note").value =
+note;
 
 }
 
 
-// LOAD NOTES
+// =========================
+// LOAD LATEST NOTE
+// =========================
 
 async function loadNotes(){
 
 const { data, error } =
 await supabaseClient
 .from("notes")
-.select("id, content, created_at")
+.select("content, created_at")
 .order("created_at", {
 ascending:false
-});
+})
+.limit(1);
+
 
 if(error){
 
@@ -250,6 +397,7 @@ error.message;
 return;
 
 }
+
 
 if(data && data.length > 0){
 
@@ -264,13 +412,15 @@ document.getElementById("savedNote").innerHTML =
 }
 
 
-// PAGE LOAD
+// =========================
+// WHEN WEBSITE OPENS
+// =========================
 
 window.addEventListener(
 "load",
 function(){
 
-showTasks();
+loadTasks();
 
 loadNotes();
 
@@ -278,5 +428,7 @@ loadNotes();
 
 </script>
 
+
 </body>
+
 </html>
