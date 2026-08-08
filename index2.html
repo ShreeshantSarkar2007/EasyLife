@@ -1,1 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EasyLife 2.0</title>
 
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f4f6f8;
+    color: #222;
+}
+
+header {
+    background: #2563eb;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 6px;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    background: white;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+nav button {
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background: #e5e7eb;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+nav button:hover {
+    background: #dbeafe;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 20px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.card h3 {
+    margin-bottom: 10px;
+}
+
+.card .number {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.form-box {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 11px;
+    margin: 7px 0 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.primary {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.danger {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.small {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.item {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 10px;
+}
+
+.item h4 {
+    margin-bottom: 6px;
+}
+
+.completed {
+    text-decoration: line-through;
+    opacity: .6;
+}
+
+.search-box {
+    margin-bottom: 15px;
+}
+
+.balance-positive {
+    font-weight: bold;
+}
+
+.empty {
+    color: #6b7280;
+    padding: 15px 0;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #6b7280;
+}
+
+.dark {
+    background: #111827;
+    color: #f9fafb;
+}
+
+.dark nav,
+.dark .card,
+.dark .form-box {
+    background: #1f2937;
+    color: #f9fafb;
+}
+
+.dark .item {
+    background: #374151;
+    border-color: #4b5563;
+}
+
+.dark input,
+.dark textarea,
+.dark select {
+    background: #374151;
+    color: white;
+    border-color: #6b7280;
+}
+
+@media(max-width:600px) {
+    .container {
+        padding: 12px;
+    }
+
+    nav button {
+        font-size: 12px;
+        padding: 8px 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌟 EasyLife</h1>
+    <p>Your Personal Life Dashboard</p>
+</header>
+
+<nav>
+    <button onclick="showSection('dashboard')">🏠 Dashboard</button>
+    <button onclick="showSection('notes')">📝 Notes</button>
+    <button onclick="showSection('tasks')">✅ Tasks</button>
+    <button onclick="showSection('expenses')">💰 Expenses</button>
+    <button onclick="showSection('calendar')">📅 Calendar</button>
+    <button onclick="showSection('reminders')">🔔 Reminders</button>
+    <button onclick="showSection('student')">📚 Student</button>
+    <button onclick="showSection('search')">🔎 Search</button>
+    <button onclick="showSection('settings')">⚙️ Settings</button>
+</nav>
+
+<div class="container">
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="section active">
+    <h2>📊 Dashboard</h2>
+    <br>
+
+    <div class="cards">
+        <div class="card">
+            <h3>📝 Notes</h3>
+            <div class="number" id="noteCount">0</div>
+        </div>
+
+        <div class="card">
+            <h3>✅ Tasks</h3>
+            <div class="number" id="taskCount">0</div>
+        </div>
+
+        <div class="card">
+            <h3>💰 Balance</h3>
+            <div class="number" id="balance">₹0</div>
+        </div>
+
+        <div class="card">
+            <h3>🔔 Reminders</h3>
+            <div class="number" id="reminderCount">0</div>
+        </div>
+    </div>
+
+    <div class="form-box">
+        <h3>⚡ Quick Actions</h3>
+        <br>
+        <button class="primary" onclick="showSection('notes')">Add Note</button>
+        <button class="primary" onclick="showSection('tasks')">Add Task</button>
+        <button class="primary" onclick="showSection('expenses')">Add Expense</button>
+        <button class="primary" onclick="showSection('reminders')">Add Reminder</button>
+    </div>
+</section>
+
+
+<!-- NOTES -->
+<section id="notes" class="section">
+    <h2>📝 Notes</h2>
+    <br>
+
+    <div class="form-box">
+        <input id="noteTitle" placeholder="Note title">
+        <textarea id="noteText" placeholder="Write your note..."></textarea>
+        <button class="primary" onclick="addNote()">Save Note</button>
+    </div>
+
+    <div id="notesList"></div>
+</section>
+
+
+<!-- TASKS -->
+<section id="tasks" class="section">
+    <h2>✅ To-Do List</h2>
+    <br>
+
+    <div class="form-box">
+        <input id="taskInput" placeholder="Enter task">
+        
+        <select id="taskPriority">
+            <option value="Low">Low Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="High">High Priority</option>
+        </select>
+
+        <input type="date" id="taskDate">
+
+        <button class="primary" onclick="addTask()">Add Task</button>
+    </div>
+
+    <div id="tasksList"></div>
+</section>
+
+
+<!-- EXPENSES -->
+<section id="expenses" class="section">
+    <h2>💰 Expense Tracker</h2>
+    <br>
+
+    <div class="form-box">
+        <select id="expenseType">
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+        </select>
+
+        <input id="expenseAmount" type="number" placeholder="Amount">
+
+        <input id="expenseCategory" placeholder="Category">
+
+        <input id="expenseDescription" placeholder="Description">
+
+        <button class="primary" onclick="addExpense()">Add Transaction</button>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Income</h3>
+            <div class="number" id="totalIncome">₹0</div>
+        </div>
+
+        <div class="card">
+            <h3>Total Expenses</h3>
+            <div class="number" id="totalExpense">₹0</div>
+        </div>
+
+        <div class="card">
+            <h3>Balance</h3>
+            <div class="number" id="expenseBalance">₹0</div>
+        </div>
+    </div>
+
+    <div id="expensesList"></div>
+</section>
+
+
+<!-- CALENDAR -->
+<section id="calendar" class="section">
+    <h2>📅 Calendar & Events</h2>
+    <br>
+
+    <div class="form-box">
+        <input id="eventTitle" placeholder="Event name">
+        <input type="date" id="eventDate">
+        <input type="time" id="eventTime">
+
+        <button class="primary" onclick="addEvent()">Add Event</button>
+    </div>
+
+    <div id="eventsList"></div>
+</section>
+
+
+<!-- REMINDERS -->
+<section id="reminders" class="section">
+    <h2>🔔 Reminders</h2>
+    <br>
+
+    <div class="form-box">
+        <input id="reminderText" placeholder="Reminder">
+        <input type="date" id="reminderDate">
+
+        <button class="primary" onclick="addReminder()">Add Reminder</button>
+    </div>
+
+    <div id="remindersList"></div>
+</section>
+
+
+<!-- STUDENT -->
+<section id="student" class="section">
+    <h2>📚 Student Tools</h2>
+    <br>
+
+    <div class="form-box">
+        <h3>📖 Study Session</h3>
+
+        <input id="studySubject" placeholder="Subject">
+
+        <input id="studyHours" type="number" placeholder="Study hours">
+
+        <button class="primary" onclick="addStudy()">Add Study Session</button>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total Study Hours</h3>
+            <div class="number" id="studyTotal">0</div>
+        </div>
+    </div>
+
+    <div id="studyList"></div>
+</section>
+
+
+<!-- SEARCH -->
+<section id="search" class="section">
+    <h2>🔎 Global Search</h2>
+    <br>
+
+    <div class="form-box">
+        <input
+            class="search-box"
+            id="globalSearch"
+            placeholder="Search notes, tasks, expenses, events..."
+            oninput="globalSearch()"
+        >
+
+        <div id="searchResults"></div>
+    </div>
+</section>
+
+
+<!-- SETTINGS -->
+<section id="settings" class="section">
+    <h2>⚙️ Settings</h2>
+    <br>
+
+    <div class="form-box">
+        <h3>🎨 Appearance</h3>
+        <br>
+        <button class="primary" onclick="toggleDarkMode()">
+            Toggle Dark Mode
+        </button>
+    </div>
+
+    <div class="form-box">
+        <h3>💾 Data Management</h3>
+        <br>
+
+        <button class="danger" onclick="clearAllData()">
+            Delete All EasyLife Data
+        </button>
+    </div>
+
+    <div class="form-box">
+        <h3>ℹ️ About EasyLife</h3>
+        <p>EasyLife helps you organize notes, tasks, finances, events, reminders and student activities in one place.</p>
+    </div>
+</section>
+
+</div>
+
+<footer>
+    <p>EasyLife © 2026</p>
+</footer>
+
+
+<script>
+
+let notes = JSON.parse(localStorage.getItem("easylife_notes")) || [];
+let tasks = JSON.parse(localStorage.getItem("easylife_tasks")) || [];
+let expenses = JSON.parse(localStorage.getItem("easylife_expenses")) || [];
+let events = JSON.parse(localStorage.getItem("easylife_events")) || [];
+let reminders = JSON.parse(localStorage.getItem("easylife_reminders")) || [];
+let studies = JSON.parse(localStorage.getItem("easylife_studies")) || [];
+
+
+/* SECTION NAVIGATION */
+
+function showSection(id) {
+
+    document.querySelectorAll(".section").forEach(section => {
+        section.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+
+    updateDashboard();
+}
+
+
+/* NOTES */
+
+function addNote() {
+
+    const title = document.getElementById("noteTitle").value.trim();
+    const text = document.getElementById("noteText").value.trim();
+
+    if (!title || !text) {
+        alert("Please enter both title and note.");
+        return;
+    }
+
+    notes.push({
+        id: Date.now(),
+        title,
+        text,
+        date: new Date().toLocaleString()
+    });
+
+    saveData();
+
+    document.getElementById("noteTitle").value = "";
+    document.getElementById("noteText").value = "";
+
+    renderNotes();
+    updateDashboard();
+}
+
+function deleteNote(id) {
+
+    notes = notes.filter(note => note.id !== id);
+
+    saveData();
+    renderNotes();
+    updateDashboard();
+}
+
+function renderNotes() {
+
+    const list = document.getElementById("notesList");
+
+    if (notes.length === 0) {
+        list.innerHTML = '<p class="empty">No notes yet.</p>';
+        return;
+    }
+
+    list.innerHTML = notes.map(note => `
+        <div class="item">
+            <h4>${escapeHTML(note.title)}</h4>
+            <p>${escapeHTML(note.text)}</p>
+            <small>${note.date}</small>
+            <br><br>
+            <button class="danger" onclick="deleteNote(${note.id})">Delete</button>
+        </div>
+    `).join("");
+}
+
+
+/* TASKS */
+
+function addTask() {
+
+    const text = document.getElementById("taskInput").value.trim();
+    const priority = document.getElementById("taskPriority").value;
+    const date = document.getElementById("taskDate").value;
+
+    if (!text) {
+        alert("Please enter a task.");
+        return;
+    }
+
+    tasks.push({
+        id: Date.now(),
+        text,
+        priority,
+        date,
+        completed: false
+    });
+
+    saveData();
+
+    document.getElementById("taskInput").value = "";
+
+    renderTasks();
+    updateDashboard();
+}
+
+function toggleTask(id) {
+
+    const task = tasks.find(t => t.id === id);
+
+    if (task) {
+        task.completed = !task.completed;
+    }
+
+    saveData();
+    renderTasks();
+    updateDashboard();
+}
+
+function deleteTask(id) {
+
+    tasks = tasks.filter(task => task.id !== id);
+
+    saveData();
+    renderTasks();
+    updateDashboard();
+}
+
+function renderTasks() {
+
+    const list = document.getElementById("tasksList");
+
+    if (tasks.length === 0) {
+        list.innerHTML = '<p class="empty">No tasks yet.</p>';
+        return;
+    }
+
+    list.innerHTML = tasks.map(task => `
+        <div class="item ${task.completed ? "completed" : ""}">
+            <h4>${escapeHTML(task.text)}</h4>
+            <p>Priority: ${task.priority}</p>
+            ${task.date ? `<p>Due: ${task.date}</p>` : ""}
+            <br>
+            <button class="primary" onclick="toggleTask(${task.id})">
+                ${task.completed ? "Undo" : "Complete"}
+            </button>
+
+            <button class="danger" onclick="deleteTask(${task.id})">
+                Delete
+            </button>
+        </div>
+    `).join("");
+}
+
+
+/* EXPENSES */
+
+function addExpense() {
+
+    const type = document.getElementById("expenseType").value;
+    const amount = Number(document.getElementById("expenseAmount").value);
+    const category = document.getElementById("expenseCategory").value.trim();
+    const description = document.getElementById("expenseDescription").value.trim();
+
+    if (!amount || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+    }
+
+    expenses.push({
+        id: Date.now(),
+        type,
+        amount,
+        category,
+        description,
+        date: new Date().toLocaleDateString()
+    });
+
+    saveData();
+
+    document.getElementById("expenseAmount").value = "";
+    document.getElementById("expenseCategory").value = "";
+    document.getElementById("expenseDescription").value = "";
+
+    renderExpenses();
+    updateDashboard();
+}
+
+function deleteExpense(id) {
+
+    expenses = expenses.filter(expense => expense.id !== id);
+
+    saveData();
+    renderExpenses();
+    updateDashboard();
+}
+
+function renderExpenses() {
+
+    const list = document.getElementById("expensesList");
+
+    if (expenses.length === 0) {
+        list.innerHTML = '<p class="empty">No transactions yet.</p>';
+        return;
+    }
+
+    list.innerHTML = expenses.map(expense => `
+        <div class="item">
+            <h4>${expense.type === "income" ? "💵 Income" : "💸 Expense"}</h4>
+            <p>Amount: ₹${expense.amount}</p>
+            <p>Category: ${escapeHTML(expense.category || "General")}</p>
+            <p>${escapeHTML(expense.description || "")}</p>
+            <small>${expense.date}</small>
+            <br><br>
+            <button class="danger" onclick="deleteExpense(${expense.id})">
+                Delete
+            </button>
+        </div>
+    `).join("");
+
+    let income = 0;
+    let expense = 0;
+
+    expenses.forEach(item => {
+        if (item.type === "income") {
+            income += item.amount;
+        } else {
+            expense += item.amount;
+        }
+    });
+
+    document.getElementById("totalIncome").textContent = "₹" + income;
+    document.getElementById("totalExpense").textContent = "₹" + expense;
+    document.getElementById("expenseBalance").textContent = "₹" + (income - expense);
+}
+
+
+/* CALENDAR */
+
+function addEvent() {
+
+    const title = document.getElementById("eventTitle").value.trim();
+    const date = document.getElementById("eventDate").value;
+    const time = document.getElementById("eventTime").value;
+
+    if (!title || !date) {
+        alert("Please enter event name and date.");
+        return;
+    }
+
+    events.push({
+        id: Date.now(),
+        title,
+        date,
+        time
+    });
+
+    saveData();
+
+    document.getElementById("eventTitle").value = "";
+    document.getElementById("eventDate").value = "";
+    document.getElementById("eventTime").value = "";
+
+    renderEvents();
+}
+
+function deleteEvent(id) {
+
+    events = events.filter(event => event.id !== id);
+
+    saveData();
+    renderEvents();
+}
+
+function renderEvents() {
+
+    const list = document.getElementById("eventsList");
+
+    if (events.length === 0) {
+        list.innerHTML = '<p class="empty">No events yet.</p>';
+        return;
+    }
+
+    list.innerHTML = events.map(event => `
+        <div class="item">
+            <h4>📅 ${escapeHTML(event.title)}</h4>
+            <p>Date: ${event.date}</p>
+            ${event.time ? `<p>Time: ${event.time}</p>` : ""}
+            <br>
+            <button class="danger" onclick="deleteEvent(${event.id})">
+                Delete
+            </button>
+        </div>
+    `).join("");
+}
+
+
+/* REMINDERS */
+
+function addReminder() {
+
+    const text = document.getElementById("reminderText").value.trim();
+    const date = document.getElementById("reminderDate").value;
+
+    if (!text || !date) {
+        alert("Please enter reminder and date.");
+        return;
+    }
+
+    reminders.push({
+        id: Date.now(),
+        text,
+        date
+    });
+
+    saveData();
+
+    document.getElementById("reminderText").value = "";
+    document.getElementById("reminderDate").value = "";
+
+    renderReminders();
+    updateDashboard();
+}
+
+function deleteReminder(id) {
+
+    reminders = reminders.filter(reminder => reminder.id !== id);
+
+    saveData();
+    renderReminders();
+    updateDashboard();
+}
+
+function renderReminders() {
+
+    const list = document.getElementById("remindersList");
+
+    if (reminders.length === 0) {
+        list.innerHTML = '<p class="empty">No reminders yet.</p>';
+        return;
+    }
+
+    list.innerHTML = reminders.map(reminder => `
+        <div class="item">
+            <h4>🔔 ${escapeHTML(reminder.text)}</h4>
+            <p>Date: ${reminder.date}</p>
+            <br>
+            <button class="danger" onclick="deleteReminder(${reminder.id})">
+                Delete
+            </button>
+        </div>
+    `).join("");
+}
+
+
+/* STUDENT TOOLS */
+
+function addStudy() {
+
+    const subject = document.getElementById("studySubject").value.trim();
+    const hours = Number(document.getElementById("studyHours").value);
+
+    if (!subject || !hours || hours <= 0) {
+        alert("Please enter subject and study hours.");
+        return;
+    }
+
+    studies.push({
+        id: Date.now(),
+        subject,
+        hours,
+        date: new Date().toLocaleDateString()
+    });
+
+    saveData();
+
+    document.getElementById("studySubject").value = "";
+    document.getElementById("studyHours").value = "";
+
+    renderStudies();
+}
+
+function deleteStudy(id) {
+
+    studies = studies.filter(study => study.id !== id);
+
+    saveData();
+    renderStudies();
+}
+
+function renderStudies() {
+
+    const list = document.getElementById("studyList");
+
+    if (studies.length === 0) {
+        list.innerHTML = '<p class="empty">No study sessions yet.</p>';
+        document.getElementById("studyTotal").textContent = "0";
+        return;
+    }
+
+    let total = 0;
+
+    studies.forEach(study => {
+        total += study.hours;
+    });
+
+    document.getElementById("studyTotal").textContent = total;
+
+    list.innerHTML = studies.map(study => `
+        <div class="item">
+            <h4>📖 ${escapeHTML(study.subject)}</h4>
+            <p>${study.hours} hour(s)</p>
+            <small>${study.date}</small>
+            <br><br>
+            <button class="danger" onclick="deleteStudy(${study.id})">
+                Delete
+            </button>
+        </div>
+    `).join("");
+}
+
+
+/* GLOBAL SEARCH */
+
+function globalSearch() {
+
+    const query = document.getElementById("globalSearch").value.toLowerCase().trim();
+
+    const results = document.getElementById("searchResults");
+
+    if (!query) {
+        results.innerHTML = "<p class='empty'>Start typing to search.</p>";
+        return;
+    }
+
+    let output = [];
+
+    notes.forEach(note => {
+        if (
+            note.title.toLowerCase().includes(query) ||
+            note.text.toLowerCase().includes(query)
+        ) {
+            output.push(`📝 Note: ${escapeHTML(note.title)}`);
+        }
+    });
+
+    tasks.forEach(task => {
+        if (task.text.toLowerCase()
