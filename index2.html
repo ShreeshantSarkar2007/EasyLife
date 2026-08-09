@@ -73,6 +73,7 @@ nav button {
     padding: 20px;
     border-radius: 14px;
     box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    margin-bottom: 18px;
 }
 
 .card .number {
@@ -107,8 +108,24 @@ button {
     border-radius: 8px;
 }
 
+.success {
+    background: #16a34a;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+
 .danger {
     background: #dc2626;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+
+.secondary {
+    background: #6b7280;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -123,6 +140,14 @@ button {
     border-radius: 10px;
 }
 
+.item.completed {
+    opacity: .65;
+}
+
+.item.completed h3 {
+    text-decoration: line-through;
+}
+
 .empty {
     color: #6b7280;
     padding: 15px 0;
@@ -133,6 +158,13 @@ button {
     padding: 10px;
     border-radius: 8px;
     background: #eef2ff;
+}
+
+.task-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
 }
 
 footer {
@@ -199,11 +231,13 @@ footer {
 
 <div class="container">
 
+<!-- DASHBOARD -->
 <section id="dashboard" class="section active">
     <h2>📊 Dashboard</h2>
     <br>
 
     <div class="cards">
+
         <div class="card">
             <h3>📝 Notes</h3>
             <div class="number" id="noteCount">0</div>
@@ -211,7 +245,7 @@ footer {
 
         <div class="card">
             <h3>✅ Tasks</h3>
-            <div class="number">Coming soon</div>
+            <div class="number" id="taskCount">0</div>
         </div>
 
         <div class="card">
@@ -223,16 +257,23 @@ footer {
             <h3>🔔 Reminders</h3>
             <div class="number">Coming soon</div>
         </div>
+
     </div>
 </section>
 
 
+<!-- NOTES -->
 <section id="notes" class="section">
+
     <h2>📝 Notes</h2>
     <br>
 
     <div class="form-box">
-        <input id="noteTitle" placeholder="Note title">
+
+        <input
+            id="noteTitle"
+            placeholder="Note title"
+        >
 
         <textarea
             id="noteContent"
@@ -246,77 +287,118 @@ footer {
         <div id="noteStatus" class="status">
             Connecting to Supabase...
         </div>
+
     </div>
 
     <div id="notesList"></div>
+
 </section>
 
 
+<!-- TASKS -->
 <section id="tasks" class="section">
-    <h2>✅ To-Do List</h2>
+
+    <h2>✅ Tasks</h2>
     <br>
 
     <div class="form-box">
-        <p class="empty">
-            Task database will be connected in the next stage.
-        </p>
+
+        <input
+            id="taskTitle"
+            placeholder="Enter a task..."
+        >
+
+        <button class="primary" onclick="addTask()">
+            Add Task
+        </button>
+
+        <div id="taskStatus" class="status">
+            Loading tasks...
+        </div>
+
     </div>
+
+    <div id="tasksList"></div>
+
 </section>
 
 
+<!-- EXPENSES -->
 <section id="expenses" class="section">
+
     <h2>💰 Expense Tracker</h2>
     <br>
 
     <div class="form-box">
+
         <p class="empty">
             Expense database will be connected in the next stage.
         </p>
+
     </div>
+
 </section>
 
 
+<!-- CALENDAR -->
 <section id="calendar" class="section">
+
     <h2>📅 Calendar</h2>
     <br>
 
     <div class="form-box">
+
         <p class="empty">
             Calendar database will be connected in the next stage.
         </p>
+
     </div>
+
 </section>
 
 
+<!-- REMINDERS -->
 <section id="reminders" class="section">
+
     <h2>🔔 Reminders</h2>
     <br>
 
     <div class="form-box">
+
         <p class="empty">
             Reminder database will be connected in the next stage.
         </p>
+
     </div>
+
 </section>
 
 
+<!-- STUDENT -->
 <section id="student" class="section">
+
     <h2>📚 Student Tools</h2>
     <br>
 
     <div class="form-box">
+
         <p class="empty">
             Student tools database will be connected in the next stage.
         </p>
+
     </div>
+
 </section>
 
 
+<!-- SEARCH -->
 <section id="search" class="section">
+
     <h2>🔎 Search</h2>
     <br>
 
     <div class="form-box">
+
         <input
             id="searchInput"
             placeholder="Search your notes..."
@@ -324,34 +406,45 @@ footer {
         >
 
         <div id="searchResults"></div>
+
     </div>
+
 </section>
 
 
+<!-- SETTINGS -->
 <section id="settings" class="section">
+
     <h2>⚙️ Settings</h2>
     <br>
 
     <div class="form-box">
+
         <h3>🎨 Appearance</h3>
         <br>
 
         <button class="primary" onclick="toggleDarkMode()">
             Toggle Dark Mode
         </button>
+
     </div>
 
     <div class="form-box">
+
         <h3>ℹ️ About EasyLife</h3>
         <br>
+
         <p>
             EasyLife helps you organize your personal information
             in one simple place.
         </p>
+
     </div>
+
 </section>
 
 </div>
+
 
 <footer>
     <p>EasyLife © 2026</p>
@@ -360,9 +453,9 @@ footer {
 
 <script>
 
-/* ==============================
+/* ==========================================
    SUPABASE CONNECTION
-   ============================== */
+   ========================================== */
 
 const SUPABASE_URL =
     "https://lhxjfyzqpsmqejxfrxlg.supabase.co";
@@ -377,9 +470,9 @@ const supabaseClient =
     );
 
 
-/* ==============================
+/* ==========================================
    NAVIGATION
-   ============================== */
+   ========================================== */
 
 function showSection(id) {
 
@@ -394,20 +487,26 @@ function showSection(id) {
     if (id === "notes") {
         loadNotes();
     }
+
+    if (id === "tasks") {
+        loadTasks();
+    }
 }
 
 
-/* ==============================
+/* ==========================================
    NOTES - LOAD
-   ============================== */
+   ========================================== */
 
 async function loadNotes() {
 
     const status =
         document.getElementById("noteStatus");
 
-    status.textContent =
-        "Loading notes from Supabase...";
+    if (status) {
+        status.textContent =
+            "Loading notes from Supabase...";
+    }
 
     const { data, error } =
         await supabaseClient
@@ -421,25 +520,31 @@ async function loadNotes() {
 
         console.error(error);
 
-        status.textContent =
-            "Error loading notes: " + error.message;
+        if (status) {
+            status.textContent =
+                "Error loading notes: " +
+                error.message;
+        }
 
         return;
     }
 
-    status.textContent =
-        "Connected to Supabase ✅";
+    if (status) {
+        status.textContent =
+            "Connected to Supabase ✅";
+    }
 
     renderNotes(data || []);
 
     document.getElementById("noteCount")
-        .textContent = (data || []).length;
+        .textContent =
+        (data || []).length;
 }
 
 
-/* ==============================
+/* ==========================================
    NOTES - ADD
-   ============================== */
+   ========================================== */
 
 async function addNote() {
 
@@ -458,7 +563,9 @@ async function addNote() {
 
     if (!content) {
 
-        alert("Please write something in the note.");
+        alert(
+            "Please write something in the note."
+        );
 
         return;
     }
@@ -471,8 +578,10 @@ async function addNote() {
             .from("notes")
             .insert([
                 {
-                    title: title || "Untitled",
-                    content: content
+                    title:
+                        title || "Untitled",
+                    content:
+                        content
                 }
             ]);
 
@@ -481,7 +590,8 @@ async function addNote() {
         console.error(error);
 
         status.textContent =
-            "Error saving note: " + error.message;
+            "Error saving note: " +
+            error.message;
 
         return;
     }
@@ -499,9 +609,9 @@ async function addNote() {
 }
 
 
-/* ==============================
+/* ==========================================
    NOTES - DISPLAY
-   ============================== */
+   ========================================== */
 
 function renderNotes(notes) {
 
@@ -521,12 +631,14 @@ function renderNotes(notes) {
 
             const title =
                 escapeHTML(
-                    note.title || "Untitled"
+                    note.title ||
+                    "Untitled"
                 );
 
             const content =
                 escapeHTML(
-                    note.content || ""
+                    note.content ||
+                    ""
                 );
 
             const date =
@@ -538,6 +650,7 @@ function renderNotes(notes) {
 
             return `
                 <div class="item">
+
                     <h3>${title}</h3>
 
                     <p>${content}</p>
@@ -545,6 +658,7 @@ function renderNotes(notes) {
                     <br>
 
                     <small>${date}</small>
+
                 </div>
             `;
 
@@ -552,19 +666,283 @@ function renderNotes(notes) {
 }
 
 
-/* ==============================
+/* ==========================================
+   TASKS - LOAD
+   ========================================== */
+
+async function loadTasks() {
+
+    const status =
+        document.getElementById("taskStatus");
+
+    status.textContent =
+        "Loading tasks from Supabase...";
+
+    const { data, error } =
+        await supabaseClient
+            .from("tasks")
+            .select(
+                "id, created_at, title, completed"
+            )
+            .order("created_at", {
+                ascending: false
+            });
+
+    if (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "Error loading tasks: " +
+            error.message;
+
+        return;
+    }
+
+    status.textContent =
+        "Tasks connected to Supabase ✅";
+
+    renderTasks(data || []);
+
+    document.getElementById("taskCount")
+        .textContent =
+        (data || []).filter(
+            task => !task.completed
+        ).length;
+}
+
+
+/* ==========================================
+   TASKS - ADD
+   ========================================== */
+
+async function addTask() {
+
+    const input =
+        document.getElementById("taskTitle");
+
+    const status =
+        document.getElementById("taskStatus");
+
+    const title =
+        input.value.trim();
+
+    if (!title) {
+
+        alert(
+            "Please enter a task."
+        );
+
+        return;
+    }
+
+    status.textContent =
+        "Saving task...";
+
+    const { error } =
+        await supabaseClient
+            .from("tasks")
+            .insert([
+                {
+                    title: title,
+                    completed: false
+                }
+            ]);
+
+    if (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "Error saving task: " +
+            error.message;
+
+        return;
+    }
+
+    input.value = "";
+
+    status.textContent =
+        "Task saved permanently ✅";
+
+    await loadTasks();
+}
+
+
+/* ==========================================
+   TASKS - TOGGLE COMPLETE
+   ========================================== */
+
+async function toggleTask(
+    id,
+    currentStatus
+) {
+
+    const { error } =
+        await supabaseClient
+            .from("tasks")
+            .update({
+                completed:
+                    !currentStatus
+            })
+            .eq("id", id);
+
+    if (error) {
+
+        alert(
+            "Could not update task: " +
+            error.message
+        );
+
+        console.error(error);
+
+        return;
+    }
+
+    await loadTasks();
+}
+
+
+/* ==========================================
+   TASKS - DELETE
+   ========================================== */
+
+async function deleteTask(id) {
+
+    const confirmDelete =
+        confirm(
+            "Delete this task permanently?"
+        );
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    const { error } =
+        await supabaseClient
+            .from("tasks")
+            .delete()
+            .eq("id", id);
+
+    if (error) {
+
+        alert(
+            "Could not delete task: " +
+            error.message
+        );
+
+        console.error(error);
+
+        return;
+    }
+
+    await loadTasks();
+}
+
+
+/* ==========================================
+   TASKS - DISPLAY
+   ========================================== */
+
+function renderTasks(tasks) {
+
+    const list =
+        document.getElementById(
+            "tasksList"
+        );
+
+    if (!tasks.length) {
+
+        list.innerHTML =
+            '<p class="empty">No tasks yet.</p>';
+
+        return;
+    }
+
+    list.innerHTML =
+        tasks.map(task => {
+
+            const title =
+                escapeHTML(
+                    task.title ||
+                    "Untitled task"
+                );
+
+            const date =
+                task.created_at
+                    ? new Date(
+                        task.created_at
+                      ).toLocaleString()
+                    : "";
+
+            return `
+                <div class="item ${
+                    task.completed
+                        ? "completed"
+                        : ""
+                }">
+
+                    <h3>${title}</h3>
+
+                    <small>
+                        ${date}
+                    </small>
+
+                    <div class="task-buttons">
+
+                        <button
+                            class="${
+                                task.completed
+                                ? "secondary"
+                                : "success"
+                            }"
+                            onclick="toggleTask(
+                                ${task.id},
+                                ${task.completed}
+                            )"
+                        >
+                            ${
+                                task.completed
+                                ? "↩️ Mark Pending"
+                                : "✅ Complete"
+                            }
+                        </button>
+
+                        <button
+                            class="danger"
+                            onclick="deleteTask(
+                                ${task.id}
+                            )"
+                        >
+                            🗑️ Delete
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+}
+
+
+/* ==========================================
    SEARCH NOTES
-   ============================== */
+   ========================================== */
 
 async function searchNotes() {
 
     const query =
-        document.getElementById("searchInput")
-            .value
-            .trim();
+        document.getElementById(
+            "searchInput"
+        )
+        .value
+        .trim();
 
     const results =
-        document.getElementById("searchResults");
+        document.getElementById(
+            "searchResults"
+        );
 
     if (!query) {
 
@@ -576,7 +954,9 @@ async function searchNotes() {
     const { data, error } =
         await supabaseClient
             .from("notes")
-            .select("diid, created_at, content, title")
+            .select(
+                "diid, created_at, content, title"
+            )
             .or(
                 `title.ilike.%${query}%,content.ilike.%${query}%`
             )
@@ -588,7 +968,10 @@ async function searchNotes() {
 
         results.innerHTML =
             `<p class="empty">
-                Search error: ${escapeHTML(error.message)}
+                Search error:
+                ${escapeHTML(
+                    error.message
+                )}
             </p>`;
 
         return;
@@ -604,49 +987,69 @@ async function searchNotes() {
 
     results.innerHTML =
         data.map(note => `
+
             <div class="item">
+
                 <h3>
-                    ${escapeHTML(note.title || "Untitled")}
+                    ${escapeHTML(
+                        note.title ||
+                        "Untitled"
+                    )}
                 </h3>
 
                 <p>
-                    ${escapeHTML(note.content || "")}
+                    ${escapeHTML(
+                        note.content ||
+                        ""
+                    )}
                 </p>
+
             </div>
+
         `).join("");
 }
 
 
-/* ==============================
+/* ==========================================
    DARK MODE
-   ============================== */
+   ========================================== */
 
 function toggleDarkMode() {
 
-    document.body.classList.toggle("dark");
+    document.body.classList.toggle(
+        "dark"
+    );
 
     localStorage.setItem(
         "easylife_dark",
-        document.body.classList.contains("dark")
+        document.body.classList.contains(
+            "dark"
+        )
     );
 }
 
 if (
-    localStorage.getItem("easylife_dark")
-    === "true"
+    localStorage.getItem(
+        "easylife_dark"
+    ) === "true"
 ) {
-    document.body.classList.add("dark");
+
+    document.body.classList.add(
+        "dark"
+    );
 }
 
 
-/* ==============================
+/* ==========================================
    SECURITY HELPER
-   ============================== */
+   ========================================== */
 
 function escapeHTML(text) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     div.textContent = text;
 
@@ -654,11 +1057,12 @@ function escapeHTML(text) {
 }
 
 
-/* ==============================
+/* ==========================================
    INITIAL LOAD
-   ============================== */
+   ========================================== */
 
 loadNotes();
+loadTasks();
 
 </script>
 
