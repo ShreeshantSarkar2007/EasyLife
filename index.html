@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+
+<meta charset="UTF-8">
 
 <title>EasyLife</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
@@ -167,17 +171,21 @@ button:hover{
 opacity:0.9;
 }
 
+.delete{
+margin-left:10px;
+background:var(--danger);
+}
+
+.logout{
+background:var(--danger);
+}
+
 ul{
 padding-left:20px;
 }
 
 li{
 margin:10px 0;
-}
-
-.delete{
-margin-left:10px;
-background:var(--danger);
 }
 
 .expense-item{
@@ -204,6 +212,59 @@ scroll-margin-top:15px;
 footer{
 text-align:center;
 padding:20px;
+color:var(--muted);
+}
+
+/* LOGIN */
+
+#authScreen{
+max-width:430px;
+margin:50px auto;
+}
+
+.auth-card{
+background:var(--card);
+padding:30px;
+border-radius:18px;
+box-shadow:0 3px 15px rgba(0,0,0,0.10);
+}
+
+.auth-card h1{
+text-align:center;
+margin-top:0;
+}
+
+.auth-card button{
+width:100%;
+margin-top:8px;
+}
+
+.auth-switch{
+text-align:center;
+margin-top:18px;
+color:var(--muted);
+}
+
+.auth-switch button{
+width:auto;
+background:none;
+color:var(--button);
+padding:0;
+}
+
+#app{
+display:none;
+}
+
+.user-box{
+display:flex;
+align-items:center;
+gap:8px;
+flex-wrap:wrap;
+}
+
+.user-email{
+font-size:13px;
 color:var(--muted);
 }
 
@@ -234,7 +295,111 @@ padding:16px;
 
 <body>
 
-<div class="container">
+
+<!-- ================= AUTH SCREEN ================= -->
+
+<div id="authScreen">
+
+<div class="auth-card">
+
+<h1>🌟 EasyLife</h1>
+
+<p style="text-align:center;color:var(--muted);">
+Your Daily Life Assistant
+</p>
+
+<br>
+
+
+<!-- LOGIN -->
+
+<div id="loginBox">
+
+<h2>🔐 Login</h2>
+
+<input
+id="loginEmail"
+type="email"
+placeholder="Email address"
+autocomplete="email">
+
+<input
+id="loginPassword"
+type="password"
+placeholder="Password"
+autocomplete="current-password">
+
+<button onclick="login()">
+🔑 Login
+</button>
+
+<p id="loginMessage" class="message"></p>
+
+<div class="auth-switch">
+
+Don't have an account?
+
+<button onclick="showSignup()">
+Create account
+</button>
+
+</div>
+
+</div>
+
+
+<!-- SIGNUP -->
+
+<div id="signupBox" style="display:none;">
+
+<h2>🆕 Create Account</h2>
+
+<input
+id="signupEmail"
+type="email"
+placeholder="Email address"
+autocomplete="email">
+
+<input
+id="signupPassword"
+type="password"
+placeholder="Password"
+autocomplete="new-password">
+
+<input
+id="signupConfirm"
+type="password"
+placeholder="Confirm password"
+autocomplete="new-password">
+
+<button onclick="signup()">
+🆕 Sign Up
+</button>
+
+<p id="signupMessage" class="message"></p>
+
+<div class="auth-switch">
+
+Already have an account?
+
+<button onclick="showLogin()">
+Login
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ================= MAIN APP ================= -->
+
+<div
+id="app"
+class="container">
 
 
 <header>
@@ -244,6 +409,20 @@ padding:16px;
 <h1>🌟 EasyLife</h1>
 
 <p>Your Daily Life Assistant</p>
+
+<div class="user-box">
+
+<span class="user-email" id="userEmail"></span>
+
+<button
+class="logout"
+onclick="logout()">
+
+🚪 Logout
+
+</button>
+
+</div>
 
 </div>
 
@@ -279,6 +458,8 @@ id="themeButton">
 
 </nav>
 
+
+<!-- DASHBOARD -->
 
 <div
 class="card section"
@@ -343,6 +524,8 @@ class="message">
 </div>
 
 
+<!-- TASKS -->
+
 <div
 class="card section"
 id="tasks">
@@ -367,6 +550,8 @@ class="message">
 </div>
 
 
+<!-- NOTES -->
+
 <div
 class="card section"
 id="notes">
@@ -375,8 +560,7 @@ id="notes">
 
 <textarea
 id="note"
-placeholder="Write your note">
-</textarea>
+placeholder="Write your note"></textarea>
 
 <button onclick="saveNote()">
 💾 Save Note
@@ -387,8 +571,12 @@ id="savedNote"
 class="message">
 </p>
 
+<div id="notesList"></div>
+
 </div>
 
+
+<!-- EXPENSES -->
 
 <div
 class="card section"
@@ -455,8 +643,7 @@ Total:
 📋 Expense History
 </h3>
 
-<div id="expenseList">
-</div>
+<div id="expenseList"></div>
 
 </div>
 
@@ -471,11 +658,12 @@ Total:
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-
 <script>
 
+
+/* ==========================================
+   SUPABASE
+========================================== */
 
 const SUPABASE_URL =
 "https://lhxjfyzqpsmqejxfrxlg.supabase.co";
@@ -490,20 +678,28 @@ SUPABASE_KEY
 );
 
 
+let currentUser = null;
+
+
+/* ==========================================
+   THEME
+========================================== */
+
 function loadTheme(){
 
 const theme =
-localStorage.getItem(
-"EasyLifeTheme"
-);
+localStorage.getItem("EasyLifeTheme");
 
-if(theme==="dark"){
+if(theme === "dark"){
 
 document.body.classList.add("dark");
 
-document.getElementById(
-"themeButton"
-).innerHTML="☀️ Light";
+const button =
+document.getElementById("themeButton");
+
+if(button){
+button.innerHTML="☀️ Light";
+}
 
 }
 
@@ -514,34 +710,323 @@ function toggleTheme(){
 
 document.body.classList.toggle("dark");
 
-if(
-document.body.classList.contains("dark")
-){
+const dark =
+document.body.classList.contains("dark");
 
 localStorage.setItem(
 "EasyLifeTheme",
-"dark"
+dark ? "dark" : "light"
 );
 
 document.getElementById(
 "themeButton"
-).innerHTML="☀️ Light";
+).innerHTML =
+dark ? "☀️ Light" : "🌙 Dark";
+
+}
+
+
+/* ==========================================
+   AUTH SCREEN
+========================================== */
+
+function showSignup(){
+
+document.getElementById(
+"loginBox"
+).style.display="none";
+
+document.getElementById(
+"signupBox"
+).style.display="block";
+
+}
+
+
+function showLogin(){
+
+document.getElementById(
+"signupBox"
+).style.display="none";
+
+document.getElementById(
+"loginBox"
+).style.display="block";
+
+}
+
+
+/* ==========================================
+   SIGN UP
+========================================== */
+
+async function signup(){
+
+const email =
+document.getElementById(
+"signupEmail"
+).value.trim();
+
+const password =
+document.getElementById(
+"signupPassword"
+).value;
+
+const confirm =
+document.getElementById(
+"signupConfirm"
+).value;
+
+const message =
+document.getElementById(
+"signupMessage"
+);
+
+
+if(!email || !password){
+
+message.innerHTML =
+"⚠️ Enter email and password.";
+
+return;
+
+}
+
+
+if(password.length < 6){
+
+message.innerHTML =
+"⚠️ Password must be at least 6 characters.";
+
+return;
+
+}
+
+
+if(password !== confirm){
+
+message.innerHTML =
+"⚠️ Passwords do not match.";
+
+return;
+
+}
+
+
+message.innerHTML =
+"⏳ Creating account...";
+
+
+const {data,error} =
+await supabaseClient.auth.signUp({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+message.innerHTML =
+"❌ "+escapeHTML(error.message);
+
+return;
+
+}
+
+
+if(data.session){
+
+message.innerHTML =
+"✅ Account created! Logging in...";
+
+await showApp(data.session.user);
 
 }else{
 
-localStorage.setItem(
-"EasyLifeTheme",
-"light"
+message.innerHTML =
+"✅ Account created! Check your email to confirm your account.";
+
+}
+
+}
+
+
+/* ==========================================
+   LOGIN
+========================================== */
+
+async function login(){
+
+const email =
+document.getElementById(
+"loginEmail"
+).value.trim();
+
+const password =
+document.getElementById(
+"loginPassword"
+).value;
+
+const message =
+document.getElementById(
+"loginMessage"
 );
 
+
+if(!email || !password){
+
+message.innerHTML =
+"⚠️ Enter email and password.";
+
+return;
+
+}
+
+
+message.innerHTML =
+"⏳ Logging in...";
+
+
+const {data,error} =
+await supabaseClient.auth.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+message.innerHTML =
+"❌ "+escapeHTML(error.message);
+
+return;
+
+}
+
+
+await showApp(data.session.user);
+
+}
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+async function logout(){
+
+await supabaseClient.auth.signOut();
+
+currentUser = null;
+
 document.getElementById(
-"themeButton"
-).innerHTML="🌙 Dark";
+"app"
+).style.display="none";
+
+document.getElementById(
+"authScreen"
+).style.display="block";
+
+showLogin();
+
+}
+
+
+/* ==========================================
+   SHOW APP
+========================================== */
+
+async function showApp(user){
+
+currentUser = user;
+
+document.getElementById(
+"authScreen"
+).style.display="none";
+
+document.getElementById(
+"app"
+).style.display="block";
+
+document.getElementById(
+"userEmail"
+).textContent =
+"👤 "+user.email;
+
+loadTheme();
+
+loadDate();
+
+await loadTasks();
+
+await loadNotes();
+
+await loadExpenses();
+
+}
+
+
+/* ==========================================
+   CHECK SESSION
+========================================== */
+
+async function checkSession(){
+
+const {data} =
+await supabaseClient.auth.getSession();
+
+if(data.session){
+
+await showApp(
+data.session.user
+);
+
+}else{
+
+document.getElementById(
+"authScreen"
+).style.display="block";
+
+document.getElementById(
+"app"
+).style.display="none";
 
 }
 
 }
 
+
+/* ==========================================
+   AUTH STATE LISTENER
+========================================== */
+
+supabaseClient.auth.onAuthStateChange(
+async function(event,session){
+
+if(session && !currentUser){
+
+await showApp(session.user);
+
+}
+
+if(!session){
+
+currentUser=null;
+
+}
+
+});
+
+
+/* ==========================================
+   NAVIGATION
+========================================== */
 
 function scrollToSection(id){
 
@@ -553,6 +1038,10 @@ behavior:"smooth"
 }
 
 
+/* ==========================================
+   DATE
+========================================== */
+
 function loadDate(){
 
 const today =
@@ -560,7 +1049,7 @@ new Date();
 
 document.getElementById(
 "today"
-).innerHTML=
+).innerHTML =
 "📅 "+
 today.toLocaleDateString(
 "en-IN",
@@ -575,68 +1064,98 @@ day:"numeric"
 }
 
 
+/* ==========================================
+   TASKS - ADD
+========================================== */
+
 async function addTask(){
 
+if(!currentUser){
+
+return;
+
+}
+
+
+const input =
+document.getElementById("task");
+
 const task =
-document.getElementById(
-"task"
-).value
-.trim();
+input.value.trim();
 
 const message =
 document.getElementById(
 "taskMessage"
 );
 
-if(task===""){
 
-message.innerHTML=
+if(!task){
+
+message.innerHTML =
 "⚠️ Please enter a task.";
 
 return;
 
 }
 
-message.innerHTML=
+
+message.innerHTML =
 "⏳ Saving task...";
 
-const {error}=
+
+const {error} =
 await supabaseClient
 .from("tasks")
 .insert({
-content:task
+
+content:task,
+
+user_id:currentUser.id
+
 });
+
 
 if(error){
 
-message.innerHTML=
+console.error(error);
+
+message.innerHTML =
 "❌ Error: "+
-error.message;
+escapeHTML(error.message);
 
 return;
 
 }
 
-document.getElementById(
-"task"
-).value="";
 
-message.innerHTML=
-"✅ Task saved!";
+input.value="";
 
-loadTasks();
+message.innerHTML =
+"✅ Task saved permanently!";
+
+await loadTasks();
 
 }
 
 
+/* ==========================================
+   TASKS - LOAD
+========================================== */
+
 async function loadTasks(){
 
-const {data,error}=
+if(!currentUser){
+
+return;
+
+}
+
+
+const {data,error} =
 await supabaseClient
 .from("tasks")
-.select(
-"content,created_at"
-)
+.select("id,content,created_at")
+.eq("user_id",currentUser.id)
 .order(
 "created_at",
 {
@@ -644,52 +1163,53 @@ ascending:false
 }
 );
 
+
 if(error){
 
 console.error(error);
+
+document.getElementById(
+"taskMessage"
+).innerHTML =
+"❌ "+escapeHTML(error.message);
 
 return;
 
 }
 
-const list=
-document.getElementById(
-"list"
-);
+
+const list =
+document.getElementById("list");
 
 list.innerHTML="";
+
 
 data.forEach(
 function(task){
 
-const li=
-document.createElement(
-"li"
-);
+const li =
+document.createElement("li");
 
-li.textContent=
+li.textContent =
 task.content;
 
-const del=
-document.createElement(
-"button"
-);
 
-del.innerHTML=
+const del =
+document.createElement("button");
+
+del.innerHTML =
 "❌ Delete";
 
-del.className=
+del.className =
 "delete";
 
-del.onclick=
+del.onclick =
 function(){
 
-deleteTask(
-task.content,
-task.created_at
-);
+deleteTask(task.id);
 
 };
+
 
 li.appendChild(del);
 
@@ -698,216 +1218,139 @@ list.appendChild(li);
 }
 );
 
+
 document.getElementById(
 "taskCount"
-).innerText=
+).innerText =
 data.length;
 
 }
 
 
-async function deleteTask(
-content,
-createdAt
-){
+/* ==========================================
+   TASKS - DELETE
+========================================== */
 
+async function deleteTask(id){
+
+const {error} =
 await supabaseClient
 .from("tasks")
 .delete()
-.eq(
-"content",
-content
-)
-.eq(
-"created_at",
-createdAt
+.eq("id",id)
+.eq("user_id",currentUser.id);
+
+
+if(error){
+
+alert(
+"Could not delete task: "+
+error.message
 );
 
-loadTasks();
+return;
 
 }
 
 
+await loadTasks();
+
+}
+
+
+/* ==========================================
+   NOTES - SAVE
+========================================== */
+
 async function saveNote(){
 
-const note=
+if(!currentUser){
+
+return;
+
+}
+
+
+const note =
 document.getElementById(
 "note"
-).value
-.trim();
+).value.trim();
 
-const message=
+const message =
 document.getElementById(
 "savedNote"
 );
 
-if(note===""){
 
-message.innerHTML=
+if(!note){
+
+message.innerHTML =
 "⚠️ Please write a note first.";
 
 return;
 
 }
 
-message.innerHTML=
+
+message.innerHTML =
 "⏳ Saving note...";
 
-const {error}=
+
+const {error} =
 await supabaseClient
 .from("notes")
 .insert({
-content:note
+
+content:note,
+
+user_id:currentUser.id
+
 });
 
-if(error){
-
-message.innerHTML=
-"❌ Error: "+
-error.message;
-
-return;
-
-}
-
-message.innerHTML=
-"✅ Note saved successfully!";
-
-loadNotes();
-
-}
-
-
-async function loadNotes(){
-
-const {data,error}=
-await supabaseClient
-.from("notes")
-.select(
-"content,created_at"
-)
-.order(
-"created_at",
-{
-ascending:false
-}
-);
 
 if(error){
 
 console.error(error);
 
+message.innerHTML =
+"❌ Error: "+
+escapeHTML(error.message);
+
 return;
 
 }
 
-document.getElementById(
-"noteCount"
-).innerText=
-data.length;
-
-if(data.length>0){
 
 document.getElementById(
 "note"
-).value=
-data[0].content;
+).value="";
 
-document.getElementById(
-"savedNote"
-).innerHTML=
-"✅ Saved note loaded.";
+message.innerHTML =
+"✅ Note saved permanently!";
 
-}
+await loadNotes();
 
 }
 
 
-async function addExpense(){
+/* ==========================================
+   NOTES - LOAD
+========================================== */
 
-const amount=
-document.getElementById(
-"expenseAmount"
-).value;
+async function loadNotes(){
 
-const category=
-document.getElementById(
-"expenseCategory"
-).value;
-
-const description=
-document.getElementById(
-"expenseDescription"
-).value
-.trim();
-
-const message=
-document.getElementById(
-"expenseMessage"
-);
-
-if(
-amount==="" ||
-Number(amount)<=0
-){
-
-message.innerHTML=
-"⚠️ Enter a valid amount.";
+if(!currentUser){
 
 return;
 
 }
 
-message.innerHTML=
-"⏳ Saving expense...";
 
-const {error}=
+const {data,error} =
 await supabaseClient
-.from("expenses")
-.insert({
-
-amount:Number(amount),
-
-category:category,
-
-description:description
-
-});
-
-if(error){
-
-message.innerHTML=
-"❌ Error: "+
-error.message;
-
-return;
-
-}
-
-document.getElementById(
-"expenseAmount"
-).value="";
-
-document.getElementById(
-"expenseDescription"
-).value="";
-
-message.innerHTML=
-"✅ Expense saved!";
-
-loadExpenses();
-
-}
-
-
-async function loadExpenses(){
-
-const {data,error}=
-await supabaseClient
-.from("expenses")
-.select(
-"amount,category,description,expense_date,created_at"
-)
+.from("notes")
+.select("id,content,created_at")
+.eq("user_id",currentUser.id)
 .order(
 "created_at",
 {
@@ -915,72 +1358,70 @@ ascending:false
 }
 );
 
+
 if(error){
 
 console.error(error);
+
+document.getElementById(
+"savedNote"
+).innerHTML =
+"❌ "+escapeHTML(error.message);
 
 return;
 
 }
 
-const list=
+
 document.getElementById(
-"expenseList"
+"noteCount"
+).innerText =
+data.length;
+
+
+const list =
+document.getElementById(
+"notesList"
 );
 
 list.innerHTML="";
 
-let total=0;
 
 data.forEach(
-function(expense){
+function(note){
 
-total+=
-Number(expense.amount);
+const div =
+document.createElement("div");
 
-const div=
-document.createElement(
-"div"
-);
-
-div.className=
+div.className =
 "expense-item";
 
-div.innerHTML=
-"<strong>₹"+
-expense.amount+
-"</strong> - "+
-expense.category+
-"<br>"+
-(
-expense.description ||
-"No description"
-)+
-"<br>"+
-"<small>"+
-expense.expense_date+
+div.innerHTML =
+"<strong>📒 Note</strong><br>"+
+escapeHTML(note.content)+
+"<br><small>"+
+new Date(
+note.created_at
+).toLocaleString()+
 "</small>";
 
-const del=
-document.createElement(
-"button"
-);
 
-del.innerHTML=
+const del =
+document.createElement("button");
+
+del.innerHTML =
 "❌ Delete";
 
-del.className=
+del.className =
 "delete";
 
-del.onclick=
+del.onclick =
 function(){
 
-deleteExpense(
-expense.amount,
-expense.created_at
-);
+deleteNote(note.id);
 
 };
+
 
 div.appendChild(del);
 
@@ -989,66 +1430,326 @@ list.appendChild(div);
 }
 );
 
+}
+
+
+/* ==========================================
+   NOTES - DELETE
+========================================== */
+
+async function deleteNote(id){
+
+const {error} =
+await supabaseClient
+.from("notes")
+.delete()
+.eq("id",id)
+.eq("user_id",currentUser.id);
+
+
+if(error){
+
+alert(
+"Could not delete note: "+
+error.message
+);
+
+return;
+
+}
+
+
+await loadNotes();
+
+}
+
+
+/* ==========================================
+   EXPENSE - ADD
+========================================== */
+
+async function addExpense(){
+
+if(!currentUser){
+
+return;
+
+}
+
+
+const amount =
+document.getElementById(
+"expenseAmount"
+).value;
+
+const category =
+document.getElementById(
+"expenseCategory"
+).value;
+
+const description =
+document.getElementById(
+"expenseDescription"
+).value.trim();
+
+const message =
+document.getElementById(
+"expenseMessage"
+);
+
+
+if(
+amount === "" ||
+Number(amount) <= 0
+){
+
+message.innerHTML =
+"⚠️ Enter a valid amount.";
+
+return;
+
+}
+
+
+message.innerHTML =
+"⏳ Saving expense...";
+
+
+const {error} =
+await supabaseClient
+.from("expenses")
+.insert({
+
+amount:Number(amount),
+
+category:category,
+
+description:description,
+
+user_id:currentUser.id
+
+});
+
+
+if(error){
+
+console.error(error);
+
+message.innerHTML =
+"❌ Error: "+
+escapeHTML(error.message);
+
+return;
+
+}
+
+
+document.getElementById(
+"expenseAmount"
+).value="";
+
+document.getElementById(
+"expenseDescription"
+).value="";
+
+
+message.innerHTML =
+"✅ Expense saved permanently!";
+
+
+await loadExpenses();
+
+}
+
+
+/* ==========================================
+   EXPENSE - LOAD
+========================================== */
+
+async function loadExpenses(){
+
+if(!currentUser){
+
+return;
+
+}
+
+
+const {data,error} =
+await supabaseClient
+.from("expenses")
+.select(
+"id,amount,category,description,expense_date,created_at"
+)
+.eq(
+"user_id",
+currentUser.id
+)
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+
+if(error){
+
+console.error(error);
+
+document.getElementById(
+"expenseMessage"
+).innerHTML =
+"❌ "+escapeHTML(error.message);
+
+return;
+
+}
+
+
+const list =
+document.getElementById(
+"expenseList"
+);
+
+list.innerHTML="";
+
+
+let total=0;
+
+
+data.forEach(
+function(expense){
+
+total +=
+Number(expense.amount);
+
+
+const div =
+document.createElement("div");
+
+div.className =
+"expense-item";
+
+
+div.innerHTML =
+"<strong>₹"+
+escapeHTML(
+String(expense.amount)
+)+
+"</strong> - "+
+escapeHTML(
+expense.category || ""
+)+
+"<br>"+
+escapeHTML(
+expense.description ||
+"No description"
+)+
+"<br>"+
+"<small>"+
+escapeHTML(
+expense.expense_date ||
+new Date(
+expense.created_at
+).toLocaleDateString("en-IN")
+)+
+"</small>";
+
+
+const del =
+document.createElement("button");
+
+del.innerHTML =
+"❌ Delete";
+
+del.className =
+"delete";
+
+
+del.onclick =
+function(){
+
+deleteExpense(
+expense.id
+);
+
+};
+
+
+div.appendChild(del);
+
+list.appendChild(div);
+
+}
+);
+
+
 document.getElementById(
 "totalExpense"
-).innerText=
+).innerText =
 total.toFixed(2);
 
 document.getElementById(
 "dashboardTotal"
-).innerText=
+).innerText =
 total.toFixed(2);
 
 document.getElementById(
 "expenseCount"
-).innerText=
+).innerText =
 data.length;
 
 }
 
 
-async function deleteExpense(
-amount,
-createdAt
-){
+/* ==========================================
+   EXPENSE - DELETE
+========================================== */
 
+async function deleteExpense(id){
+
+const {error} =
 await supabaseClient
 .from("expenses")
 .delete()
-.eq(
-"amount",
-amount
-)
-.eq(
-"created_at",
-createdAt
+.eq("id",id)
+.eq("user_id",currentUser.id);
+
+
+if(error){
+
+alert(
+"Could not delete expense: "+
+error.message
 );
 
-loadExpenses();
+return;
 
 }
 
 
-window.addEventListener(
-"load",
-function(){
+await loadExpenses();
 
-loadTheme();
-
-loadDate();
-
-loadTasks();
-
-loadNotes();
-
-loadExpenses();
-
-});
+}
 
 
-</script>
+/* ==========================================
+   SECURITY HELPER
+========================================== */
+
+function escapeHTML(text){
+
+const div =
+document.createElement("div");
+
+div.textContent =
+text == null ? "" : text;
+
+return div.innerHTML;
+
+}
 
 
-</body>
-
-</html>
+/* ==========================================
+   ST
