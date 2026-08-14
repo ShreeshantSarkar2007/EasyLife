@@ -46,6 +46,10 @@ nav button {
     font-weight: bold;
 }
 
+nav button:hover {
+    background: #dbeafe;
+}
+
 .container {
     max-width: 1100px;
     margin: auto;
@@ -79,6 +83,7 @@ nav button {
 .card .number {
     font-size: 28px;
     font-weight: bold;
+    margin-top: 8px;
 }
 
 input,
@@ -106,6 +111,10 @@ button {
     border: none;
     padding: 11px 16px;
     border-radius: 8px;
+}
+
+.primary:hover {
+    background: #1d4ed8;
 }
 
 .success {
@@ -167,6 +176,55 @@ button {
     margin-top: 10px;
 }
 
+.expense-top {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.expense-summary {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0,0,0,.08);
+}
+
+.expense-summary h3 {
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.expense-summary .amount {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+.expense-amount {
+    font-size: 22px;
+    font-weight: bold;
+    color: #dc2626;
+    margin: 8px 0;
+}
+
+.expense-category {
+    display: inline-block;
+    background: #dbeafe;
+    color: #1d4ed8;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.expense-actions {
+    margin-top: 12px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 footer {
     text-align: center;
     padding: 25px;
@@ -180,7 +238,8 @@ footer {
 
 .dark nav,
 .dark .card,
-.dark .form-box {
+.dark .form-box,
+.dark .expense-summary {
     background: #1f2937;
     color: #f9fafb;
 }
@@ -195,9 +254,16 @@ footer {
 .dark select {
     background: #374151;
     color: white;
+    border-color: #6b7280;
+}
+
+.dark .expense-category {
+    background: #1e3a8a;
+    color: #dbeafe;
 }
 
 @media(max-width:600px) {
+
     .container {
         padding: 12px;
     }
@@ -205,6 +271,14 @@ footer {
     nav button {
         font-size: 12px;
         padding: 8px 10px;
+    }
+
+    header h1 {
+        font-size: 25px;
+    }
+
+    .expense-summary .amount {
+        font-size: 22px;
     }
 }
 </style>
@@ -231,8 +305,12 @@ footer {
 
 <div class="container">
 
-<!-- DASHBOARD -->
+<!-- ==========================================
+     DASHBOARD
+     ========================================== -->
+
 <section id="dashboard" class="section active">
+
     <h2>📊 Dashboard</h2>
     <br>
 
@@ -244,25 +322,29 @@ footer {
         </div>
 
         <div class="card">
-            <h3>✅ Tasks</h3>
+            <h3>✅ Pending Tasks</h3>
             <div class="number" id="taskCount">0</div>
         </div>
 
         <div class="card">
-            <h3>💰 Expenses</h3>
-            <div class="number">Coming soon</div>
+            <h3>💰 Total Expenses</h3>
+            <div class="number" id="expenseTotal">₹0.00</div>
         </div>
 
         <div class="card">
-            <h3>🔔 Reminders</h3>
-            <div class="number">Coming soon</div>
+            <h3>💸 Expense Records</h3>
+            <div class="number" id="expenseCount">0</div>
         </div>
 
     </div>
+
 </section>
 
 
-<!-- NOTES -->
+<!-- ==========================================
+     NOTES
+     ========================================== -->
+
 <section id="notes" class="section">
 
     <h2>📝 Notes</h2>
@@ -295,7 +377,10 @@ footer {
 </section>
 
 
-<!-- TASKS -->
+<!-- ==========================================
+     TASKS
+     ========================================== -->
+
 <section id="tasks" class="section">
 
     <h2>✅ Tasks</h2>
@@ -323,24 +408,175 @@ footer {
 </section>
 
 
-<!-- EXPENSES -->
+<!-- ==========================================
+     EXPENSES
+     ========================================== -->
+
 <section id="expenses" class="section">
 
     <h2>💰 Expense Tracker</h2>
     <br>
 
+    <!-- EXPENSE SUMMARY -->
+
+    <div class="expense-top">
+
+        <div class="expense-summary">
+
+            <h3>Total Spending</h3>
+
+            <div
+                class="amount"
+                id="expensePageTotal"
+            >
+                ₹0.00
+            </div>
+
+        </div>
+
+        <div class="expense-summary">
+
+            <h3>Total Records</h3>
+
+            <div
+                class="amount"
+                id="expensePageCount"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ADD EXPENSE -->
+
     <div class="form-box">
 
-        <p class="empty">
-            Expense database will be connected in the next stage.
-        </p>
+        <h3>➕ Add New Expense</h3>
+
+        <br>
+
+        <label>
+            Amount
+        </label>
+
+        <input
+            type="number"
+            id="expenseAmount"
+            placeholder="Enter amount"
+            min="0"
+            step="0.01"
+        >
+
+
+        <label>
+            Category
+        </label>
+
+        <select id="expenseCategory">
+
+            <option value="">
+                Select category
+            </option>
+
+            <option value="Food">
+                🍔 Food
+            </option>
+
+            <option value="Travel">
+                🚗 Travel
+            </option>
+
+            <option value="Education">
+                📚 Education
+            </option>
+
+            <option value="Shopping">
+                🛍️ Shopping
+            </option>
+
+            <option value="Bills">
+                💡 Bills
+            </option>
+
+            <option value="Entertainment">
+                🎮 Entertainment
+            </option>
+
+            <option value="Health">
+                🏥 Health
+            </option>
+
+            <option value="Other">
+                📦 Other
+            </option>
+
+        </select>
+
+
+        <label>
+            Description
+        </label>
+
+        <textarea
+            id="expenseDescription"
+            placeholder="What did you spend money on?"
+        ></textarea>
+
+
+        <label>
+            Date
+        </label>
+
+        <input
+            type="date"
+            id="expenseDate"
+        >
+
+
+        <button
+            class="primary"
+            onclick="addExpense()"
+        >
+            💾 Save Expense
+        </button>
+
+
+        <div
+            id="expenseStatus"
+            class="status"
+        >
+            Ready
+        </div>
+
+    </div>
+
+
+    <!-- EXPENSE HISTORY -->
+
+    <div class="form-box">
+
+        <h3>📋 Expense History</h3>
+
+        <div id="expensesList">
+
+            <p class="empty">
+                Loading expenses...
+            </p>
+
+        </div>
 
     </div>
 
 </section>
 
 
-<!-- CALENDAR -->
+<!-- ==========================================
+     CALENDAR
+     ========================================== -->
+
 <section id="calendar" class="section">
 
     <h2>📅 Calendar</h2>
@@ -349,7 +585,7 @@ footer {
     <div class="form-box">
 
         <p class="empty">
-            Calendar database will be connected in the next stage.
+            Calendar will be added in the next stage.
         </p>
 
     </div>
@@ -357,7 +593,10 @@ footer {
 </section>
 
 
-<!-- REMINDERS -->
+<!-- ==========================================
+     REMINDERS
+     ========================================== -->
+
 <section id="reminders" class="section">
 
     <h2>🔔 Reminders</h2>
@@ -366,7 +605,7 @@ footer {
     <div class="form-box">
 
         <p class="empty">
-            Reminder database will be connected in the next stage.
+            Reminders will be added in the next stage.
         </p>
 
     </div>
@@ -374,7 +613,10 @@ footer {
 </section>
 
 
-<!-- STUDENT -->
+<!-- ==========================================
+     STUDENT
+     ========================================== -->
+
 <section id="student" class="section">
 
     <h2>📚 Student Tools</h2>
@@ -383,7 +625,7 @@ footer {
     <div class="form-box">
 
         <p class="empty">
-            Student tools database will be connected in the next stage.
+            Student tools will be added in the next stage.
         </p>
 
     </div>
@@ -391,7 +633,10 @@ footer {
 </section>
 
 
-<!-- SEARCH -->
+<!-- ==========================================
+     SEARCH
+     ========================================== -->
+
 <section id="search" class="section">
 
     <h2>🔎 Search</h2>
@@ -412,7 +657,10 @@ footer {
 </section>
 
 
-<!-- SETTINGS -->
+<!-- ==========================================
+     SETTINGS
+     ========================================== -->
+
 <section id="settings" class="section">
 
     <h2>⚙️ Settings</h2>
@@ -421,9 +669,13 @@ footer {
     <div class="form-box">
 
         <h3>🎨 Appearance</h3>
+
         <br>
 
-        <button class="primary" onclick="toggleDarkMode()">
+        <button
+            class="primary"
+            onclick="toggleDarkMode()"
+        >
             Toggle Dark Mode
         </button>
 
@@ -432,11 +684,12 @@ footer {
     <div class="form-box">
 
         <h3>ℹ️ About EasyLife</h3>
+
         <br>
 
         <p>
-            EasyLife helps you organize your personal information
-            in one simple place.
+            EasyLife helps you organize your personal
+            information in one simple place.
         </p>
 
     </div>
@@ -471,6 +724,14 @@ const supabaseClient =
 
 
 /* ==========================================
+   DEFAULT EXPENSE DATE
+   ========================================== */
+
+document.getElementById("expenseDate").value =
+    new Date().toISOString().split("T")[0];
+
+
+/* ==========================================
    NAVIGATION
    ========================================== */
 
@@ -478,19 +739,30 @@ function showSection(id) {
 
     document.querySelectorAll(".section")
         .forEach(section => {
+
             section.classList.remove("active");
+
         });
+
 
     document.getElementById(id)
         .classList.add("active");
+
 
     if (id === "notes") {
         loadNotes();
     }
 
+
     if (id === "tasks") {
         loadTasks();
     }
+
+
+    if (id === "expenses") {
+        loadExpenses();
+    }
+
 }
 
 
@@ -503,42 +775,61 @@ async function loadNotes() {
     const status =
         document.getElementById("noteStatus");
 
+
     if (status) {
+
         status.textContent =
             "Loading notes from Supabase...";
+
     }
+
 
     const { data, error } =
         await supabaseClient
             .from("notes")
-            .select("diid, created_at, content, title")
-            .order("created_at", {
-                ascending: false
-            });
+            .select(
+                "created_at, content, title"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
 
     if (error) {
 
         console.error(error);
 
         if (status) {
+
             status.textContent =
                 "Error loading notes: " +
                 error.message;
+
         }
 
         return;
+
     }
+
 
     if (status) {
+
         status.textContent =
             "Connected to Supabase ✅";
+
     }
 
+
     renderNotes(data || []);
+
 
     document.getElementById("noteCount")
         .textContent =
         (data || []).length;
+
 }
 
 
@@ -553,13 +844,16 @@ async function addNote() {
             .value
             .trim();
 
+
     const content =
         document.getElementById("noteContent")
             .value
             .trim();
 
+
     const status =
         document.getElementById("noteStatus");
+
 
     if (!content) {
 
@@ -568,10 +862,13 @@ async function addNote() {
         );
 
         return;
+
     }
+
 
     status.textContent =
         "Saving note...";
+
 
     const { error } =
         await supabaseClient
@@ -580,10 +877,12 @@ async function addNote() {
                 {
                     title:
                         title || "Untitled",
+
                     content:
                         content
                 }
             ]);
+
 
     if (error) {
 
@@ -594,18 +893,24 @@ async function addNote() {
             error.message;
 
         return;
+
     }
+
 
     document.getElementById("noteTitle")
         .value = "";
 
+
     document.getElementById("noteContent")
         .value = "";
+
 
     status.textContent =
         "Note saved successfully ✅";
 
+
     await loadNotes();
+
 }
 
 
@@ -618,13 +923,16 @@ function renderNotes(notes) {
     const list =
         document.getElementById("notesList");
 
+
     if (!notes.length) {
 
         list.innerHTML =
             '<p class="empty">No notes found.</p>';
 
         return;
+
     }
+
 
     list.innerHTML =
         notes.map(note => {
@@ -635,11 +943,13 @@ function renderNotes(notes) {
                     "Untitled"
                 );
 
+
             const content =
                 escapeHTML(
                     note.content ||
                     ""
                 );
+
 
             const date =
                 note.created_at
@@ -648,7 +958,9 @@ function renderNotes(notes) {
                       ).toLocaleString()
                     : "";
 
+
             return `
+
                 <div class="item">
 
                     <h3>${title}</h3>
@@ -657,12 +969,16 @@ function renderNotes(notes) {
 
                     <br>
 
-                    <small>${date}</small>
+                    <small>
+                        ${date}
+                    </small>
 
                 </div>
+
             `;
 
         }).join("");
+
 }
 
 
@@ -675,8 +991,10 @@ async function loadTasks() {
     const status =
         document.getElementById("taskStatus");
 
+
     status.textContent =
         "Loading tasks from Supabase...";
+
 
     const { data, error } =
         await supabaseClient
@@ -684,9 +1002,13 @@ async function loadTasks() {
             .select(
                 "id, created_at, title, completed"
             )
-            .order("created_at", {
-                ascending: false
-            });
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
 
     if (error) {
 
@@ -697,18 +1019,23 @@ async function loadTasks() {
             error.message;
 
         return;
+
     }
+
 
     status.textContent =
         "Tasks connected to Supabase ✅";
 
+
     renderTasks(data || []);
+
 
     document.getElementById("taskCount")
         .textContent =
         (data || []).filter(
             task => !task.completed
         ).length;
+
 }
 
 
@@ -721,11 +1048,14 @@ async function addTask() {
     const input =
         document.getElementById("taskTitle");
 
+
     const status =
         document.getElementById("taskStatus");
 
+
     const title =
         input.value.trim();
+
 
     if (!title) {
 
@@ -734,10 +1064,13 @@ async function addTask() {
         );
 
         return;
+
     }
+
 
     status.textContent =
         "Saving task...";
+
 
     const { error } =
         await supabaseClient
@@ -749,6 +1082,7 @@ async function addTask() {
                 }
             ]);
 
+
     if (error) {
 
         console.error(error);
@@ -758,19 +1092,24 @@ async function addTask() {
             error.message;
 
         return;
+
     }
 
+
     input.value = "";
+
 
     status.textContent =
         "Task saved permanently ✅";
 
+
     await loadTasks();
+
 }
 
 
 /* ==========================================
-   TASKS - TOGGLE COMPLETE
+   TASKS - TOGGLE
    ========================================== */
 
 async function toggleTask(
@@ -785,7 +1124,11 @@ async function toggleTask(
                 completed:
                     !currentStatus
             })
-            .eq("id", id);
+            .eq(
+                "id",
+                id
+            );
+
 
     if (error) {
 
@@ -797,9 +1140,12 @@ async function toggleTask(
         console.error(error);
 
         return;
+
     }
 
+
     await loadTasks();
+
 }
 
 
@@ -814,15 +1160,21 @@ async function deleteTask(id) {
             "Delete this task permanently?"
         );
 
+
     if (!confirmDelete) {
         return;
     }
+
 
     const { error } =
         await supabaseClient
             .from("tasks")
             .delete()
-            .eq("id", id);
+            .eq(
+                "id",
+                id
+            );
+
 
     if (error) {
 
@@ -834,9 +1186,12 @@ async function deleteTask(id) {
         console.error(error);
 
         return;
+
     }
 
+
     await loadTasks();
+
 }
 
 
@@ -846,225 +1201,4 @@ async function deleteTask(id) {
 
 function renderTasks(tasks) {
 
-    const list =
-        document.getElementById(
-            "tasksList"
-        );
-
-    if (!tasks.length) {
-
-        list.innerHTML =
-            '<p class="empty">No tasks yet.</p>';
-
-        return;
-    }
-
-    list.innerHTML =
-        tasks.map(task => {
-
-            const title =
-                escapeHTML(
-                    task.title ||
-                    "Untitled task"
-                );
-
-            const date =
-                task.created_at
-                    ? new Date(
-                        task.created_at
-                      ).toLocaleString()
-                    : "";
-
-            return `
-                <div class="item ${
-                    task.completed
-                        ? "completed"
-                        : ""
-                }">
-
-                    <h3>${title}</h3>
-
-                    <small>
-                        ${date}
-                    </small>
-
-                    <div class="task-buttons">
-
-                        <button
-                            class="${
-                                task.completed
-                                ? "secondary"
-                                : "success"
-                            }"
-                            onclick="toggleTask(
-                                ${task.id},
-                                ${task.completed}
-                            )"
-                        >
-                            ${
-                                task.completed
-                                ? "↩️ Mark Pending"
-                                : "✅ Complete"
-                            }
-                        </button>
-
-                        <button
-                            class="danger"
-                            onclick="deleteTask(
-                                ${task.id}
-                            )"
-                        >
-                            🗑️ Delete
-                        </button>
-
-                    </div>
-
-                </div>
-            `;
-
-        }).join("");
-}
-
-
-/* ==========================================
-   SEARCH NOTES
-   ========================================== */
-
-async function searchNotes() {
-
-    const query =
-        document.getElementById(
-            "searchInput"
-        )
-        .value
-        .trim();
-
-    const results =
-        document.getElementById(
-            "searchResults"
-        );
-
-    if (!query) {
-
-        results.innerHTML = "";
-
-        return;
-    }
-
-    const { data, error } =
-        await supabaseClient
-            .from("notes")
-            .select(
-                "diid, created_at, content, title"
-            )
-            .or(
-                `title.ilike.%${query}%,content.ilike.%${query}%`
-            )
-            .order("created_at", {
-                ascending: false
-            });
-
-    if (error) {
-
-        results.innerHTML =
-            `<p class="empty">
-                Search error:
-                ${escapeHTML(
-                    error.message
-                )}
-            </p>`;
-
-        return;
-    }
-
-    if (!data.length) {
-
-        results.innerHTML =
-            '<p class="empty">No matching notes found.</p>';
-
-        return;
-    }
-
-    results.innerHTML =
-        data.map(note => `
-
-            <div class="item">
-
-                <h3>
-                    ${escapeHTML(
-                        note.title ||
-                        "Untitled"
-                    )}
-                </h3>
-
-                <p>
-                    ${escapeHTML(
-                        note.content ||
-                        ""
-                    )}
-                </p>
-
-            </div>
-
-        `).join("");
-}
-
-
-/* ==========================================
-   DARK MODE
-   ========================================== */
-
-function toggleDarkMode() {
-
-    document.body.classList.toggle(
-        "dark"
-    );
-
-    localStorage.setItem(
-        "easylife_dark",
-        document.body.classList.contains(
-            "dark"
-        )
-    );
-}
-
-if (
-    localStorage.getItem(
-        "easylife_dark"
-    ) === "true"
-) {
-
-    document.body.classList.add(
-        "dark"
-    );
-}
-
-
-/* ==========================================
-   SECURITY HELPER
-   ========================================== */
-
-function escapeHTML(text) {
-
-    const div =
-        document.createElement(
-            "div"
-        );
-
-    div.textContent = text;
-
-    return div.innerHTML;
-}
-
-
-/* ==========================================
-   INITIAL LOAD
-   ========================================== */
-
-loadNotes();
-loadTasks();
-
-</script>
-
-</body>
-</html>
+    const l
