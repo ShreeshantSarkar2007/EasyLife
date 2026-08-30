@@ -5,286 +5,554 @@
 
 <meta charset="UTF-8">
 
-<title>EasyLife</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EasyLife</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 
+/* =========================
+   VARIABLES
+========================= */
+
 :root{
---bg:#dff3ff;
---card:#ffffff;
---text:#222222;
---muted:#666666;
---input:#f5f5f5;
---border:#dddddd;
---button:#2563eb;
---buttonText:#ffffff;
---danger:#dc2626;
-}
 
-*{
-box-sizing:border-box;
-}
+    --bg:#dff3ff;
+    --card:#ffffff;
+    --text:#222222;
+    --muted:#666666;
+    --input:#f5f5f5;
+    --border:#dddddd;
+    --button:#2563eb;
+    --buttonText:#ffffff;
+    --danger:#dc2626;
+    --success:#16a34a;
 
-body{
-font-family:Arial,sans-serif;
-background:var(--bg);
-color:var(--text);
-padding:15px;
-margin:0;
-transition:0.3s;
 }
 
 body.dark{
---bg:#121212;
---card:#1e1e1e;
---text:#f5f5f5;
---muted:#bbbbbb;
---input:#2a2a2a;
---border:#444444;
---button:#3b82f6;
---buttonText:#ffffff;
---danger:#ef4444;
+
+    --bg:#121212;
+    --card:#1e1e1e;
+    --text:#f5f5f5;
+    --muted:#bbbbbb;
+    --input:#2a2a2a;
+    --border:#444444;
+    --button:#3b82f6;
+    --buttonText:#ffffff;
+    --danger:#ef4444;
+    --success:#22c55e;
+
 }
 
-.container{
-max-width:900px;
-margin:auto;
+
+/* =========================
+   GENERAL
+========================= */
+
+*{
+    box-sizing:border-box;
 }
 
-header{
-background:var(--card);
-padding:20px;
-border-radius:16px;
-margin-bottom:15px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-gap:10px;
-box-shadow:0 3px 12px rgba(0,0,0,0.08);
+html{
+    scroll-behavior:smooth;
 }
 
-header h1{
-margin:0;
+body{
+
+    font-family:Arial,sans-serif;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    padding:15px;
+
+    margin:0;
+
+    transition:0.3s;
+
 }
 
-header p{
-margin:5px 0 0;
-color:var(--muted);
+button{
+
+    padding:10px 14px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:var(--button);
+
+    color:var(--buttonText);
+
+    cursor:pointer;
+
+    font-size:14px;
+
 }
 
-.themeButton{
-background:var(--button);
-color:var(--buttonText);
-border:none;
-border-radius:10px;
-padding:10px 14px;
+button:hover{
+    opacity:0.9;
 }
 
-nav{
-background:var(--card);
-padding:10px;
-border-radius:14px;
-margin-bottom:15px;
-display:flex;
-gap:8px;
-overflow-x:auto;
-box-shadow:0 3px 12px rgba(0,0,0,0.08);
-}
+button:disabled{
 
-nav button{
-background:transparent;
-color:var(--text);
-border:1px solid var(--border);
-border-radius:10px;
-padding:9px 13px;
-white-space:nowrap;
-}
+    opacity:0.6;
 
-.card{
-background:var(--card);
-padding:20px;
-margin:15px 0;
-border-radius:16px;
-box-shadow:0 3px 12px rgba(0,0,0,0.08);
-}
+    cursor:not-allowed;
 
-.card h2{
-margin-top:0;
-}
-
-.dashboard{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-}
-
-.stat{
-background:var(--input);
-padding:18px;
-border-radius:14px;
-text-align:center;
-border:1px solid var(--border);
-}
-
-.stat h3{
-margin:5px 0;
-}
-
-.stat p{
-font-size:24px;
-font-weight:bold;
-margin:10px 0 0;
 }
 
 input,
 textarea,
 select{
-width:100%;
-padding:12px;
-margin:6px 0;
-border-radius:10px;
-border:1px solid var(--border);
-background:var(--input);
-color:var(--text);
-font-size:15px;
+
+    width:100%;
+
+    padding:12px;
+
+    margin:6px 0;
+
+    border-radius:10px;
+
+    border:1px solid var(--border);
+
+    background:var(--input);
+
+    color:var(--text);
+
+    font-size:15px;
+
 }
 
 textarea{
-height:120px;
-resize:vertical;
-}
 
-button{
-padding:10px 14px;
-border:none;
-border-radius:10px;
-background:var(--button);
-color:var(--buttonText);
-cursor:pointer;
-}
+    height:120px;
 
-button:hover{
-opacity:0.9;
-}
+    resize:vertical;
 
-.delete{
-margin-left:10px;
-background:var(--danger);
-}
-
-.logout{
-background:var(--danger);
-}
-
-ul{
-padding-left:20px;
-}
-
-li{
-margin:10px 0;
-}
-
-.expense-item{
-padding:14px;
-margin:10px 0;
-background:var(--input);
-border:1px solid var(--border);
-border-radius:12px;
-}
-
-.total{
-font-size:22px;
-font-weight:bold;
 }
 
 .message{
-color:var(--muted);
+
+    color:var(--muted);
+
+    min-height:20px;
+
 }
 
-.section{
-scroll-margin-top:15px;
-}
 
-footer{
-text-align:center;
-padding:20px;
-color:var(--muted);
-}
-
-/* LOGIN */
+/* =========================
+   AUTH SCREEN
+========================= */
 
 #authScreen{
-max-width:430px;
-margin:50px auto;
+
+    max-width:430px;
+
+    margin:50px auto;
+
 }
 
 .auth-card{
-background:var(--card);
-padding:30px;
-border-radius:18px;
-box-shadow:0 3px 15px rgba(0,0,0,0.10);
+
+    background:var(--card);
+
+    padding:30px;
+
+    border-radius:18px;
+
+    box-shadow:0 3px 15px rgba(0,0,0,0.10);
+
 }
 
 .auth-card h1{
-text-align:center;
-margin-top:0;
+
+    text-align:center;
+
+    margin-top:0;
+
 }
 
-.auth-card button{
-width:100%;
-margin-top:8px;
+.auth-subtitle{
+
+    text-align:center;
+
+    color:var(--muted);
+
+    margin-bottom:25px;
+
+}
+
+.auth-box h2{
+
+    margin-top:0;
+
+}
+
+.auth-button{
+
+    width:100%;
+
+    margin-top:8px;
+
 }
 
 .auth-switch{
-text-align:center;
-margin-top:18px;
-color:var(--muted);
+
+    text-align:center;
+
+    margin-top:18px;
+
+    color:var(--muted);
+
+    font-size:14px;
+
 }
 
-.auth-switch button{
-width:auto;
-background:none;
-color:var(--button);
-padding:0;
+.switch-button{
+
+    background:none;
+
+    color:var(--button);
+
+    padding:0;
+
+    font-size:14px;
+
 }
+
+.switch-button:hover{
+
+    opacity:1;
+
+    text-decoration:underline;
+
+}
+
+
+/* =========================
+   MAIN APP
+========================= */
 
 #app{
-display:none;
+
+    display:none;
+
+}
+
+.container{
+
+    max-width:900px;
+
+    margin:auto;
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+
+    background:var(--card);
+
+    padding:20px;
+
+    border-radius:16px;
+
+    margin-bottom:15px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+    box-shadow:0 3px 12px rgba(0,0,0,0.08);
+
+}
+
+header h1{
+
+    margin:0;
+
+}
+
+header p{
+
+    margin:5px 0 0;
+
+    color:var(--muted);
+
+}
+
+.themeButton{
+
+    background:var(--button);
+
+    color:var(--buttonText);
+
 }
 
 .user-box{
-display:flex;
-align-items:center;
-gap:8px;
-flex-wrap:wrap;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    margin-top:10px;
+
 }
 
 .user-email{
-font-size:13px;
-color:var(--muted);
+
+    font-size:13px;
+
+    color:var(--muted);
+
 }
+
+.logout{
+
+    background:var(--danger);
+
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav{
+
+    background:var(--card);
+
+    padding:10px;
+
+    border-radius:14px;
+
+    margin-bottom:15px;
+
+    display:flex;
+
+    gap:8px;
+
+    overflow-x:auto;
+
+    box-shadow:0 3px 12px rgba(0,0,0,0.08);
+
+}
+
+nav button{
+
+    background:transparent;
+
+    color:var(--text);
+
+    border:1px solid var(--border);
+
+    white-space:nowrap;
+
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+
+    background:var(--card);
+
+    padding:20px;
+
+    margin:15px 0;
+
+    border-radius:16px;
+
+    box-shadow:0 3px 12px rgba(0,0,0,0.08);
+
+}
+
+.card h2{
+
+    margin-top:0;
+
+}
+
+.section{
+
+    scroll-margin-top:15px;
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:12px;
+
+}
+
+.stat{
+
+    background:var(--input);
+
+    padding:18px;
+
+    border-radius:14px;
+
+    text-align:center;
+
+    border:1px solid var(--border);
+
+}
+
+.stat h3{
+
+    margin:5px 0;
+
+}
+
+.stat p{
+
+    font-size:24px;
+
+    font-weight:bold;
+
+    margin:10px 0 0;
+
+}
+
+
+/* =========================
+   TASKS
+========================= */
+
+ul{
+
+    padding-left:20px;
+
+}
+
+li{
+
+    margin:10px 0;
+
+    line-height:1.5;
+
+}
+
+.delete{
+
+    margin-left:10px;
+
+    background:var(--danger);
+
+}
+
+
+/* =========================
+   NOTES / EXPENSE ITEMS
+========================= */
+
+.expense-item{
+
+    padding:14px;
+
+    margin:10px 0;
+
+    background:var(--input);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+}
+
+.total{
+
+    font-size:22px;
+
+    font-weight:bold;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+
+    text-align:center;
+
+    padding:20px;
+
+    color:var(--muted);
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
 
 @media(max-width:600px){
 
-body{
-padding:10px;
-}
+    body{
 
-header{
-align-items:flex-start;
-}
+        padding:10px;
 
-.dashboard{
-grid-template-columns:1fr 1fr;
-}
+    }
 
-.card{
-padding:16px;
-}
+    #authScreen{
+
+        margin:25px auto;
+
+    }
+
+    .auth-card{
+
+        padding:22px;
+
+    }
+
+    header{
+
+        align-items:flex-start;
+
+    }
+
+    .dashboard{
+
+        grid-template-columns:1fr 1fr;
+
+    }
+
+    .card{
+
+        padding:16px;
+
+    }
 
 }
 
@@ -296,1460 +564,900 @@ padding:16px;
 <body>
 
 
-<!-- ================= AUTH SCREEN ================= -->
+<!-- ==================================================
+     AUTH SCREEN
+================================================== -->
 
 <div id="authScreen">
 
-<div class="auth-card">
+    <div class="auth-card">
 
-<h1>🌟 EasyLife</h1>
+        <h1>🌟 EasyLife</h1>
 
-<p style="text-align:center;color:var(--muted);">
-Your Daily Life Assistant
-</p>
-
-<br>
+        <p class="auth-subtitle">
+            Your Daily Life Assistant
+        </p>
 
 
-<!-- LOGIN -->
+        <!-- ================= LOGIN ================= -->
 
-<div id="loginBox">
+        <div id="loginBox" class="auth-box">
 
-<h2>🔐 Login</h2>
+            <h2>🔐 Login</h2>
 
-<input
-id="loginEmail"
-type="email"
-placeholder="Email address"
-autocomplete="email">
+            <input
+                id="loginEmail"
+                type="email"
+                placeholder="Email address"
+                autocomplete="email"
+            >
 
-<input
-id="loginPassword"
-type="password"
-placeholder="Password"
-autocomplete="current-password">
+            <input
+                id="loginPassword"
+                type="password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
 
-<button onclick="login()">
-🔑 Login
-</button>
+            <button
+                id="loginButton"
+                class="auth-button"
+            >
+                🔑 Login
+            </button>
 
-<p id="loginMessage" class="message"></p>
+            <p
+                id="loginMessage"
+                class="message"
+            ></p>
 
-<div class="auth-switch">
 
-Don't have an account?
+            <div class="auth-switch">
 
-<button onclick="showSignup()">
-Create account
-</button>
+                Don't have an account?
+
+                <button
+                    id="showSignupButton"
+                    class="switch-button"
+                >
+                    Create account
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= SIGNUP ================= -->
+
+        <div
+            id="signupBox"
+            class="auth-box"
+            style="display:none;"
+        >
+
+            <h2>🆕 Create Account</h2>
+
+            <input
+                id="signupEmail"
+                type="email"
+                placeholder="Email address"
+                autocomplete="email"
+            >
+
+            <input
+                id="signupPassword"
+                type="password"
+                placeholder="Password"
+                autocomplete="new-password"
+            >
+
+            <input
+                id="signupConfirm"
+                type="password"
+                placeholder="Confirm password"
+                autocomplete="new-password"
+            >
+
+            <button
+                id="signupButton"
+                class="auth-button"
+            >
+                🆕 Sign Up
+            </button>
+
+            <p
+                id="signupMessage"
+                class="message"
+            ></p>
+
+
+            <div class="auth-switch">
+
+                Already have an account?
+
+                <button
+                    id="showLoginButton"
+                    class="switch-button"
+                >
+                    Login
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-</div>
 
-
-<!-- SIGNUP -->
-
-<div id="signupBox" style="display:none;">
-
-<h2>🆕 Create Account</h2>
-
-<input
-id="signupEmail"
-type="email"
-placeholder="Email address"
-autocomplete="email">
-
-<input
-id="signupPassword"
-type="password"
-placeholder="Password"
-autocomplete="new-password">
-
-<input
-id="signupConfirm"
-type="password"
-placeholder="Confirm password"
-autocomplete="new-password">
-
-<button onclick="signup()">
-🆕 Sign Up
-</button>
-
-<p id="signupMessage" class="message"></p>
-
-<div class="auth-switch">
-
-Already have an account?
-
-<button onclick="showLogin()">
-Login
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- ================= MAIN APP ================= -->
+<!-- ==================================================
+     MAIN APPLICATION
+================================================== -->
 
 <div
-id="app"
-class="container">
+    id="app"
+    class="container"
+>
 
 
-<header>
+    <!-- HEADER -->
 
-<div>
+    <header>
 
-<h1>🌟 EasyLife</h1>
+        <div>
 
-<p>Your Daily Life Assistant</p>
+            <h1>🌟 EasyLife</h1>
 
-<div class="user-box">
+            <p>
+                Your Daily Life Assistant
+            </p>
 
-<span class="user-email" id="userEmail"></span>
+            <div class="user-box">
 
-<button
-class="logout"
-onclick="logout()">
+                <span
+                    class="user-email"
+                    id="userEmail"
+                ></span>
 
-🚪 Logout
+                <button
+                    id="logoutButton"
+                    class="logout"
+                >
+                    🚪 Logout
+                </button>
 
-</button>
+            </div>
+
+        </div>
+
+
+        <button
+            class="themeButton"
+            id="themeButton"
+        >
+            🌙 Dark
+        </button>
+
+    </header>
+
+
+    <!-- NAVIGATION -->
+
+    <nav>
+
+        <button data-section="dashboard">
+            📊 Dashboard
+        </button>
+
+        <button data-section="tasks">
+            📝 Tasks
+        </button>
+
+        <button data-section="notes">
+            📒 Notes
+        </button>
+
+        <button data-section="expenses">
+            💰 Expenses
+        </button>
+
+    </nav>
+
+
+    <!-- ==================================================
+         DASHBOARD
+    ================================================== -->
+
+    <div
+        class="card section"
+        id="dashboard"
+    >
+
+        <h2>📊 Dashboard</h2>
+
+        <p
+            id="today"
+            class="message"
+        ></p>
+
+
+        <div class="dashboard">
+
+
+            <div class="stat">
+
+                <h3>📝 Tasks</h3>
+
+                <p id="taskCount">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat">
+
+                <h3>📒 Notes</h3>
+
+                <p id="noteCount">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat">
+
+                <h3>💰 Expenses</h3>
+
+                <p id="expenseCount">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="stat">
+
+                <h3>💵 Total Spent</h3>
+
+                <p>
+                    ₹<span id="dashboardTotal">0.00</span>
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ==================================================
+         TASKS
+    ================================================== -->
+
+    <div
+        class="card section"
+        id="tasks"
+    >
+
+        <h2>📝 To-Do List</h2>
+
+        <input
+            id="task"
+            placeholder="Enter a task"
+        >
+
+        <button id="addTaskButton">
+            ➕ Add Task
+        </button>
+
+        <p
+            id="taskMessage"
+            class="message"
+        ></p>
+
+        <ul id="list"></ul>
+
+    </div>
+
+
+    <!-- ==================================================
+         NOTES
+    ================================================== -->
+
+    <div
+        class="card section"
+        id="notes"
+    >
+
+        <h2>📒 Notes</h2>
+
+        <textarea
+            id="note"
+            placeholder="Write your note"
+        ></textarea>
+
+        <button id="saveNoteButton">
+            💾 Save Note
+        </button>
+
+        <p
+            id="savedNote"
+            class="message"
+        ></p>
+
+        <div id="notesList"></div>
+
+    </div>
+
+
+    <!-- ==================================================
+         EXPENSES
+    ================================================== -->
+
+    <div
+        class="card section"
+        id="expenses"
+    >
+
+        <h2>💰 Expense Tracker</h2>
+
+        <input
+            id="expenseAmount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Enter amount"
+        >
+
+
+        <select id="expenseCategory">
+
+            <option value="Food">
+                🍔 Food
+            </option>
+
+            <option value="Travel">
+                🚗 Travel
+            </option>
+
+            <option value="Shopping">
+                🛍️ Shopping
+            </option>
+
+            <option value="Bills">
+                💡 Bills
+            </option>
+
+            <option value="Education">
+                📚 Education
+            </option>
+
+            <option value="Other">
+                📦 Other
+            </option>
+
+        </select>
+
+
+        <input
+            id="expenseDescription"
+            placeholder="Description"
+        >
+
+
+        <button id="addExpenseButton">
+            ➕ Add Expense
+        </button>
+
+
+        <p
+            id="expenseMessage"
+            class="message"
+        ></p>
+
+
+        <p class="total">
+
+            Total:
+            ₹<span id="totalExpense">0.00</span>
+
+        </p>
+
+
+        <h3>
+            📋 Expense History
+        </h3>
+
+        <div id="expenseList"></div>
+
+    </div>
+
+
+    <footer>
+
+        🌟 EasyLife — Your Daily Life Assistant
+
+    </footer>
 
 </div>
 
-</div>
-
-<button
-class="themeButton"
-onclick="toggleTheme()"
-id="themeButton">
-
-🌙 Dark
-
-</button>
-
-</header>
-
-
-<nav>
-
-<button onclick="scrollToSection('dashboard')">
-📊 Dashboard
-</button>
-
-<button onclick="scrollToSection('tasks')">
-📝 Tasks
-</button>
-
-<button onclick="scrollToSection('notes')">
-📒 Notes
-</button>
-
-<button onclick="scrollToSection('expenses')">
-💰 Expenses
-</button>
-
-</nav>
-
-
-<!-- DASHBOARD -->
-
-<div
-class="card section"
-id="dashboard">
-
-<h2>📊 Dashboard</h2>
-
-<p
-id="today"
-class="message">
-</p>
-
-<div class="dashboard">
-
-
-<div class="stat">
-
-<h3>📝 Tasks</h3>
-
-<p id="taskCount">
-0
-</p>
-
-</div>
-
-
-<div class="stat">
-
-<h3>📒 Notes</h3>
-
-<p id="noteCount">
-0
-</p>
-
-</div>
-
-
-<div class="stat">
-
-<h3>💰 Expenses</h3>
-
-<p id="expenseCount">
-0
-</p>
-
-</div>
-
-
-<div class="stat">
-
-<h3>💵 Total Spent</h3>
-
-<p>
-₹<span id="dashboardTotal">0</span>
-</p>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-<!-- TASKS -->
-
-<div
-class="card section"
-id="tasks">
-
-<h2>📝 To-Do List</h2>
-
-<input
-id="task"
-placeholder="Enter a task">
-
-<button onclick="addTask()">
-➕ Add Task
-</button>
-
-<p
-id="taskMessage"
-class="message">
-</p>
-
-<ul id="list"></ul>
-
-</div>
-
-
-<!-- NOTES -->
-
-<div
-class="card section"
-id="notes">
-
-<h2>📒 Notes</h2>
-
-<textarea
-id="note"
-placeholder="Write your note"></textarea>
-
-<button onclick="saveNote()">
-💾 Save Note
-</button>
-
-<p
-id="savedNote"
-class="message">
-</p>
-
-<div id="notesList"></div>
-
-</div>
-
-
-<!-- EXPENSES -->
-
-<div
-class="card section"
-id="expenses">
-
-<h2>💰 Expense Tracker</h2>
-
-<input
-id="expenseAmount"
-type="number"
-placeholder="Enter amount">
-
-<select id="expenseCategory">
-
-<option value="Food">
-🍔 Food
-</option>
-
-<option value="Travel">
-🚗 Travel
-</option>
-
-<option value="Shopping">
-🛍️ Shopping
-</option>
-
-<option value="Bills">
-💡 Bills
-</option>
-
-<option value="Education">
-📚 Education
-</option>
-
-<option value="Other">
-📦 Other
-</option>
-
-</select>
-
-<input
-id="expenseDescription"
-placeholder="Description">
-
-<button onclick="addExpense()">
-➕ Add Expense
-</button>
-
-<p
-id="expenseMessage"
-class="message">
-</p>
-
-<p class="total">
-
-Total:
-₹<span id="totalExpense">
-0
-</span>
-
-</p>
-
-<h3>
-📋 Expense History
-</h3>
-
-<div id="expenseList"></div>
-
-</div>
-
-
-<footer>
-
-🌟 EasyLife — Your Daily Life Assistant
-
-</footer>
-
-
-</div>
 
 
 <script>
 
-
-/* ==========================================
-   SUPABASE
-========================================== */
+/* ==================================================
+   SUPABASE CONFIGURATION
+================================================== */
 
 const SUPABASE_URL =
-"https://lhxjfyzqpsmqejxfrxlg.supabase.co";
+    "https://lhxjfyzqpsmqejxfrxlg.supabase.co";
 
 const SUPABASE_KEY =
-"sb_publishable_4o82RmTdkM9f5j5negCsKg_wmZYZGtW";
+    "sb_publishable_4o82RmTdkM9f5j5negCsKg_wmZYZGtW";
+
 
 const supabaseClient =
-window.supabase.createClient(
-SUPABASE_URL,
-SUPABASE_KEY
-);
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
 
+
+/* ==================================================
+   GLOBAL USER
+================================================== */
 
 let currentUser = null;
 
 
-/* ==========================================
+/* ==================================================
+   DOM HELPER
+================================================== */
+
+function get(id){
+
+    return document.getElementById(id);
+
+}
+
+
+/* ==================================================
+   ESCAPE HTML
+================================================== */
+
+function escapeHTML(text){
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        text == null ? "" : String(text);
+
+    return div.innerHTML;
+
+}
+
+
+/* ==================================================
    THEME
-========================================== */
+================================================== */
 
 function loadTheme(){
 
-const theme =
-localStorage.getItem("EasyLifeTheme");
+    const theme =
+        localStorage.getItem("EasyLifeTheme");
 
-if(theme === "dark"){
+    const button =
+        get("themeButton");
 
-document.body.classList.add("dark");
 
-const button =
-document.getElementById("themeButton");
+    if(theme === "dark"){
 
-if(button){
-button.innerHTML="☀️ Light";
-}
+        document.body.classList.add("dark");
 
-}
+        button.innerHTML =
+            "☀️ Light";
+
+    }
+
+    else{
+
+        document.body.classList.remove("dark");
+
+        button.innerHTML =
+            "🌙 Dark";
+
+    }
 
 }
 
 
 function toggleTheme(){
 
-document.body.classList.toggle("dark");
+    document.body.classList.toggle("dark");
 
-const dark =
-document.body.classList.contains("dark");
 
-localStorage.setItem(
-"EasyLifeTheme",
-dark ? "dark" : "light"
-);
+    const dark =
+        document.body.classList.contains("dark");
 
-document.getElementById(
-"themeButton"
-).innerHTML =
-dark ? "☀️ Light" : "🌙 Dark";
+
+    localStorage.setItem(
+        "EasyLifeTheme",
+        dark ? "dark" : "light"
+    );
+
+
+    get("themeButton").innerHTML =
+        dark ? "☀️ Light" : "🌙 Dark";
 
 }
 
 
-/* ==========================================
-   AUTH SCREEN
-========================================== */
+/* ==================================================
+   AUTH SCREEN SWITCHING
+================================================== */
 
 function showSignup(){
 
-document.getElementById(
-"loginBox"
-).style.display="none";
+    get("loginBox").style.display =
+        "none";
 
-document.getElementById(
-"signupBox"
-).style.display="block";
+    get("signupBox").style.display =
+        "block";
+
+
+    get("loginMessage").innerHTML =
+        "";
+
+
+    get("signupMessage").innerHTML =
+        "";
+
+
+    get("signupEmail").focus();
 
 }
 
 
 function showLogin(){
 
-document.getElementById(
-"signupBox"
-).style.display="none";
+    get("signupBox").style.display =
+        "none";
 
-document.getElementById(
-"loginBox"
-).style.display="block";
+    get("loginBox").style.display =
+        "block";
+
+
+    get("loginMessage").innerHTML =
+        "";
+
+
+    get("signupMessage").innerHTML =
+        "";
+
+
+    get("loginEmail").focus();
 
 }
 
 
-/* ==========================================
+/* ==================================================
    SIGN UP
-========================================== */
+================================================== */
 
 async function signup(){
 
-const email =
-document.getElementById(
-"signupEmail"
-).value.trim();
-
-const password =
-document.getElementById(
-"signupPassword"
-).value;
-
-const confirm =
-document.getElementById(
-"signupConfirm"
-).value;
-
-const message =
-document.getElementById(
-"signupMessage"
-);
+    const email =
+        get("signupEmail")
+        .value
+        .trim();
 
 
-if(!email || !password){
+    const password =
+        get("signupPassword")
+        .value;
 
-message.innerHTML =
-"⚠️ Enter email and password.";
 
-return;
+    const confirm =
+        get("signupConfirm")
+        .value;
+
+
+    const message =
+        get("signupMessage");
+
+
+    const button =
+        get("signupButton");
+
+
+    if(!email){
+
+        message.innerHTML =
+            "⚠️ Please enter your email.";
+
+        return;
+
+    }
+
+
+    if(!password){
+
+        message.innerHTML =
+            "⚠️ Please enter a password.";
+
+        return;
+
+    }
+
+
+    if(password.length < 6){
+
+        message.innerHTML =
+            "⚠️ Password must be at least 6 characters.";
+
+        return;
+
+    }
+
+
+    if(password !== confirm){
+
+        message.innerHTML =
+            "⚠️ Passwords do not match.";
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+
+    message.innerHTML =
+        "⏳ Creating account...";
+
+
+    try{
+
+        const {data,error} =
+            await supabaseClient.auth.signUp({
+
+                email:email,
+
+                password:password
+
+            });
+
+
+        if(error){
+
+            message.innerHTML =
+                "❌ " +
+                escapeHTML(error.message);
+
+            button.disabled = false;
+
+            return;
+
+        }
+
+
+        if(data.session){
+
+            message.innerHTML =
+                "✅ Account created!";
+
+            await showApp(data.user);
+
+        }
+
+        else{
+
+            message.innerHTML =
+                "✅ Account created! Check your email to confirm your account.";
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        message.innerHTML =
+            "❌ Something went wrong. Please try again.";
+
+    }
+
+
+    button.disabled = false;
 
 }
 
 
-if(password.length < 6){
-
-message.innerHTML =
-"⚠️ Password must be at least 6 characters.";
-
-return;
-
-}
-
-
-if(password !== confirm){
-
-message.innerHTML =
-"⚠️ Passwords do not match.";
-
-return;
-
-}
-
-
-message.innerHTML =
-"⏳ Creating account...";
-
-
-const {data,error} =
-await supabaseClient.auth.signUp({
-
-email:email,
-
-password:password
-
-});
-
-
-if(error){
-
-message.innerHTML =
-"❌ "+escapeHTML(error.message);
-
-return;
-
-}
-
-
-if(data.session){
-
-message.innerHTML =
-"✅ Account created! Logging in...";
-
-await showApp(data.session.user);
-
-}else{
-
-message.innerHTML =
-"✅ Account created! Check your email to confirm your account.";
-
-}
-
-}
-
-
-/* ==========================================
+/* ==================================================
    LOGIN
-========================================== */
+================================================== */
 
 async function login(){
 
-const email =
-document.getElementById(
-"loginEmail"
-).value.trim();
-
-const password =
-document.getElementById(
-"loginPassword"
-).value;
-
-const message =
-document.getElementById(
-"loginMessage"
-);
+    const email =
+        get("loginEmail")
+        .value
+        .trim();
 
 
-if(!email || !password){
+    const password =
+        get("loginPassword")
+        .value;
 
-message.innerHTML =
-"⚠️ Enter email and password.";
 
-return;
+    const message =
+        get("loginMessage");
+
+
+    const button =
+        get("loginButton");
+
+
+    if(!email){
+
+        message.innerHTML =
+            "⚠️ Please enter your email.";
+
+        return;
+
+    }
+
+
+    if(!password){
+
+        message.innerHTML =
+            "⚠️ Please enter your password.";
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+
+    message.innerHTML =
+        "⏳ Logging in...";
+
+
+    try{
+
+        const {data,error} =
+            await supabaseClient.auth
+            .signInWithPassword({
+
+                email:email,
+
+                password:password
+
+            });
+
+
+        if(error){
+
+            message.innerHTML =
+                "❌ " +
+                escapeHTML(error.message);
+
+            button.disabled = false;
+
+            return;
+
+        }
+
+
+        await showApp(data.user);
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        message.innerHTML =
+            "❌ Something went wrong. Please try again.";
+
+    }
+
+
+    button.disabled = false;
 
 }
 
 
-message.innerHTML =
-"⏳ Logging in...";
-
-
-const {data,error} =
-await supabaseClient.auth.signInWithPassword({
-
-email:email,
-
-password:password
-
-});
-
-
-if(error){
-
-message.innerHTML =
-"❌ "+escapeHTML(error.message);
-
-return;
-
-}
-
-
-await showApp(data.session.user);
-
-}
-
-
-/* ==========================================
+/* ==================================================
    LOGOUT
-========================================== */
+================================================== */
 
 async function logout(){
 
-await supabaseClient.auth.signOut();
+    try{
 
-currentUser = null;
+        await supabaseClient.auth.signOut();
 
-document.getElementById(
-"app"
-).style.display="none";
+    }
 
-document.getElementById(
-"authScreen"
-).style.display="block";
+    catch(error){
 
-showLogin();
+        console.error(error);
+
+    }
+
+
+    currentUser = null;
+
+
+    get("app").style.display =
+        "none";
+
+
+    get("authScreen").style.display =
+        "block";
+
+
+    get("loginEmail").value =
+        "";
+
+    get("loginPassword").value =
+        "";
+
+    get("loginMessage").innerHTML =
+        "";
+
+
+    showLogin();
 
 }
 
 
-/* ==========================================
-   SHOW APP
-========================================== */
+/* ==================================================
+   SHOW MAIN APP
+================================================== */
 
 async function showApp(user){
 
-currentUser = user;
+    if(!user){
 
-document.getElementById(
-"authScreen"
-).style.display="none";
+        return;
 
-document.getElementById(
-"app"
-).style.display="block";
+    }
 
-document.getElementById(
-"userEmail"
-).textContent =
-"👤 "+user.email;
 
-loadTheme();
+    currentUser = user;
 
-loadDate();
 
-await loadTasks();
+    get("authScreen").style.display =
+        "none";
 
-await loadNotes();
 
-await loadExpenses();
+    get("app").style.display =
+        "block";
 
-}
 
+    get("userEmail").textContent =
+        "👤 " + user.email;
 
-/* ==========================================
-   CHECK SESSION
-========================================== */
 
-async function checkSession(){
+    loadTheme();
 
-const {data} =
-await supabaseClient.auth.getSession();
+    loadDate();
 
-if(data.session){
 
-await showApp(
-data.session.user
-);
+    await loadTasks();
 
-}else{
+    await loadNotes();
 
-document.getElementById(
-"authScreen"
-).style.display="block";
-
-document.getElementById(
-"app"
-).style.display="none";
-
-}
-
-}
-
-
-/* ==========================================
-   AUTH STATE LISTENER
-========================================== */
-
-supabaseClient.auth.onAuthStateChange(
-async function(event,session){
-
-if(session && !currentUser){
-
-await showApp(session.user);
-
-}
-
-if(!session){
-
-currentUser=null;
-
-}
-
-});
-
-
-/* ==========================================
-   NAVIGATION
-========================================== */
-
-function scrollToSection(id){
-
-document.getElementById(id)
-.scrollIntoView({
-behavior:"smooth"
-});
-
-}
-
-
-/* ==========================================
-   DATE
-========================================== */
-
-function loadDate(){
-
-const today =
-new Date();
-
-document.getElementById(
-"today"
-).innerHTML =
-"📅 "+
-today.toLocaleDateString(
-"en-IN",
-{
-weekday:"long",
-year:"numeric",
-month:"long",
-day:"numeric"
-}
-);
-
-}
-
-
-/* ==========================================
-   TASKS - ADD
-========================================== */
-
-async function addTask(){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-const input =
-document.getElementById("task");
-
-const task =
-input.value.trim();
-
-const message =
-document.getElementById(
-"taskMessage"
-);
-
-
-if(!task){
-
-message.innerHTML =
-"⚠️ Please enter a task.";
-
-return;
-
-}
-
-
-message.innerHTML =
-"⏳ Saving task...";
-
-
-const {error} =
-await supabaseClient
-.from("tasks")
-.insert({
-
-content:task,
-
-user_id:currentUser.id
-
-});
-
-
-if(error){
-
-console.error(error);
-
-message.innerHTML =
-"❌ Error: "+
-escapeHTML(error.message);
-
-return;
-
-}
-
-
-input.value="";
-
-message.innerHTML =
-"✅ Task saved permanently!";
-
-await loadTasks();
-
-}
-
-
-/* ==========================================
-   TASKS - LOAD
-========================================== */
-
-async function loadTasks(){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-const {data,error} =
-await supabaseClient
-.from("tasks")
-.select("id,content,created_at")
-.eq("user_id",currentUser.id)
-.order(
-"created_at",
-{
-ascending:false
-}
-);
-
-
-if(error){
-
-console.error(error);
-
-document.getElementById(
-"taskMessage"
-).innerHTML =
-"❌ "+escapeHTML(error.message);
-
-return;
-
-}
-
-
-const list =
-document.getElementById("list");
-
-list.innerHTML="";
-
-
-data.forEach(
-function(task){
-
-const li =
-document.createElement("li");
-
-li.textContent =
-task.content;
-
-
-const del =
-document.createElement("button");
-
-del.innerHTML =
-"❌ Delete";
-
-del.className =
-"delete";
-
-del.onclick =
-function(){
-
-deleteTask(task.id);
-
-};
-
-
-li.appendChild(del);
-
-list.appendChild(li);
-
-}
-);
-
-
-document.getElementById(
-"taskCount"
-).innerText =
-data.length;
-
-}
-
-
-/* ==========================================
-   TASKS - DELETE
-========================================== */
-
-async function deleteTask(id){
-
-const {error} =
-await supabaseClient
-.from("tasks")
-.delete()
-.eq("id",id)
-.eq("user_id",currentUser.id);
-
-
-if(error){
-
-alert(
-"Could not delete task: "+
-error.message
-);
-
-return;
-
-}
-
-
-await loadTasks();
-
-}
-
-
-/* ==========================================
-   NOTES - SAVE
-========================================== */
-
-async function saveNote(){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-const note =
-document.getElementById(
-"note"
-).value.trim();
-
-const message =
-document.getElementById(
-"savedNote"
-);
-
-
-if(!note){
-
-message.innerHTML =
-"⚠️ Please write a note first.";
-
-return;
-
-}
-
-
-message.innerHTML =
-"⏳ Saving note...";
-
-
-const {error} =
-await supabaseClient
-.from("notes")
-.insert({
-
-content:note,
-
-user_id:currentUser.id
-
-});
-
-
-if(error){
-
-console.error(error);
-
-message.innerHTML =
-"❌ Error: "+
-escapeHTML(error.message);
-
-return;
-
-}
-
-
-document.getElementById(
-"note"
-).value="";
-
-message.innerHTML =
-"✅ Note saved permanently!";
-
-await loadNotes();
-
-}
-
-
-/* ==========================================
-   NOTES - LOAD
-========================================== */
-
-async function loadNotes(){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-const {data,error} =
-await supabaseClient
-.from("notes")
-.select("id,content,created_at")
-.eq("user_id",currentUser.id)
-.order(
-"created_at",
-{
-ascending:false
-}
-);
-
-
-if(error){
-
-console.error(error);
-
-document.getElementById(
-"savedNote"
-).innerHTML =
-"❌ "+escapeHTML(error.message);
-
-return;
-
-}
-
-
-document.getElementById(
-"noteCount"
-).innerText =
-data.length;
-
-
-const list =
-document.getElementById(
-"notesList"
-);
-
-list.innerHTML="";
-
-
-data.forEach(
-function(note){
-
-const div =
-document.createElement("div");
-
-div.className =
-"expense-item";
-
-div.innerHTML =
-"<strong>📒 Note</strong><br>"+
-escapeHTML(note.content)+
-"<br><small>"+
-new Date(
-note.created_at
-).toLocaleString()+
-"</small>";
-
-
-const del =
-document.createElement("button");
-
-del.innerHTML =
-"❌ Delete";
-
-del.className =
-"delete";
-
-del.onclick =
-function(){
-
-deleteNote(note.id);
-
-};
-
-
-div.appendChild(del);
-
-list.appendChild(div);
-
-}
-);
-
-}
-
-
-/* ==========================================
-   NOTES - DELETE
-========================================== */
-
-async function deleteNote(id){
-
-const {error} =
-await supabaseClient
-.from("notes")
-.delete()
-.eq("id",id)
-.eq("user_id",currentUser.id);
-
-
-if(error){
-
-alert(
-"Could not delete note: "+
-error.message
-);
-
-return;
-
-}
-
-
-await loadNotes();
-
-}
-
-
-/* ==========================================
-   EXPENSE - ADD
-========================================== */
-
-async function addExpense(){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-const amount =
-document.getElementById(
-"expenseAmount"
-).value;
-
-const category =
-document.getElementById(
-"expenseCategory"
-).value;
-
-const description =
-document.getElementById(
-"expenseDescription"
-).value.trim();
-
-const message =
-document.getElementById(
-"expenseMessage"
-);
-
-
-if(
-amount === "" ||
-Number(amount) <= 0
-){
-
-message.innerHTML =
-"⚠️ Enter a valid amount.";
-
-return;
-
-}
-
-
-message.innerHTML =
-"⏳ Saving expense...";
-
-
-const {error} =
-await supabaseClient
-.from("expenses")
-.insert({
-
-amount:Number(amount),
-
-category:category,
-
-description:description,
-
-user_id:currentUser.id
-
-});
-
-
-if(error){
-
-console.error(error);
-
-message.innerHTML =
-"❌ Error: "+
-escapeHTML(error.message);
-
-return;
-
-}
-
-
-document.getElementById(
-"expenseAmount"
-).value="";
-
-document.getElementById(
-"expenseDescription"
-).value="";
-
-
-message.innerHTML =
-"✅ Expense saved permanently!";
-
-
-await loadExpenses();
-
-}
-
-
-/* ==========================================
-   EXPENSE - LOAD
-========================================== */
-
-async function loadExpenses(){
-
-if(!currentUser){
-
-return;
-
-}
-
-
-const {data,error} =
-await supabaseClient
-.from("expenses")
-.select(
-"id,amount,category,description,expense_date,created_at"
-)
-.eq(
-"user_id",
-currentUser.id
-)
-.order(
-"created_at",
-{
-ascending:false
-}
-);
-
-
-if(error){
-
-console.error(error);
-
-document.getElementById(
-"expenseMessage"
-).innerHTML =
-"❌ "+escapeHTML(error.message);
-
-return;
-
-}
-
-
-const list =
-document.getElementById(
-"expenseList"
-);
-
-list.innerHTML="";
-
-
-let total=0;
-
-
-data.forEach(
-function(expense){
-
-total +=
-Number(expense.amount);
-
-
-const div =
-document.createElement("div");
-
-div.className =
-"expense-item";
-
-
-div.innerHTML =
-"<strong>₹"+
-escapeHTML(
-String(expense.amount)
-)+
-"</strong> - "+
-escapeHTML(
-expense.category || ""
-)+
-"<br>"+
-escapeHTML(
-expense.description ||
-"No description"
-)+
-"<br>"+
-"<small>"+
-escapeHTML(
-expense.expense_date ||
-new Date(
-expense.created_at
-).toLocaleDateString("en-IN")
-)+
-"</small>";
-
-
-const del =
-document.createElement("button");
-
-del.innerHTML =
-"❌ Delete";
-
-del.className =
-"delete";
-
-
-del.onclick =
-function(){
-
-deleteExpense(
-expense.id
-);
-
-};
-
-
-div.appendChild(del);
-
-list.appendChild(div);
-
-}
-);
-
-
-document.getElementById(
-"totalExpense"
-).innerText =
-total.toFixed(2);
-
-document.getElementById(
-"dashboardTotal"
-).innerText =
-total.toFixed(2);
-
-document.getElementById(
-"expenseCount"
-).innerText =
-data.length;
-
-}
-
-
-/* ==========================================
-   EXPENSE - DELETE
-========================================== */
-
-async function deleteExpense(id){
-
-const {error} =
-await supabaseClient
-.from("expenses")
-.delete()
-.eq("id",id)
-.eq("user_id",currentUser.id);
-
-
-if(error){
-
-alert(
-"Could not delete expense: "+
-error.message
-);
-
-return;
-
-}
-
-
-await loadExpenses();
-
-}
-
-
-/* ==========================================
-   SECURITY HELPER
-========================================== */
-
-function escapeHTML(text){
-
-const div =
-document.createElement("div");
-
-div.textContent =
-text == null ? "" : text;
-
-return div.innerHTML;
-
-}
-
-
-/* ==========================================
-   ST
+    await loadExpenses(
