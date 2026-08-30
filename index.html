@@ -13,546 +13,333 @@
 
 <style>
 
-/* =========================
-   VARIABLES
-========================= */
-
 :root{
-
-    --bg:#dff3ff;
-    --card:#ffffff;
-    --text:#222222;
-    --muted:#666666;
-    --input:#f5f5f5;
-    --border:#dddddd;
-    --button:#2563eb;
-    --buttonText:#ffffff;
-    --danger:#dc2626;
-    --success:#16a34a;
-
+--bg:#dff3ff;
+--card:#ffffff;
+--text:#222222;
+--muted:#666666;
+--input:#f5f5f5;
+--border:#dddddd;
+--button:#2563eb;
+--buttonText:#ffffff;
+--danger:#dc2626;
 }
-
-body.dark{
-
-    --bg:#121212;
-    --card:#1e1e1e;
-    --text:#f5f5f5;
-    --muted:#bbbbbb;
-    --input:#2a2a2a;
-    --border:#444444;
-    --button:#3b82f6;
-    --buttonText:#ffffff;
-    --danger:#ef4444;
-    --success:#22c55e;
-
-}
-
-
-/* =========================
-   GENERAL
-========================= */
 
 *{
-    box-sizing:border-box;
-}
-
-html{
-    scroll-behavior:smooth;
+box-sizing:border-box;
 }
 
 body{
-
-    font-family:Arial,sans-serif;
-
-    background:var(--bg);
-
-    color:var(--text);
-
-    padding:15px;
-
-    margin:0;
-
-    transition:0.3s;
-
+font-family:Arial,sans-serif;
+background:var(--bg);
+color:var(--text);
+padding:15px;
+margin:0;
+transition:0.3s;
 }
 
-button{
-
-    padding:10px 14px;
-
-    border:none;
-
-    border-radius:10px;
-
-    background:var(--button);
-
-    color:var(--buttonText);
-
-    cursor:pointer;
-
-    font-size:14px;
-
+body.dark{
+--bg:#121212;
+--card:#1e1e1e;
+--text:#f5f5f5;
+--muted:#bbbbbb;
+--input:#2a2a2a;
+--border:#444444;
+--button:#3b82f6;
+--buttonText:#ffffff;
+--danger:#ef4444;
 }
 
-button:hover{
-    opacity:0.9;
+
+/* ================= AUTH ================= */
+
+#authScreen{
+max-width:430px;
+margin:50px auto;
 }
 
-button:disabled{
-
-    opacity:0.6;
-
-    cursor:not-allowed;
-
+.auth-card{
+background:var(--card);
+padding:30px;
+border-radius:18px;
+box-shadow:0 3px 15px rgba(0,0,0,0.10);
 }
+
+.auth-card h1{
+text-align:center;
+margin-top:0;
+}
+
+.subtitle{
+text-align:center;
+color:var(--muted);
+margin-bottom:25px;
+}
+
+
+/* IMPORTANT:
+   Login is visible initially.
+   Signup appears when checkbox is checked.
+*/
+
+#authToggle{
+display:none;
+}
+
+#signupBox{
+display:none;
+}
+
+#authToggle:checked ~ #loginBox{
+display:none;
+}
+
+#authToggle:checked ~ #signupBox{
+display:block;
+}
+
+
+.auth-button{
+width:100%;
+margin-top:8px;
+}
+
+.switch-area{
+text-align:center;
+margin-top:18px;
+color:var(--muted);
+font-size:14px;
+}
+
+.switch-label{
+color:var(--button);
+text-decoration:underline;
+cursor:pointer;
+}
+
+.switch-label:hover{
+opacity:0.8;
+}
+
+
+/* ================= GENERAL ================= */
 
 input,
 textarea,
 select{
-
-    width:100%;
-
-    padding:12px;
-
-    margin:6px 0;
-
-    border-radius:10px;
-
-    border:1px solid var(--border);
-
-    background:var(--input);
-
-    color:var(--text);
-
-    font-size:15px;
-
+width:100%;
+padding:12px;
+margin:6px 0;
+border-radius:10px;
+border:1px solid var(--border);
+background:var(--input);
+color:var(--text);
+font-size:15px;
 }
 
 textarea{
+height:120px;
+resize:vertical;
+}
 
-    height:120px;
+button{
+padding:10px 14px;
+border:none;
+border-radius:10px;
+background:var(--button);
+color:var(--buttonText);
+cursor:pointer;
+}
 
-    resize:vertical;
-
+button:hover{
+opacity:0.9;
 }
 
 .message{
-
-    color:var(--muted);
-
-    min-height:20px;
-
+color:var(--muted);
+min-height:20px;
 }
 
 
-/* =========================
-   AUTH SCREEN
-========================= */
-
-#authScreen{
-
-    max-width:430px;
-
-    margin:50px auto;
-
-}
-
-.auth-card{
-
-    background:var(--card);
-
-    padding:30px;
-
-    border-radius:18px;
-
-    box-shadow:0 3px 15px rgba(0,0,0,0.10);
-
-}
-
-.auth-card h1{
-
-    text-align:center;
-
-    margin-top:0;
-
-}
-
-.auth-subtitle{
-
-    text-align:center;
-
-    color:var(--muted);
-
-    margin-bottom:25px;
-
-}
-
-.auth-box h2{
-
-    margin-top:0;
-
-}
-
-.auth-button{
-
-    width:100%;
-
-    margin-top:8px;
-
-}
-
-.auth-switch{
-
-    text-align:center;
-
-    margin-top:18px;
-
-    color:var(--muted);
-
-    font-size:14px;
-
-}
-
-.switch-button{
-
-    background:none;
-
-    color:var(--button);
-
-    padding:0;
-
-    font-size:14px;
-
-}
-
-.switch-button:hover{
-
-    opacity:1;
-
-    text-decoration:underline;
-
-}
-
-
-/* =========================
-   MAIN APP
-========================= */
+/* ================= APP ================= */
 
 #app{
-
-    display:none;
-
+display:none;
 }
 
 .container{
-
-    max-width:900px;
-
-    margin:auto;
-
+max-width:900px;
+margin:auto;
 }
 
-
-/* =========================
-   HEADER
-========================= */
-
 header{
-
-    background:var(--card);
-
-    padding:20px;
-
-    border-radius:16px;
-
-    margin-bottom:15px;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:10px;
-
-    box-shadow:0 3px 12px rgba(0,0,0,0.08);
-
+background:var(--card);
+padding:20px;
+border-radius:16px;
+margin-bottom:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
 }
 
 header h1{
-
-    margin:0;
-
+margin:0;
 }
 
 header p{
-
-    margin:5px 0 0;
-
-    color:var(--muted);
-
-}
-
-.themeButton{
-
-    background:var(--button);
-
-    color:var(--buttonText);
-
+margin:5px 0 0;
+color:var(--muted);
 }
 
 .user-box{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    flex-wrap:wrap;
-
-    margin-top:10px;
-
+display:flex;
+align-items:center;
+gap:8px;
+flex-wrap:wrap;
+margin-top:10px;
 }
 
 .user-email{
-
-    font-size:13px;
-
-    color:var(--muted);
-
+font-size:13px;
+color:var(--muted);
 }
 
 .logout{
+background:var(--danger);
+}
 
-    background:var(--danger);
-
+.themeButton{
+background:var(--button);
 }
 
 
-/* =========================
-   NAVIGATION
-========================= */
+/* ================= NAV ================= */
 
 nav{
-
-    background:var(--card);
-
-    padding:10px;
-
-    border-radius:14px;
-
-    margin-bottom:15px;
-
-    display:flex;
-
-    gap:8px;
-
-    overflow-x:auto;
-
-    box-shadow:0 3px 12px rgba(0,0,0,0.08);
-
+background:var(--card);
+padding:10px;
+border-radius:14px;
+margin-bottom:15px;
+display:flex;
+gap:8px;
+overflow-x:auto;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
 }
 
 nav button{
-
-    background:transparent;
-
-    color:var(--text);
-
-    border:1px solid var(--border);
-
-    white-space:nowrap;
-
+background:transparent;
+color:var(--text);
+border:1px solid var(--border);
+white-space:nowrap;
 }
 
 
-/* =========================
-   CARDS
-========================= */
+/* ================= CARDS ================= */
 
 .card{
-
-    background:var(--card);
-
-    padding:20px;
-
-    margin:15px 0;
-
-    border-radius:16px;
-
-    box-shadow:0 3px 12px rgba(0,0,0,0.08);
-
+background:var(--card);
+padding:20px;
+margin:15px 0;
+border-radius:16px;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);
 }
 
 .card h2{
-
-    margin-top:0;
-
-}
-
-.section{
-
-    scroll-margin-top:15px;
-
+margin-top:0;
 }
 
 
-/* =========================
-   DASHBOARD
-========================= */
+/* ================= DASHBOARD ================= */
 
 .dashboard{
-
-    display:grid;
-
-    grid-template-columns:repeat(2,1fr);
-
-    gap:12px;
-
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
 }
 
 .stat{
-
-    background:var(--input);
-
-    padding:18px;
-
-    border-radius:14px;
-
-    text-align:center;
-
-    border:1px solid var(--border);
-
+background:var(--input);
+padding:18px;
+border-radius:14px;
+text-align:center;
+border:1px solid var(--border);
 }
 
 .stat h3{
-
-    margin:5px 0;
-
+margin:5px 0;
 }
 
 .stat p{
-
-    font-size:24px;
-
-    font-weight:bold;
-
-    margin:10px 0 0;
-
+font-size:24px;
+font-weight:bold;
+margin:10px 0 0;
 }
 
 
-/* =========================
-   TASKS
-========================= */
+/* ================= LISTS ================= */
 
 ul{
-
-    padding-left:20px;
-
+padding-left:20px;
 }
 
 li{
-
-    margin:10px 0;
-
-    line-height:1.5;
-
+margin:10px 0;
 }
 
 .delete{
-
-    margin-left:10px;
-
-    background:var(--danger);
-
+margin-left:10px;
+background:var(--danger);
 }
 
-
-/* =========================
-   NOTES / EXPENSE ITEMS
-========================= */
-
 .expense-item{
-
-    padding:14px;
-
-    margin:10px 0;
-
-    background:var(--input);
-
-    border:1px solid var(--border);
-
-    border-radius:12px;
-
+padding:14px;
+margin:10px 0;
+background:var(--input);
+border:1px solid var(--border);
+border-radius:12px;
 }
 
 .total{
-
-    font-size:22px;
-
-    font-weight:bold;
-
+font-size:22px;
+font-weight:bold;
 }
-
-
-/* =========================
-   FOOTER
-========================= */
 
 footer{
-
-    text-align:center;
-
-    padding:20px;
-
-    color:var(--muted);
-
+text-align:center;
+padding:20px;
+color:var(--muted);
 }
 
 
-/* =========================
-   MOBILE
-========================= */
+/* ================= MOBILE ================= */
 
 @media(max-width:600px){
 
-    body{
+body{
+padding:10px;
+}
 
-        padding:10px;
+#authScreen{
+margin:25px auto;
+}
 
-    }
+.auth-card{
+padding:22px;
+}
 
-    #authScreen{
+header{
+align-items:flex-start;
+}
 
-        margin:25px auto;
+.dashboard{
+grid-template-columns:1fr 1fr;
+}
 
-    }
-
-    .auth-card{
-
-        padding:22px;
-
-    }
-
-    header{
-
-        align-items:flex-start;
-
-    }
-
-    .dashboard{
-
-        grid-template-columns:1fr 1fr;
-
-    }
-
-    .card{
-
-        padding:16px;
-
-    }
+.card{
+padding:16px;
+}
 
 }
 
@@ -564,425 +351,453 @@ footer{
 <body>
 
 
-<!-- ==================================================
-     AUTH SCREEN
-================================================== -->
+<!-- =====================================================
+     AUTH
+===================================================== -->
 
 <div id="authScreen">
 
-    <div class="auth-card">
+<div class="auth-card">
 
-        <h1>🌟 EasyLife</h1>
+<h1>🌟 EasyLife</h1>
 
-        <p class="auth-subtitle">
-            Your Daily Life Assistant
-        </p>
-
-
-        <!-- ================= LOGIN ================= -->
-
-        <div id="loginBox" class="auth-box">
-
-            <h2>🔐 Login</h2>
-
-            <input
-                id="loginEmail"
-                type="email"
-                placeholder="Email address"
-                autocomplete="email"
-            >
-
-            <input
-                id="loginPassword"
-                type="password"
-                placeholder="Password"
-                autocomplete="current-password"
-            >
-
-            <button
-                id="loginButton"
-                class="auth-button"
-            >
-                🔑 Login
-            </button>
-
-            <p
-                id="loginMessage"
-                class="message"
-            ></p>
+<p class="subtitle">
+Your Daily Life Assistant
+</p>
 
 
-            <div class="auth-switch">
+<!-- THIS CHECKBOX CONTROLS LOGIN/SIGNUP -->
 
-                Don't have an account?
-
-                <button
-                    id="showSignupButton"
-                    class="switch-button"
-                >
-                    Create account
-                </button>
-
-            </div>
-
-        </div>
+<input
+type="checkbox"
+id="authToggle"
+>
 
 
-        <!-- ================= SIGNUP ================= -->
+<!-- =====================================================
+     LOGIN
+===================================================== -->
 
-        <div
-            id="signupBox"
-            class="auth-box"
-            style="display:none;"
-        >
+<div id="loginBox">
 
-            <h2>🆕 Create Account</h2>
+<h2>🔐 Login</h2>
 
-            <input
-                id="signupEmail"
-                type="email"
-                placeholder="Email address"
-                autocomplete="email"
-            >
+<input
+id="loginEmail"
+type="email"
+placeholder="Email address"
+autocomplete="email"
+>
 
-            <input
-                id="signupPassword"
-                type="password"
-                placeholder="Password"
-                autocomplete="new-password"
-            >
+<input
+id="loginPassword"
+type="password"
+placeholder="Password"
+autocomplete="current-password"
+>
 
-            <input
-                id="signupConfirm"
-                type="password"
-                placeholder="Confirm password"
-                autocomplete="new-password"
-            >
+<button
+id="loginButton"
+class="auth-button"
+type="button"
+>
+🔑 Login
+</button>
 
-            <button
-                id="signupButton"
-                class="auth-button"
-            >
-                🆕 Sign Up
-            </button>
-
-            <p
-                id="signupMessage"
-                class="message"
-            ></p>
+<p
+id="loginMessage"
+class="message"
+></p>
 
 
-            <div class="auth-switch">
+<div class="switch-area">
 
-                Already have an account?
+Don't have an account?
 
-                <button
-                    id="showLoginButton"
-                    class="switch-button"
-                >
-                    Login
-                </button>
+<label
+for="authToggle"
+class="switch-label"
+>
+Create account
+</label>
 
-            </div>
-
-        </div>
-
-    </div>
+</div>
 
 </div>
 
 
-<!-- ==================================================
-     MAIN APPLICATION
-================================================== -->
+<!-- =====================================================
+     SIGNUP
+===================================================== -->
+
+<div id="signupBox">
+
+<h2>🆕 Create Account</h2>
+
+<input
+id="signupEmail"
+type="email"
+placeholder="Email address"
+autocomplete="email"
+>
+
+<input
+id="signupPassword"
+type="password"
+placeholder="Password"
+autocomplete="new-password"
+>
+
+<input
+id="signupConfirm"
+type="password"
+placeholder="Confirm password"
+autocomplete="new-password"
+>
+
+<button
+id="signupButton"
+class="auth-button"
+type="button"
+>
+🆕 Sign Up
+</button>
+
+<p
+id="signupMessage"
+class="message"
+></p>
+
+
+<div class="switch-area">
+
+Already have an account?
+
+<label
+for="authToggle"
+class="switch-label"
+>
+Login
+</label>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MAIN APP
+===================================================== -->
 
 <div
-    id="app"
-    class="container"
+id="app"
+class="container"
 >
 
 
-    <!-- HEADER -->
+<header>
 
-    <header>
+<div>
 
-        <div>
+<h1>🌟 EasyLife</h1>
 
-            <h1>🌟 EasyLife</h1>
+<p>
+Your Daily Life Assistant
+</p>
 
-            <p>
-                Your Daily Life Assistant
-            </p>
+<div class="user-box">
 
-            <div class="user-box">
+<span
+id="userEmail"
+class="user-email"
+></span>
 
-                <span
-                    class="user-email"
-                    id="userEmail"
-                ></span>
+<button
+id="logoutButton"
+class="logout"
+type="button"
+>
+🚪 Logout
+</button>
 
-                <button
-                    id="logoutButton"
-                    class="logout"
-                >
-                    🚪 Logout
-                </button>
+</div>
 
-            </div>
+</div>
 
-        </div>
 
+<button
+id="themeButton"
+class="themeButton"
+type="button"
+>
+🌙 Dark
+</button>
 
-        <button
-            class="themeButton"
-            id="themeButton"
-        >
-            🌙 Dark
-        </button>
+</header>
 
-    </header>
 
+<!-- NAV -->
 
-    <!-- NAVIGATION -->
+<nav>
 
-    <nav>
+<button
+data-section="dashboard"
+type="button"
+>
+📊 Dashboard
+</button>
 
-        <button data-section="dashboard">
-            📊 Dashboard
-        </button>
+<button
+data-section="tasks"
+type="button"
+>
+📝 Tasks
+</button>
 
-        <button data-section="tasks">
-            📝 Tasks
-        </button>
+<button
+data-section="notes"
+type="button"
+>
+📒 Notes
+</button>
 
-        <button data-section="notes">
-            📒 Notes
-        </button>
+<button
+data-section="expenses"
+type="button"
+>
+💰 Expenses
+</button>
 
-        <button data-section="expenses">
-            💰 Expenses
-        </button>
+</nav>
 
-    </nav>
 
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
 
-    <!-- ==================================================
-         DASHBOARD
-    ================================================== -->
+<div
+class="card"
+id="dashboard"
+>
 
-    <div
-        class="card section"
-        id="dashboard"
-    >
+<h2>📊 Dashboard</h2>
 
-        <h2>📊 Dashboard</h2>
+<p
+id="today"
+class="message"
+></p>
 
-        <p
-            id="today"
-            class="message"
-        ></p>
+<div class="dashboard">
 
 
-        <div class="dashboard">
+<div class="stat">
 
+<h3>📝 Tasks</h3>
 
-            <div class="stat">
+<p id="taskCount">
+0
+</p>
 
-                <h3>📝 Tasks</h3>
+</div>
 
-                <p id="taskCount">
-                    0
-                </p>
 
-            </div>
+<div class="stat">
 
+<h3>📒 Notes</h3>
 
-            <div class="stat">
+<p id="noteCount">
+0
+</p>
 
-                <h3>📒 Notes</h3>
+</div>
 
-                <p id="noteCount">
-                    0
-                </p>
 
-            </div>
+<div class="stat">
 
+<h3>💰 Expenses</h3>
 
-            <div class="stat">
+<p id="expenseCount">
+0
+</p>
 
-                <h3>💰 Expenses</h3>
+</div>
 
-                <p id="expenseCount">
-                    0
-                </p>
 
-            </div>
+<div class="stat">
 
+<h3>💵 Total Spent</h3>
 
-            <div class="stat">
+<p>
+₹<span id="dashboardTotal">0.00</span>
+</p>
 
-                <h3>💵 Total Spent</h3>
+</div>
 
-                <p>
-                    ₹<span id="dashboardTotal">0.00</span>
-                </p>
+</div>
 
-            </div>
+</div>
 
 
-        </div>
+<!-- =====================================================
+     TASKS
+===================================================== -->
 
-    </div>
+<div
+class="card"
+id="tasks"
+>
 
+<h2>📝 To-Do List</h2>
 
-    <!-- ==================================================
-         TASKS
-    ================================================== -->
+<input
+id="task"
+placeholder="Enter a task"
+>
 
-    <div
-        class="card section"
-        id="tasks"
-    >
+<button
+id="addTaskButton"
+type="button"
+>
+➕ Add Task
+</button>
 
-        <h2>📝 To-Do List</h2>
+<p
+id="taskMessage"
+class="message"
+></p>
 
-        <input
-            id="task"
-            placeholder="Enter a task"
-        >
+<ul id="list"></ul>
 
-        <button id="addTaskButton">
-            ➕ Add Task
-        </button>
+</div>
 
-        <p
-            id="taskMessage"
-            class="message"
-        ></p>
 
-        <ul id="list"></ul>
+<!-- =====================================================
+     NOTES
+===================================================== -->
 
-    </div>
+<div
+class="card"
+id="notes"
+>
 
+<h2>📒 Notes</h2>
 
-    <!-- ==================================================
-         NOTES
-    ================================================== -->
+<textarea
+id="note"
+placeholder="Write your note"
+></textarea>
 
-    <div
-        class="card section"
-        id="notes"
-    >
+<button
+id="saveNoteButton"
+type="button"
+>
+💾 Save Note
+</button>
 
-        <h2>📒 Notes</h2>
+<p
+id="savedNote"
+class="message"
+></p>
 
-        <textarea
-            id="note"
-            placeholder="Write your note"
-        ></textarea>
+<div id="notesList"></div>
 
-        <button id="saveNoteButton">
-            💾 Save Note
-        </button>
+</div>
 
-        <p
-            id="savedNote"
-            class="message"
-        ></p>
 
-        <div id="notesList"></div>
+<!-- =====================================================
+     EXPENSES
+===================================================== -->
 
-    </div>
+<div
+class="card"
+id="expenses"
+>
 
+<h2>💰 Expense Tracker</h2>
 
-    <!-- ==================================================
-         EXPENSES
-    ================================================== -->
+<input
+id="expenseAmount"
+type="number"
+min="0"
+step="0.01"
+placeholder="Enter amount"
+>
 
-    <div
-        class="card section"
-        id="expenses"
-    >
 
-        <h2>💰 Expense Tracker</h2>
+<select id="expenseCategory">
 
-        <input
-            id="expenseAmount"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Enter amount"
-        >
+<option value="Food">
+🍔 Food
+</option>
 
+<option value="Travel">
+🚗 Travel
+</option>
 
-        <select id="expenseCategory">
+<option value="Shopping">
+🛍️ Shopping
+</option>
 
-            <option value="Food">
-                🍔 Food
-            </option>
+<option value="Bills">
+💡 Bills
+</option>
 
-            <option value="Travel">
-                🚗 Travel
-            </option>
+<option value="Education">
+📚 Education
+</option>
 
-            <option value="Shopping">
-                🛍️ Shopping
-            </option>
+<option value="Other">
+📦 Other
+</option>
 
-            <option value="Bills">
-                💡 Bills
-            </option>
+</select>
 
-            <option value="Education">
-                📚 Education
-            </option>
 
-            <option value="Other">
-                📦 Other
-            </option>
+<input
+id="expenseDescription"
+placeholder="Description"
+>
 
-        </select>
 
+<button
+id="addExpenseButton"
+type="button"
+>
+➕ Add Expense
+</button>
 
-        <input
-            id="expenseDescription"
-            placeholder="Description"
-        >
+<p
+id="expenseMessage"
+class="message"
+></p>
 
+<p class="total">
 
-        <button id="addExpenseButton">
-            ➕ Add Expense
-        </button>
+Total:
+₹<span id="totalExpense">0.00</span>
 
+</p>
 
-        <p
-            id="expenseMessage"
-            class="message"
-        ></p>
 
+<h3>
+📋 Expense History
+</h3>
 
-        <p class="total">
+<div id="expenseList"></div>
 
-            Total:
-            ₹<span id="totalExpense">0.00</span>
+</div>
 
-        </p>
 
+<footer>
 
-        <h3>
-            📋 Expense History
-        </h3>
+🌟 EasyLife — Your Daily Life Assistant
 
-        <div id="expenseList"></div>
-
-    </div>
-
-
-    <footer>
-
-        🌟 EasyLife — Your Daily Life Assistant
-
-    </footer>
+</footer>
 
 </div>
 
@@ -990,474 +805,982 @@ footer{
 
 <script>
 
-/* ==================================================
-   SUPABASE CONFIGURATION
-================================================== */
+/* =====================================================
+   SUPABASE
+===================================================== */
 
 const SUPABASE_URL =
-    "https://lhxjfyzqpsmqejxfrxlg.supabase.co";
+"https://lhxjfyzqpsmqejxfrxlg.supabase.co";
 
 const SUPABASE_KEY =
-    "sb_publishable_4o82RmTdkM9f5j5negCsKg_wmZYZGtW";
-
+"sb_publishable_4o82RmTdkM9f5j5negCsKg_wmZYZGtW";
 
 const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
-
-/* ==================================================
-   GLOBAL USER
-================================================== */
 
 let currentUser = null;
 
 
-/* ==================================================
-   DOM HELPER
-================================================== */
+/* =====================================================
+   HELPER
+===================================================== */
 
-function get(id){
-
-    return document.getElementById(id);
-
+function $(id){
+return document.getElementById(id);
 }
 
-
-/* ==================================================
-   ESCAPE HTML
-================================================== */
 
 function escapeHTML(text){
 
-    const div =
-        document.createElement("div");
+const div =
+document.createElement("div");
 
-    div.textContent =
-        text == null ? "" : String(text);
+div.textContent =
+text == null ? "" : String(text);
 
-    return div.innerHTML;
+return div.innerHTML;
 
 }
 
 
-/* ==================================================
+/* =====================================================
    THEME
-================================================== */
+===================================================== */
 
 function loadTheme(){
 
-    const theme =
-        localStorage.getItem("EasyLifeTheme");
+const theme =
+localStorage.getItem("EasyLifeTheme");
 
-    const button =
-        get("themeButton");
+if(theme === "dark"){
 
+document.body.classList.add("dark");
 
-    if(theme === "dark"){
+$("themeButton").innerHTML =
+"☀️ Light";
 
-        document.body.classList.add("dark");
+}
 
-        button.innerHTML =
-            "☀️ Light";
+else{
 
-    }
+document.body.classList.remove("dark");
 
-    else{
+$("themeButton").innerHTML =
+"🌙 Dark";
 
-        document.body.classList.remove("dark");
-
-        button.innerHTML =
-            "🌙 Dark";
-
-    }
+}
 
 }
 
 
 function toggleTheme(){
 
-    document.body.classList.toggle("dark");
+document.body.classList.toggle("dark");
 
+const dark =
+document.body.classList.contains("dark");
 
-    const dark =
-        document.body.classList.contains("dark");
+localStorage.setItem(
+"EasyLifeTheme",
+dark ? "dark" : "light"
+);
 
-
-    localStorage.setItem(
-        "EasyLifeTheme",
-        dark ? "dark" : "light"
-    );
-
-
-    get("themeButton").innerHTML =
-        dark ? "☀️ Light" : "🌙 Dark";
+$("themeButton").innerHTML =
+dark ? "☀️ Light" : "🌙 Dark";
 
 }
 
 
-/* ==================================================
-   AUTH SCREEN SWITCHING
-================================================== */
-
-function showSignup(){
-
-    get("loginBox").style.display =
-        "none";
-
-    get("signupBox").style.display =
-        "block";
-
-
-    get("loginMessage").innerHTML =
-        "";
-
-
-    get("signupMessage").innerHTML =
-        "";
-
-
-    get("signupEmail").focus();
-
-}
-
-
-function showLogin(){
-
-    get("signupBox").style.display =
-        "none";
-
-    get("loginBox").style.display =
-        "block";
-
-
-    get("loginMessage").innerHTML =
-        "";
-
-
-    get("signupMessage").innerHTML =
-        "";
-
-
-    get("loginEmail").focus();
-
-}
-
-
-/* ==================================================
+/* =====================================================
    SIGN UP
-================================================== */
+===================================================== */
 
 async function signup(){
 
-    const email =
-        get("signupEmail")
-        .value
-        .trim();
+const email =
+$("signupEmail").value.trim();
+
+const password =
+$("signupPassword").value;
+
+const confirm =
+$("signupConfirm").value;
+
+const message =
+$("signupMessage");
+
+const button =
+$("signupButton");
 
 
-    const password =
-        get("signupPassword")
-        .value;
+if(!email){
 
+message.innerHTML =
+"⚠️ Please enter your email.";
 
-    const confirm =
-        get("signupConfirm")
-        .value;
+return;
 
+}
 
-    const message =
-        get("signupMessage");
+if(!password){
 
+message.innerHTML =
+"⚠️ Please enter a password.";
 
-    const button =
-        get("signupButton");
+return;
 
+}
 
-    if(!email){
+if(password.length < 6){
 
-        message.innerHTML =
-            "⚠️ Please enter your email.";
+message.innerHTML =
+"⚠️ Password must be at least 6 characters.";
 
-        return;
+return;
 
-    }
+}
 
+if(password !== confirm){
 
-    if(!password){
+message.innerHTML =
+"⚠️ Passwords do not match.";
 
-        message.innerHTML =
-            "⚠️ Please enter a password.";
-
-        return;
-
-    }
-
-
-    if(password.length < 6){
-
-        message.innerHTML =
-            "⚠️ Password must be at least 6 characters.";
-
-        return;
-
-    }
-
-
-    if(password !== confirm){
-
-        message.innerHTML =
-            "⚠️ Passwords do not match.";
-
-        return;
-
-    }
-
-
-    button.disabled = true;
-
-
-    message.innerHTML =
-        "⏳ Creating account...";
-
-
-    try{
-
-        const {data,error} =
-            await supabaseClient.auth.signUp({
-
-                email:email,
-
-                password:password
-
-            });
-
-
-        if(error){
-
-            message.innerHTML =
-                "❌ " +
-                escapeHTML(error.message);
-
-            button.disabled = false;
-
-            return;
-
-        }
-
-
-        if(data.session){
-
-            message.innerHTML =
-                "✅ Account created!";
-
-            await showApp(data.user);
-
-        }
-
-        else{
-
-            message.innerHTML =
-                "✅ Account created! Check your email to confirm your account.";
-
-        }
-
-    }
-
-    catch(error){
-
-        console.error(error);
-
-        message.innerHTML =
-            "❌ Something went wrong. Please try again.";
-
-    }
-
-
-    button.disabled = false;
+return;
 
 }
 
 
-/* ==================================================
+button.disabled = true;
+
+message.innerHTML =
+"⏳ Creating account...";
+
+
+try{
+
+const {data,error} =
+await supabaseClient.auth.signUp({
+
+email:email,
+
+password:password
+
+});
+
+
+if(error){
+
+message.innerHTML =
+"❌ " +
+escapeHTML(error.message);
+
+button.disabled = false;
+
+return;
+
+}
+
+
+if(data.session){
+
+message.innerHTML =
+"✅ Account created!";
+
+await showApp(data.user);
+
+}
+
+else{
+
+message.innerHTML =
+"✅ Account created! Check your email to confirm your account.";
+
+}
+
+}
+
+catch(error){
+
+console.error(error);
+
+message.innerHTML =
+"❌ Something went wrong.";
+
+}
+
+
+button.disabled = false;
+
+}
+
+
+/* =====================================================
    LOGIN
-================================================== */
+===================================================== */
 
 async function login(){
 
-    const email =
-        get("loginEmail")
-        .value
-        .trim();
+const email =
+$("loginEmail").value.trim();
+
+const password =
+$("loginPassword").value;
+
+const message =
+$("loginMessage");
+
+const button =
+$("loginButton");
 
 
-    const password =
-        get("loginPassword")
-        .value;
+if(!email){
 
+message.innerHTML =
+"⚠️ Please enter your email.";
 
-    const message =
-        get("loginMessage");
+return;
 
+}
 
-    const button =
-        get("loginButton");
+if(!password){
 
+message.innerHTML =
+"⚠️ Please enter your password.";
 
-    if(!email){
-
-        message.innerHTML =
-            "⚠️ Please enter your email.";
-
-        return;
-
-    }
-
-
-    if(!password){
-
-        message.innerHTML =
-            "⚠️ Please enter your password.";
-
-        return;
-
-    }
-
-
-    button.disabled = true;
-
-
-    message.innerHTML =
-        "⏳ Logging in...";
-
-
-    try{
-
-        const {data,error} =
-            await supabaseClient.auth
-            .signInWithPassword({
-
-                email:email,
-
-                password:password
-
-            });
-
-
-        if(error){
-
-            message.innerHTML =
-                "❌ " +
-                escapeHTML(error.message);
-
-            button.disabled = false;
-
-            return;
-
-        }
-
-
-        await showApp(data.user);
-
-    }
-
-    catch(error){
-
-        console.error(error);
-
-        message.innerHTML =
-            "❌ Something went wrong. Please try again.";
-
-    }
-
-
-    button.disabled = false;
+return;
 
 }
 
 
-/* ==================================================
-   LOGOUT
-================================================== */
+button.disabled = true;
 
-async function logout(){
-
-    try{
-
-        await supabaseClient.auth.signOut();
-
-    }
-
-    catch(error){
-
-        console.error(error);
-
-    }
+message.innerHTML =
+"⏳ Logging in...";
 
 
-    currentUser = null;
+try{
+
+const {data,error} =
+await supabaseClient.auth
+.signInWithPassword({
+
+email:email,
+
+password:password
+
+});
 
 
-    get("app").style.display =
-        "none";
+if(error){
 
+message.innerHTML =
+"❌ " +
+escapeHTML(error.message);
 
-    get("authScreen").style.display =
-        "block";
+button.disabled = false;
 
-
-    get("loginEmail").value =
-        "";
-
-    get("loginPassword").value =
-        "";
-
-    get("loginMessage").innerHTML =
-        "";
-
-
-    showLogin();
+return;
 
 }
 
 
-/* ==================================================
-   SHOW MAIN APP
-================================================== */
+await showApp(data.user);
+
+}
+
+catch(error){
+
+console.error(error);
+
+message.innerHTML =
+"❌ Something went wrong.";
+
+}
+
+
+button.disabled = false;
+
+}
+
+
+/* =====================================================
+   SHOW APP
+===================================================== */
 
 async function showApp(user){
 
-    if(!user){
+if(!user){
+return;
+}
 
-        return;
+currentUser = user;
 
-    }
+$("authScreen").style.display =
+"none";
+
+$("app").style.display =
+"block";
+
+$("userEmail").textContent =
+"👤 " + user.email;
+
+loadTheme();
+
+loadDate();
+
+await loadTasks();
+
+await loadNotes();
+
+await loadExpenses();
+
+}
 
 
-    currentUser = user;
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(){
+
+await supabaseClient.auth.signOut();
+
+currentUser = null;
+
+$("app").style.display =
+"none";
+
+$("authScreen").style.display =
+"block";
+
+$("authToggle").checked =
+false;
+
+}
 
 
-    get("authScreen").style.display =
-        "none";
+/* =====================================================
+   SESSION
+===================================================== */
+
+async function checkSession(){
+
+const {data,error} =
+await supabaseClient.auth.getSession();
+
+if(error){
+
+console.error(error);
+
+return;
+
+}
+
+if(data.session){
+
+await showApp(data.session.user);
+
+}
+
+else{
+
+$("authScreen").style.display =
+"block";
+
+$("app").style.display =
+"none";
+
+}
+
+}
 
 
-    get("app").style.display =
-        "block";
+/* =====================================================
+   AUTH STATE
+===================================================== */
+
+supabaseClient.auth.onAuthStateChange(
+function(event,session){
+
+if(event === "SIGNED_OUT"){
+
+currentUser = null;
+
+$("app").style.display =
+"none";
+
+$("authScreen").style.display =
+"block";
+
+$("authToggle").checked =
+false;
+
+}
+
+}
+);
 
 
-    get("userEmail").textContent =
-        "👤 " + user.email;
+/* =====================================================
+   DATE
+===================================================== */
+
+function loadDate(){
+
+const today =
+new Date();
+
+$("today").innerHTML =
+"📅 " +
+today.toLocaleDateString(
+"en-IN",
+{
+weekday:"long",
+year:"numeric",
+month:"long",
+day:"numeric"
+}
+);
+
+}
 
 
-    loadTheme();
+/* =====================================================
+   NAVIGATION
+===================================================== */
 
-    loadDate();
+document
+.querySelectorAll("nav button")
+.forEach(function(button){
+
+button.addEventListener(
+"click",
+function(){
+
+const section =
+$(button.dataset.section);
+
+if(section){
+
+section.scrollIntoView({
+behavior:"smooth"
+});
+
+}
+
+});
+
+});
 
 
-    await loadTasks();
+/* =====================================================
+   TASKS
+===================================================== */
 
-    await loadNotes();
+async function addTask(){
 
-    await loadExpenses(
+if(!currentUser){
+return;
+}
+
+const input =
+$("task");
+
+const task =
+input.value.trim();
+
+const message =
+$("taskMessage");
+
+if(!task){
+
+message.innerHTML =
+"⚠️ Please enter a task.";
+
+return;
+
+}
+
+message.innerHTML =
+"⏳ Saving task...";
+
+
+const {error} =
+await supabaseClient
+.from("tasks")
+.insert({
+
+content:task,
+
+user_id:currentUser.id
+
+});
+
+
+if(error){
+
+message.innerHTML =
+"❌ " +
+escapeHTML(error.message);
+
+return;
+
+}
+
+input.value = "";
+
+message.innerHTML =
+"✅ Task saved!";
+
+await loadTasks();
+
+}
+
+
+async function loadTasks(){
+
+if(!currentUser){
+return;
+}
+
+
+const {data,error} =
+await supabaseClient
+.from("tasks")
+.select(
+"id,content,created_at"
+)
+.eq(
+"user_id",
+currentUser.id
+)
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+
+if(error){
+
+$("taskMessage").innerHTML =
+"❌ " +
+escapeHTML(error.message);
+
+return;
+
+}
+
+
+const list =
+$("list");
+
+list.innerHTML = "";
+
+
+data.forEach(function(task){
+
+const li =
+document.createElement("li");
+
+li.textContent =
+task.content;
+
+
+const del =
+document.createElement("button");
+
+del.innerHTML =
+"❌ Delete";
+
+del.className =
+"delete";
+
+del.addEventListener(
+"click",
+function(){
+
+deleteTask(task.id);
+
+});
+
+
+li.appendChild(del);
+
+list.appendChild(li);
+
+});
+
+
+$("taskCount").innerText =
+data.length;
+
+}
+
+
+async function deleteTask(id){
+
+const {error} =
+await supabaseClient
+.from("tasks")
+.delete()
+.eq("id",id)
+.eq(
+"user_id",
+currentUser.id
+);
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+await loadTasks();
+
+}
+
+
+/* =====================================================
+   NOTES
+===================================================== */
+
+async function saveNote(){
+
+if(!currentUser){
+return;
+}
+
+const note =
+$("note").value.trim();
+
+const message =
+$("savedNote");
+
+if(!note){
+
+message.innerHTML =
+"⚠️ Please write a note first.";
+
+return;
+
+}
+
+message.innerHTML =
+"⏳ Saving note...";
+
+
+const {error} =
+await supabaseClient
+.from("notes")
+.insert({
+
+content:note,
+
+user_id:currentUser.id
+
+});
+
+
+if(error){
+
+message.innerHTML =
+"❌ " +
+escapeHTML(error.message);
+
+return;
+
+}
+
+$("note").value = "";
+
+message.innerHTML =
+"✅ Note saved!";
+
+await loadNotes();
+
+}
+
+
+async function loadNotes(){
+
+if(!currentUser){
+return;
+}
+
+const {data,error} =
+await supabaseClient
+.from("notes")
+.select(
+"id,content,created_at"
+)
+.eq(
+"user_id",
+currentUser.id
+)
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+
+if(error){
+
+$("savedNote").innerHTML =
+"❌ " +
+escapeHTML(error.message);
+
+return;
+
+}
+
+
+$("noteCount").innerText =
+data.length;
+
+
+const list =
+$("notesList");
+
+list.innerHTML = "";
+
+
+data.forEach(function(note){
+
+const div =
+document.createElement("div");
+
+div.className =
+"expense-item";
+
+div.innerHTML =
+"<strong>📒 Note</strong><br>" +
+escapeHTML(note.content) +
+"<br><small>" +
+new Date(
+note.created_at
+).toLocaleString("en-IN") +
+"</small>";
+
+
+const del =
+document.createElement("button");
+
+del.innerHTML =
+"❌ Delete";
+
+del.className =
+"delete";
+
+del.addEventListener(
+"click",
+function(){
+
+deleteNote(note.id);
+
+});
+
+
+div.appendChild(del);
+
+list.appendChild(div);
+
+});
+
+}
+
+
+async function deleteNote(id){
+
+const {error} =
+await supabaseClient
+.from("notes")
+.delete()
+.eq("id",id)
+.eq(
+"user_id",
+currentUser.id
+);
+
+
+if(error){
+
+alert(error.message);
+
+return;
+
+}
+
+await loadNotes();
+
+}
+
+
+/* =====================================================
+   EXPENSES
+===================================================== */
+
+async function addExpense(){
+
+if(!currentUser){
+return;
+}
+
+
+const amount =
+$("expenseAmount").value;
+
+const category =
+$("expenseCategory").value;
+
+const description =
+$("expenseDescription")
+.value
+.trim();
+
+const message =
+$("expenseMessage");
+
+
+if(
+amount === "" ||
+Number(amount) <= 0
+){
+
+message.innerHTML =
+"⚠️ Enter a valid amount.";
+
+return;
+
+}
+
+
+message.innerHTML =
+"⏳ Saving expense...";
+
+
+const {error} =
+await supabaseClient
+.from("expenses")
+.insert({
+
+amount:Number(amount),
+
+category:category,
+
+description:description,
+
+user_id:currentUser.id
+
+});
+
+
+if(error){
+
+message.innerHTML =
+"❌ " +
+escapeHTML(error.message);
+
+return;
+
+}
+
+
+$("expenseAmount").value =
+"";
+
+$("expenseDescription").value =
+"";
+
+message.innerHTML =
+"✅ Expense saved!";
+
+await loadExpenses();
+
+}
+
+
+async function loadExpenses(){
+
+if(!currentUser){
+return;
+}
+
+
+const {data,error} =
+await supabaseClient
+.from("expenses")
+.select(
+"id,amount,category,description,expense_date,created_at"
+)
+.eq(
+"user_id",
+currentUser.id
+)
+.order(
+"created_at",
+{
+ascending:false
+}
+);
+
+
+if(error){
+
+$("expenseMessage").innerHTML =
+"❌ " +
+escapeHTML(error.message);
+
+return;
+
+}
+
+
+const list =
+$("expenseList");
+
+list.innerHTML = "";
+
+
+let total = 0;
+
+
+data.forEach(function(expense){
+
+total += Number(expense.amount);
+
+
+const div =
+document.createElement("div");
+
+div.className =
+"expense-item";
+
+
+const date =
+expense.expense_date ||
+new Date(
+expense.created_at
+).toLocaleDateString(
+"en-IN"
+);
+
+
+div.innerHTML =
+"<strong>₹" +
+Number(expense.amount).toFixed(2) +
+"</strong> - " +
+escapeHTML(
+expense.category || ""
+) +
+"<br>
