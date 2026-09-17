@@ -2,8 +2,11 @@
 <html lang="en">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>EasyLife - Daily Life Assistant</title>
 
@@ -14,31 +17,29 @@
 :root{
     --bg:#dff3ff;
     --card:#ffffff;
-    --text:#222222;
-    --muted:#666666;
+    --text:#222;
+    --muted:#666;
     --input:#f5f5f5;
-    --border:#dddddd;
+    --border:#ddd;
     --button:#2563eb;
     --button-hover:#1d4ed8;
-    --button-text:#ffffff;
     --danger:#dc2626;
     --success:#16a34a;
-    --shadow:0 5px 20px rgba(0,0,0,0.10);
+    --shadow:0 5px 20px rgba(0,0,0,.10);
 }
 
 body.dark{
     --bg:#121212;
     --card:#1e1e1e;
     --text:#f5f5f5;
-    --muted:#bbbbbb;
+    --muted:#bbb;
     --input:#2a2a2a;
-    --border:#444444;
+    --border:#444;
     --button:#3b82f6;
     --button-hover:#2563eb;
-    --button-text:#ffffff;
     --danger:#ef4444;
     --success:#22c55e;
-    --shadow:0 5px 20px rgba(0,0,0,0.35);
+    --shadow:0 5px 20px rgba(0,0,0,.35);
 }
 
 *{
@@ -55,18 +56,17 @@ body{
     font-family:Arial,Helvetica,sans-serif;
     background:var(--bg);
     color:var(--text);
-    transition:0.3s;
+    transition:.3s;
 }
 
 button{
-    border:none;
+    border:0;
     border-radius:10px;
     padding:11px 15px;
     background:var(--button);
-    color:var(--button-text);
+    color:white;
     cursor:pointer;
     font-size:14px;
-    transition:0.2s;
 }
 
 button:hover{
@@ -74,7 +74,7 @@ button:hover{
 }
 
 button:disabled{
-    opacity:0.6;
+    opacity:.6;
     cursor:not-allowed;
 }
 
@@ -92,29 +92,21 @@ select{
     outline:none;
 }
 
+textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
 input:focus,
 textarea:focus,
 select:focus{
     border-color:var(--button);
 }
 
-textarea{
-    min-height:120px;
-    resize:vertical;
-}
-
-.message{
-    min-height:20px;
-    color:var(--muted);
-    font-size:14px;
-}
-
 .container{
     max-width:900px;
     margin:auto;
 }
-
-/* HEADER */
 
 header{
     background:var(--card);
@@ -138,12 +130,21 @@ header p{
 }
 
 .status{
-    font-size:13px;
-    color:var(--success);
     margin-top:8px;
+    font-size:13px;
 }
 
-/* NAVIGATION */
+.status.loading{
+    color:var(--muted);
+}
+
+.status.success{
+    color:var(--success);
+}
+
+.status.error{
+    color:var(--danger);
+}
 
 nav{
     background:var(--card);
@@ -167,8 +168,6 @@ nav button:hover{
     background:var(--input);
 }
 
-/* CARDS */
-
 .card{
     background:var(--card);
     padding:20px;
@@ -180,8 +179,6 @@ nav button:hover{
 .card h2{
     margin-top:0;
 }
-
-/* DASHBOARD */
 
 .dashboard{
     display:grid;
@@ -207,10 +204,8 @@ nav button:hover{
     font-weight:bold;
 }
 
-/* TASKS */
-
 ul{
-    padding-left:0;
+    padding:0;
     list-style:none;
 }
 
@@ -225,6 +220,12 @@ ul{
     gap:10px;
 }
 
+.task-check{
+    width:20px;
+    height:20px;
+    margin:0;
+}
+
 .task-text{
     flex:1;
     word-break:break-word;
@@ -232,14 +233,7 @@ ul{
 
 .task-completed{
     text-decoration:line-through;
-    opacity:0.6;
-}
-
-.task-check{
-    width:20px;
-    height:20px;
-    margin:0;
-    cursor:pointer;
+    opacity:.55;
 }
 
 .delete{
@@ -251,38 +245,30 @@ ul{
     background:var(--danger);
 }
 
-/* NOTES / EXPENSES */
-
 .item{
     background:var(--input);
     border:1px solid var(--border);
     border-radius:12px;
     padding:14px;
     margin:10px 0;
-    line-height:1.5;
-}
-
-.note-content{
-    white-space:pre-wrap;
-    word-break:break-word;
 }
 
 .item-header{
     display:flex;
     justify-content:space-between;
-    align-items:flex-start;
     gap:10px;
 }
 
-.item-date{
-    color:var(--muted);
-    font-size:12px;
-    margin-top:8px;
+.note-content{
+    margin-top:10px;
+    white-space:pre-wrap;
+    word-break:break-word;
 }
 
-.total{
-    font-size:22px;
-    font-weight:bold;
+.item-date{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:12px;
 }
 
 .expense-amount{
@@ -290,15 +276,22 @@ ul{
     font-weight:bold;
 }
 
-/* FOOTER */
+.total{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.message{
+    min-height:20px;
+    color:var(--muted);
+    font-size:14px;
+}
 
 footer{
     text-align:center;
     padding:25px 10px;
     color:var(--muted);
 }
-
-/* MOBILE */
 
 @media(max-width:600px){
 
@@ -314,225 +307,254 @@ footer{
         font-size:24px;
     }
 
-    .dashboard{
-        grid-template-columns:1fr 1fr;
-    }
-
     .card{
         padding:16px;
     }
 
-    .task-item{
-        align-items:flex-start;
+    .dashboard{
+        grid-template-columns:1fr 1fr;
     }
 
-    .delete{
-        flex-shrink:0;
-    }
 }
 
 </style>
+
 </head>
 
 
 <body>
 
+
 <div id="app" class="container">
 
-    <!-- HEADER -->
 
-    <header>
+<header>
 
-        <div>
+<div>
 
-            <h1>🌟 EasyLife</h1>
+<h1>🌟 EasyLife</h1>
 
-            <p>Your Daily Life Assistant</p>
+<p>Your Daily Life Assistant</p>
 
-            <div id="connectionStatus" class="status">
-                ⏳ Connecting...
-            </div>
+<div id="connectionStatus"
+     class="status loading">
+⏳ Connecting to cloud storage...
+</div>
 
-        </div>
+</div>
 
-        <button id="themeButton" type="button">
-            🌙 Dark
-        </button>
+<button id="themeButton">
+🌙 Dark
+</button>
 
-    </header>
+</header>
 
 
-    <!-- NAVIGATION -->
+<nav>
 
-    <nav>
+<button data-section="dashboard">
+📊 Dashboard
+</button>
 
-        <button data-section="dashboard" type="button">
-            📊 Dashboard
-        </button>
+<button data-section="tasks">
+📝 Tasks
+</button>
 
-        <button data-section="tasks" type="button">
-            📝 Tasks
-        </button>
+<button data-section="notes">
+📒 Notes
+</button>
 
-        <button data-section="notes" type="button">
-            📒 Notes
-        </button>
+<button data-section="expenses">
+💰 Expenses
+</button>
 
-        <button data-section="expenses" type="button">
-            💰 Expenses
-        </button>
+</nav>
 
-    </nav>
 
+<!-- DASHBOARD -->
 
-    <!-- DASHBOARD -->
+<div class="card" id="dashboard">
 
-    <div class="card" id="dashboard">
+<h2>📊 Dashboard</h2>
 
-        <h2>📊 Dashboard</h2>
+<p id="today" class="message"></p>
 
-        <p id="today" class="message"></p>
+<div class="dashboard">
 
-        <div class="dashboard">
+<div class="stat">
 
-            <div class="stat">
+<h3>📝 Tasks</h3>
 
-                <h3>📝 Tasks</h3>
+<p id="taskCount">0</p>
 
-                <p id="taskCount">0</p>
+</div>
 
-            </div>
 
-            <div class="stat">
+<div class="stat">
 
-                <h3>📒 Notes</h3>
+<h3>📒 Notes</h3>
 
-                <p id="noteCount">0</p>
+<p id="noteCount">0</p>
 
-            </div>
+</div>
 
-            <div class="stat">
 
-                <h3>💰 Expenses</h3>
+<div class="stat">
 
-                <p id="expenseCount">0</p>
+<h3>💰 Expenses</h3>
 
-            </div>
+<p id="expenseCount">0</p>
 
-            <div class="stat">
+</div>
 
-                <h3>💵 Total Spent</h3>
 
-                <p>
-                    ₹<span id="dashboardTotal">0.00</span>
-                </p>
+<div class="stat">
 
-            </div>
+<h3>💵 Total Spent</h3>
 
-        </div>
+<p>
+₹<span id="dashboardTotal">0.00</span>
+</p>
 
-    </div>
+</div>
 
+</div>
 
-    <!-- TASKS -->
+</div>
 
-    <div class="card" id="tasks">
 
-        <h2>📝 To-Do List</h2>
+<!-- TASKS -->
 
-        <input
-            id="task"
-            type="text"
-            placeholder="Enter a task"
-            maxlength="500"
-        >
+<div class="card" id="tasks">
 
-        <button id="addTaskButton" type="button">
-            ➕ Add Task
-        </button>
+<h2>📝 To-Do List</h2>
 
-        <p id="taskMessage" class="message"></p>
+<input
+id="task"
+type="text"
+placeholder="Enter a task"
+maxlength="500"
+>
 
-        <ul id="list"></ul>
+<button id="addTaskButton">
+➕ Add Task
+</button>
 
-    </div>
+<p id="taskMessage"
+   class="message">
+</p>
 
+<ul id="list"></ul>
 
-    <!-- NOTES -->
+</div>
 
-    <div class="card" id="notes">
 
-        <h2>📒 Notes</h2>
+<!-- NOTES -->
 
-        <textarea
-            id="note"
-            placeholder="Write your note..."
-            maxlength="10000"
-        ></textarea>
+<div class="card" id="notes">
 
-        <button id="saveNoteButton" type="button">
-            💾 Save Note
-        </button>
+<h2>📒 Notes</h2>
 
-        <p id="savedNote" class="message"></p>
+<textarea
+id="note"
+placeholder="Write your note..."
+maxlength="10000">
+</textarea>
 
-        <div id="notesList"></div>
+<button id="saveNoteButton">
+💾 Save Note
+</button>
 
-    </div>
+<p id="savedNote"
+   class="message">
+</p>
 
+<div id="notesList"></div>
 
-    <!-- EXPENSES -->
+</div>
 
-    <div class="card" id="expenses">
 
-        <h2>💰 Expense Tracker</h2>
+<!-- EXPENSES -->
 
-        <input
-            id="expenseAmount"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Enter amount"
-        >
+<div class="card" id="expenses">
 
-        <select id="expenseCategory">
+<h2>💰 Expense Tracker</h2>
 
-            <option value="Food">🍔 Food</option>
-            <option value="Travel">🚗 Travel</option>
-            <option value="Shopping">🛍️ Shopping</option>
-            <option value="Bills">💡 Bills</option>
-            <option value="Education">📚 Education</option>
-            <option value="Other">📦 Other</option>
+<input
+id="expenseAmount"
+type="number"
+min="0"
+step="0.01"
+placeholder="Enter amount"
+>
 
-        </select>
 
-        <input
-            id="expenseDescription"
-            type="text"
-            placeholder="Description"
-            maxlength="500"
-        >
+<select id="expenseCategory">
 
-        <button id="addExpenseButton" type="button">
-            ➕ Add Expense
-        </button>
+<option value="Food">
+🍔 Food
+</option>
 
-        <p id="expenseMessage" class="message"></p>
+<option value="Travel">
+🚗 Travel
+</option>
 
-        <p class="total">
-            Total: ₹<span id="totalExpense">0.00</span>
-        </p>
+<option value="Shopping">
+🛍️ Shopping
+</option>
 
-        <h3>📋 Expense History</h3>
+<option value="Bills">
+💡 Bills
+</option>
 
-        <div id="expenseList"></div>
+<option value="Education">
+📚 Education
+</option>
 
-    </div>
+<option value="Other">
+📦 Other
+</option>
 
+</select>
 
-    <footer>
-        🌟 EasyLife — Your Daily Life Assistant
-    </footer>
+
+<input
+id="expenseDescription"
+type="text"
+placeholder="Description"
+maxlength="500"
+>
+
+
+<button id="addExpenseButton">
+➕ Add Expense
+</button>
+
+<p id="expenseMessage"
+   class="message">
+</p>
+
+
+<p class="total">
+
+Total:
+₹<span id="totalExpense">0.00</span>
+
+</p>
+
+
+<h3>📋 Expense History</h3>
+
+<div id="expenseList"></div>
+
+</div>
+
+
+<footer>
+
+🌟 EasyLife — Your Daily Life Assistant
+
+</footer>
 
 </div>
 
@@ -540,7 +562,7 @@ footer{
 <script>
 
 /* =========================================================
-   SUPABASE
+   SUPABASE CONFIG
 ========================================================= */
 
 const SUPABASE_URL =
@@ -548,6 +570,7 @@ const SUPABASE_URL =
 
 const SUPABASE_KEY =
 "sb_publishable_4o82RmTdkM9f5j5negCsKg_wmZYZGtW";
+
 
 const supabaseClient =
 window.supabase.createClient(
@@ -560,26 +583,13 @@ let currentUser = null;
 
 
 /* =========================================================
-   SHORT DOM FUNCTION
+   DOM
 ========================================================= */
 
 function $(id){
+
     return document.getElementById(id);
-}
 
-
-/* =========================================================
-   SECURITY
-========================================================= */
-
-function escapeHTML(value){
-
-    const div = document.createElement("div");
-
-    div.textContent =
-        value == null ? "" : String(value);
-
-    return div.innerHTML;
 }
 
 
@@ -592,6 +602,7 @@ function loadTheme(){
     const theme =
         localStorage.getItem("EasyLifeTheme");
 
+
     if(theme === "dark"){
 
         document.body.classList.add("dark");
@@ -599,13 +610,8 @@ function loadTheme(){
         $("themeButton").textContent =
             "☀️ Light";
 
-    }else{
-
-        document.body.classList.remove("dark");
-
-        $("themeButton").textContent =
-            "🌙 Dark";
     }
+
 }
 
 
@@ -613,16 +619,19 @@ function toggleTheme(){
 
     document.body.classList.toggle("dark");
 
-    const isDark =
+    const dark =
         document.body.classList.contains("dark");
+
 
     localStorage.setItem(
         "EasyLifeTheme",
-        isDark ? "dark" : "light"
+        dark ? "dark" : "light"
     );
 
+
     $("themeButton").textContent =
-        isDark ? "☀️ Light" : "🌙 Dark";
+        dark ? "☀️ Light" : "🌙 Dark";
+
 }
 
 
@@ -632,11 +641,9 @@ function toggleTheme(){
 
 function loadDate(){
 
-    const today = new Date();
-
     $("today").textContent =
         "📅 " +
-        today.toLocaleDateString(
+        new Date().toLocaleDateString(
             "en-IN",
             {
                 weekday:"long",
@@ -645,140 +652,160 @@ function loadDate(){
                 day:"numeric"
             }
         );
+
 }
 
 
 /* =========================================================
-   FORMAT DATE
+   STATUS
 ========================================================= */
 
-function formatDate(date){
+function setStatus(
+    text,
+    type
+){
 
-    if(!date) return "";
+    const status =
+        $("connectionStatus");
 
-    return new Date(date).toLocaleString(
-        "en-IN",
-        {
-            day:"2-digit",
-            month:"short",
-            year:"numeric",
-            hour:"2-digit",
-            minute:"2-digit"
-        }
-    );
+    status.textContent =
+        text;
+
+    status.className =
+        "status " + type;
+
 }
 
 
 /* =========================================================
-   AUTHENTICATION
-   NO LOGIN INTERFACE
+   ANONYMOUS AUTH
 ========================================================= */
 
-async function initializeAnonymousUser(){
-
-    $("connectionStatus").textContent =
-        "⏳ Connecting to EasyLife...";
+async function connect(){
 
     try{
 
-        /*
-         * First check whether this browser already
-         * has an anonymous Supabase session.
-         */
+        setStatus(
+            "⏳ Checking your EasyLife account...",
+            "loading"
+        );
+
 
         const {
-            data:sessionData,
-            error:sessionError
+            data,
+            error
         } =
         await supabaseClient.auth.getSession();
 
 
-        if(sessionError){
+        if(error){
 
-            throw sessionError;
+            throw error;
+
         }
 
 
-        if(sessionData.session){
+        if(data.session){
 
             currentUser =
-                sessionData.session.user;
+                data.session.user;
 
-        }else{
+        }
 
-            /*
-             * No session exists.
-             * Create an anonymous Supabase account.
-             */
+        else{
 
-            const {
-                data,
-                error
-            } =
-            await supabaseClient.auth.signInAnonymously();
+            setStatus(
+                "⏳ Creating your private EasyLife account...",
+                "loading"
+            );
 
 
-            if(error){
+            const result =
+                await supabaseClient.auth.signInAnonymously();
 
-                throw error;
+
+            if(result.error){
+
+                throw result.error;
+
             }
 
 
-            if(!data.user){
+            currentUser =
+                result.data.user;
 
-                throw new Error(
-                    "Anonymous user could not be created."
-                );
-            }
-
-
-            currentUser = data.user;
         }
 
 
-        $("connectionStatus").textContent =
-            "🟢 Cloud storage connected";
+        if(!currentUser){
 
-        await loadAllData();
+            throw new Error(
+                "Supabase did not return a user."
+            );
 
-    }catch(error){
+        }
 
-        console.error(error);
 
-        $("connectionStatus").textContent =
-            "🔴 Connection error";
-
-        alert(
-            "EasyLife could not connect to Supabase.\n\n" +
-            error.message
+        console.log(
+            "EasyLife user:",
+            currentUser.id
         );
+
+
+        setStatus(
+            "🟢 Cloud storage connected",
+            "success"
+        );
+
+
+        await loadAll();
+
+
     }
+
+    catch(error){
+
+        console.error(
+            "EasyLife connection error:",
+            error
+        );
+
+
+        setStatus(
+            "🔴 " + error.message,
+            "error"
+        );
+
+    }
+
 }
 
 
 /* =========================================================
-   LOAD EVERYTHING
+   LOAD ALL DATA
 ========================================================= */
 
-async function loadAllData(){
+async function loadAll(){
 
-    await Promise.all([
-        loadTasks(),
-        loadNotes(),
-        loadExpenses()
-    ]);
+    await loadTasks();
+
+    await loadNotes();
+
+    await loadExpenses();
 
     updateDashboard();
+
 }
 
 
 /* =========================================================
-   TASKS
+   TASKS - LOAD
 ========================================================= */
 
 async function loadTasks(){
 
     if(!currentUser) return;
+
 
     const {
         data,
@@ -787,8 +814,16 @@ async function loadTasks(){
     await supabaseClient
         .from("tasks")
         .select("*")
-        .eq("user_id", currentUser.id)
-        .order("created_at", {ascending:false});
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
 
 
     if(error){
@@ -796,13 +831,15 @@ async function loadTasks(){
         console.error(error);
 
         $("taskMessage").textContent =
-            "❌ Could not load tasks.";
+            "❌ " + error.message;
 
         return;
+
     }
 
 
-    const list = $("list");
+    const list =
+        $("list");
 
     list.innerHTML = "";
 
@@ -812,60 +849,67 @@ async function loadTasks(){
         const li =
             document.createElement("li");
 
-        li.className = "task-item";
+        li.className =
+            "task-item";
 
 
         const checkbox =
             document.createElement("input");
 
-        checkbox.type = "checkbox";
+        checkbox.type =
+            "checkbox";
 
-        checkbox.className = "task-check";
+        checkbox.className =
+            "task-check";
 
         checkbox.checked =
             task.completed;
 
 
-        checkbox.addEventListener(
-            "change",
-            () => toggleTask(
-                task.id,
-                checkbox.checked
-            )
-        );
-
-
         const text =
             document.createElement("span");
 
-        text.className = "task-text";
+        text.className =
+            "task-text";
+
+        text.textContent =
+            task.task;
+
 
         if(task.completed){
 
             text.classList.add(
                 "task-completed"
             );
+
         }
 
-        text.textContent =
-            task.task;
+
+        checkbox.addEventListener(
+            "change",
+            () =>
+                toggleTask(
+                    task.id,
+                    checkbox.checked
+                )
+        );
 
 
         const deleteButton =
             document.createElement("button");
 
-        deleteButton.className = "delete";
+        deleteButton.className =
+            "delete";
 
-        deleteButton.textContent = "🗑️";
-
-        deleteButton.title =
-            "Delete task";
+        deleteButton.textContent =
+            "🗑️";
 
 
-        deleteButton.addEventListener(
-            "click",
-            () => deleteTask(task.id)
-        );
+        deleteButton.onclick =
+            () =>
+                deleteTask(
+                    task.id
+                );
 
 
         li.appendChild(checkbox);
@@ -881,36 +925,40 @@ async function loadTasks(){
 
     $("taskCount").textContent =
         data.length;
+
 }
 
 
 /* =========================================================
-   ADD TASK
+   TASKS - ADD
 ========================================================= */
 
 async function addTask(){
 
-    const input = $("task");
-
-    const taskText =
-        input.value.trim();
-
-
-    if(!taskText){
-
-        $("taskMessage").textContent =
-            "⚠️ Please enter a task.";
-
-        return;
-    }
-
-
     if(!currentUser){
 
         $("taskMessage").textContent =
-            "⏳ Connecting...";
+            "⏳ Still connecting to cloud storage...";
 
         return;
+
+    }
+
+
+    const input =
+        $("task");
+
+    const task =
+        input.value.trim();
+
+
+    if(!task){
+
+        $("taskMessage").textContent =
+            "⚠️ Enter a task first.";
+
+        return;
+
     }
 
 
@@ -918,6 +966,7 @@ async function addTask(){
         $("addTaskButton");
 
     button.disabled = true;
+
 
     $("taskMessage").textContent =
         "⏳ Saving task...";
@@ -930,7 +979,7 @@ async function addTask(){
         .from("tasks")
         .insert({
             user_id:currentUser.id,
-            task:taskText,
+            task:task,
             completed:false
         });
 
@@ -946,22 +995,26 @@ async function addTask(){
             "❌ " + error.message;
 
         return;
+
     }
 
 
     input.value = "";
 
+
     $("taskMessage").textContent =
         "✅ Task saved permanently.";
+
 
     await loadTasks();
 
     updateDashboard();
+
 }
 
 
 /* =========================================================
-   COMPLETE / UNCOMPLETE TASK
+   TASKS - UPDATE
 ========================================================= */
 
 async function toggleTask(
@@ -981,12 +1034,13 @@ async function toggleTask(
             completed:completed
         })
         .eq("id",id)
-        .eq("user_id",currentUser.id);
+        .eq(
+            "user_id",
+            currentUser.id
+        );
 
 
     if(error){
-
-        console.error(error);
 
         alert(
             "Could not update task:\n" +
@@ -996,17 +1050,17 @@ async function toggleTask(
         await loadTasks();
 
         return;
+
     }
 
 
     await loadTasks();
 
-    updateDashboard();
 }
 
 
 /* =========================================================
-   DELETE TASK
+   TASKS - DELETE
 ========================================================= */
 
 async function deleteTask(id){
@@ -1014,13 +1068,13 @@ async function deleteTask(id){
     if(!currentUser) return;
 
 
-    const confirmed =
-        confirm(
-            "Delete this task permanently?"
-        );
+    if(!confirm(
+        "Delete this task permanently?"
+    )){
 
+        return;
 
-    if(!confirmed) return;
+    }
 
 
     const {
@@ -1030,12 +1084,13 @@ async function deleteTask(id){
         .from("tasks")
         .delete()
         .eq("id",id)
-        .eq("user_id",currentUser.id);
+        .eq(
+            "user_id",
+            currentUser.id
+        );
 
 
     if(error){
-
-        console.error(error);
 
         alert(
             "Could not delete task:\n" +
@@ -1043,17 +1098,19 @@ async function deleteTask(id){
         );
 
         return;
+
     }
 
 
     await loadTasks();
 
     updateDashboard();
+
 }
 
 
 /* =========================================================
-   NOTES
+   NOTES - LOAD
 ========================================================= */
 
 async function loadNotes(){
@@ -1068,8 +1125,16 @@ async function loadNotes(){
     await supabaseClient
         .from("notes")
         .select("*")
-        .eq("user_id",currentUser.id)
-        .order("created_at",{ascending:false});
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
 
 
     if(error){
@@ -1077,9 +1142,10 @@ async function loadNotes(){
         console.error(error);
 
         $("savedNote").textContent =
-            "❌ Could not load notes.";
+            "❌ " + error.message;
 
         return;
+
     }
 
 
@@ -1094,7 +1160,8 @@ async function loadNotes(){
         const item =
             document.createElement("div");
 
-        item.className = "item";
+        item.className =
+            "item";
 
 
         const header =
@@ -1121,10 +1188,11 @@ async function loadNotes(){
             "🗑️ Delete";
 
 
-        deleteButton.addEventListener(
-            "click",
-            () => deleteNote(note.id)
-        );
+        deleteButton.onclick =
+            () =>
+                deleteNote(
+                    note.id
+                );
 
 
         header.appendChild(title);
@@ -1150,7 +1218,9 @@ async function loadNotes(){
 
         date.textContent =
             "Saved: " +
-            formatDate(note.created_at);
+            formatDate(
+                note.created_at
+            );
 
 
         item.appendChild(header);
@@ -1166,14 +1236,25 @@ async function loadNotes(){
 
     $("noteCount").textContent =
         data.length;
+
 }
 
 
 /* =========================================================
-   SAVE NOTE
+   NOTES - SAVE
 ========================================================= */
 
 async function saveNote(){
+
+    if(!currentUser){
+
+        $("savedNote").textContent =
+            "⏳ Still connecting...";
+
+        return;
+
+    }
+
 
     const textarea =
         $("note");
@@ -1185,19 +1266,143 @@ async function saveNote(){
     if(!content){
 
         $("savedNote").textContent =
-            "⚠️ Please write something first.";
+            "⚠️ Write something first.";
 
         return;
+
     }
 
 
-    if(!currentUser){
+    const button =
+        $("saveNoteButton");
+
+    button.disabled = true;
+
+
+    $("savedNote").textContent =
+        "⏳ Saving note...";
+
+
+    const {
+        error
+    } =
+    await supabaseClient
+        .from("notes")
+        .insert({
+            user_id:currentUser.id,
+            content:content
+        });
+
+
+    button.disabled = false;
+
+
+    if(error){
+
+        console.error(error);
 
         $("savedNote").textContent =
-            "⏳ Connecting...";
+            "❌ " + error.message;
 
         return;
+
     }
 
 
-    const button
+    textarea.value = "";
+
+
+    $("savedNote").textContent =
+        "✅ Note saved permanently.";
+
+
+    await loadNotes();
+
+    updateDashboard();
+
+}
+
+
+/* =========================================================
+   NOTES - DELETE
+========================================================= */
+
+async function deleteNote(id){
+
+    if(!currentUser) return;
+
+
+    if(!confirm(
+        "Delete this note permanently?"
+    )){
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+    await supabaseClient
+        .from("notes")
+        .delete()
+        .eq("id",id)
+        .eq(
+            "user_id",
+            currentUser.id
+        );
+
+
+    if(error){
+
+        alert(
+            "Could not delete note:\n" +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await loadNotes();
+
+    updateDashboard();
+
+}
+
+
+/* =========================================================
+   EXPENSES - LOAD
+========================================================= */
+
+async function loadExpenses(){
+
+    if(!currentUser) return;
+
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+        .from("expenses")
+        .select("*")
+        .eq(
+            "user_id",
+            currentUser.id
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
+
+    if(error){
+
+        console.error(error);
+
+        $("expenseMessage").textC
