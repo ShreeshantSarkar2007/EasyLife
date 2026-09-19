@@ -25,6 +25,7 @@
     --button-hover:#1d4ed8;
     --danger:#dc2626;
     --success:#16a34a;
+    --warning:#d97706;
     --shadow:0 5px 20px rgba(0,0,0,.10);
 }
 
@@ -39,6 +40,7 @@ body.dark{
     --button-hover:#2563eb;
     --danger:#ef4444;
     --success:#22c55e;
+    --warning:#f59e0b;
     --shadow:0 5px 20px rgba(0,0,0,.35);
 }
 
@@ -146,6 +148,10 @@ header p{
     color:var(--danger);
 }
 
+.status.warning{
+    color:var(--warning);
+}
+
 nav{
     background:var(--card);
     padding:10px;
@@ -204,11 +210,6 @@ nav button:hover{
     font-weight:bold;
 }
 
-ul{
-    padding:0;
-    list-style:none;
-}
-
 .task-item{
     background:var(--input);
     border:1px solid var(--border);
@@ -242,7 +243,7 @@ ul{
 }
 
 .delete:hover{
-    background:var(--danger);
+    background:#b91c1c;
 }
 
 .item{
@@ -287,6 +288,55 @@ ul{
     font-size:14px;
 }
 
+.auth-box{
+    max-width:500px;
+    margin:50px auto;
+    background:var(--card);
+    padding:25px;
+    border-radius:18px;
+    box-shadow:var(--shadow);
+}
+
+.auth-box h1{
+    text-align:center;
+}
+
+.auth-box p{
+    color:var(--muted);
+}
+
+.auth-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:10px;
+}
+
+.user-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.user-email{
+    color:var(--muted);
+    font-size:13px;
+    word-break:break-all;
+}
+
+.logout{
+    background:var(--danger);
+}
+
+.logout:hover{
+    background:#b91c1c;
+}
+
+.hidden{
+    display:none !important;
+}
+
 footer{
     text-align:center;
     padding:25px 10px;
@@ -301,6 +351,7 @@ footer{
 
     header{
         align-items:flex-start;
+        flex-direction:column;
     }
 
     header h1{
@@ -315,6 +366,10 @@ footer{
         grid-template-columns:1fr 1fr;
     }
 
+    .auth-buttons{
+        grid-template-columns:1fr;
+    }
+
 }
 
 </style>
@@ -325,7 +380,65 @@ footer{
 <body>
 
 
-<div id="app" class="container">
+<!-- =====================================================
+     AUTH SCREEN
+===================================================== -->
+
+<div id="authScreen">
+
+    <div class="auth-box">
+
+        <h1>🌟 EasyLife</h1>
+
+        <h2>Welcome</h2>
+
+        <p>
+            Create your personal EasyLife account.
+            Your tasks, notes and expenses will be stored
+            securely in the cloud.
+        </p>
+
+        <input
+            id="email"
+            type="email"
+            placeholder="Email address"
+            autocomplete="email"
+        >
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+        >
+
+        <div class="auth-buttons">
+
+            <button id="loginButton">
+                🔐 Login
+            </button>
+
+            <button id="signupButton">
+                🆕 Create Account
+            </button>
+
+        </div>
+
+        <p id="authMessage"
+           class="message">
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN APP
+===================================================== -->
+
+<div id="app"
+     class="container hidden">
 
 
 <header>
@@ -338,7 +451,20 @@ footer{
 
 <div id="connectionStatus"
      class="status loading">
-⏳ Connecting to cloud storage...
+⏳ Connecting...
+</div>
+
+<div class="user-bar">
+
+<span id="userEmail"
+      class="user-email">
+</span>
+
+<button id="logoutButton"
+        class="logout">
+    Logout
+</button>
+
 </div>
 
 </div>
@@ -371,13 +497,18 @@ footer{
 </nav>
 
 
-<!-- DASHBOARD -->
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
 
-<div class="card" id="dashboard">
+<div class="card"
+     id="dashboard">
 
 <h2>📊 Dashboard</h2>
 
-<p id="today" class="message"></p>
+<p id="today"
+   class="message">
+</p>
 
 <div class="dashboard">
 
@@ -423,9 +554,12 @@ footer{
 </div>
 
 
-<!-- TASKS -->
+<!-- =====================================================
+     TASKS
+===================================================== -->
 
-<div class="card" id="tasks">
+<div class="card"
+     id="tasks">
 
 <h2>📝 To-Do List</h2>
 
@@ -449,9 +583,12 @@ maxlength="500"
 </div>
 
 
-<!-- NOTES -->
+<!-- =====================================================
+     NOTES
+===================================================== -->
 
-<div class="card" id="notes">
+<div class="card"
+     id="notes">
 
 <h2>📒 Notes</h2>
 
@@ -474,9 +611,12 @@ maxlength="10000">
 </div>
 
 
-<!-- EXPENSES -->
+<!-- =====================================================
+     EXPENSES
+===================================================== -->
 
-<div class="card" id="expenses">
+<div class="card"
+     id="expenses">
 
 <h2>💰 Expense Tracker</h2>
 
@@ -487,7 +627,6 @@ min="0"
 step="0.01"
 placeholder="Enter amount"
 >
-
 
 <select id="expenseCategory">
 
@@ -517,14 +656,12 @@ placeholder="Enter amount"
 
 </select>
 
-
 <input
 id="expenseDescription"
 type="text"
 placeholder="Description"
 maxlength="500"
 >
-
 
 <button id="addExpenseButton">
 ➕ Add Expense
@@ -534,14 +671,10 @@ maxlength="500"
    class="message">
 </p>
 
-
 <p class="total">
-
 Total:
 ₹<span id="totalExpense">0.00</span>
-
 </p>
-
 
 <h3>📋 Expense History</h3>
 
@@ -562,7 +695,7 @@ Total:
 <script>
 
 /* =========================================================
-   SUPABASE CONFIG
+   SUPABASE CONFIGURATION
 ========================================================= */
 
 const SUPABASE_URL =
@@ -583,13 +716,11 @@ let currentUser = null;
 
 
 /* =========================================================
-   DOM
+   SHORT DOM FUNCTION
 ========================================================= */
 
 function $(id){
-
     return document.getElementById(id);
-
 }
 
 
@@ -601,7 +732,6 @@ function loadTheme(){
 
     const theme =
         localStorage.getItem("EasyLifeTheme");
-
 
     if(theme === "dark"){
 
@@ -622,12 +752,10 @@ function toggleTheme(){
     const dark =
         document.body.classList.contains("dark");
 
-
     localStorage.setItem(
         "EasyLifeTheme",
         dark ? "dark" : "light"
     );
-
 
     $("themeButton").textContent =
         dark ? "☀️ Light" : "🌙 Dark";
@@ -660,16 +788,12 @@ function loadDate(){
    STATUS
 ========================================================= */
 
-function setStatus(
-    text,
-    type
-){
+function setStatus(text,type){
 
     const status =
         $("connectionStatus");
 
-    status.textContent =
-        text;
+    status.textContent = text;
 
     status.className =
         "status " + type;
@@ -678,102 +802,323 @@ function setStatus(
 
 
 /* =========================================================
-   ANONYMOUS AUTH
+   AUTH MESSAGE
 ========================================================= */
 
-async function connect(){
+function authMessage(text,type=""){
 
-    try{
+    const element =
+        $("authMessage");
 
-        setStatus(
-            "⏳ Checking your EasyLife account...",
-            "loading"
+    element.textContent =
+        text;
+
+    element.className =
+        "message " + type;
+
+}
+
+
+/* =========================================================
+   SIGN UP
+========================================================= */
+
+async function signup(){
+
+    const email =
+        $("email").value.trim();
+
+    const password =
+        $("password").value;
+
+
+    if(!email){
+
+        authMessage(
+            "⚠️ Enter your email address."
         );
 
-
-        const {
-            data,
-            error
-        } =
-        await supabaseClient.auth.getSession();
-
-
-        if(error){
-
-            throw error;
-
-        }
-
-
-        if(data.session){
-
-            currentUser =
-                data.session.user;
-
-        }
-
-        else{
-
-            setStatus(
-                "⏳ Creating your private EasyLife account...",
-                "loading"
-            );
-
-
-            const result =
-                await supabaseClient.auth.signInAnonymously();
-
-
-            if(result.error){
-
-                throw result.error;
-
-            }
-
-
-            currentUser =
-                result.data.user;
-
-        }
-
-
-        if(!currentUser){
-
-            throw new Error(
-                "Supabase did not return a user."
-            );
-
-        }
-
-
-        console.log(
-            "EasyLife user:",
-            currentUser.id
-        );
-
-
-        setStatus(
-            "🟢 Cloud storage connected",
-            "success"
-        );
-
-
-        await loadAll();
-
+        return;
 
     }
 
-    catch(error){
 
-        console.error(
-            "EasyLife connection error:",
-            error
+    if(password.length < 6){
+
+        authMessage(
+            "⚠️ Password must contain at least 6 characters."
         );
 
+        return;
+
+    }
+
+
+    $("signupButton").disabled = true;
+
+    authMessage(
+        "⏳ Creating your account..."
+    );
+
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient.auth.signUp({
+
+        email:email,
+
+        password:password
+
+    });
+
+
+    $("signupButton").disabled = false;
+
+
+    if(error){
+
+        console.error(error);
+
+        authMessage(
+            "❌ " + error.message,
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    /*
+       If email confirmation is enabled,
+       Supabase may not create an active session yet.
+    */
+
+    if(data.session){
+
+        authMessage(
+            "✅ Account created. Logging you in...",
+            "success"
+        );
+
+        return;
+
+    }
+
+
+    authMessage(
+        "✅ Account created! Check your email and confirm your account before logging in.",
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function login(){
+
+    const email =
+        $("email").value.trim();
+
+    const password =
+        $("password").value;
+
+
+    if(!email || !password){
+
+        authMessage(
+            "⚠️ Enter both email and password."
+        );
+
+        return;
+
+    }
+
+
+    $("loginButton").disabled = true;
+
+    authMessage(
+        "⏳ Logging in..."
+    );
+
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient.auth.signInWithPassword({
+
+        email:email,
+
+        password:password
+
+    });
+
+
+    $("loginButton").disabled = false;
+
+
+    if(error){
+
+        console.error(error);
+
+        authMessage(
+            "❌ " + error.message,
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    currentUser =
+        data.user;
+
+
+    showApp();
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout(){
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to logout?"
+        );
+
+    if(!confirmed){
+        return;
+    }
+
+
+    const {
+        error
+    } =
+    await supabaseClient.auth.signOut();
+
+
+    if(error){
+
+        alert(
+            "Logout failed:\n" +
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    currentUser = null;
+
+    $("app").classList.add("hidden");
+
+    $("authScreen").classList.remove("hidden");
+
+    $("password").value = "";
+
+    authMessage(
+        "You have been logged out.",
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   SHOW APP
+========================================================= */
+
+async function showApp(){
+
+    if(!currentUser){
+        return;
+    }
+
+
+    $("authScreen").classList.add("hidden");
+
+    $("app").classList.remove("hidden");
+
+
+    $("userEmail").textContent =
+        "👤 " + currentUser.email;
+
+
+    setStatus(
+        "🟢 Cloud storage connected",
+        "success"
+    );
+
+
+    loadDate();
+
+    await loadAll();
+
+}
+
+
+/* =========================================================
+   CHECK EXISTING SESSION
+========================================================= */
+
+async function checkSession(){
+
+    setStatus(
+        "⏳ Checking your account...",
+        "loading"
+    );
+
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient.auth.getSession();
+
+
+    if(error){
+
+        console.error(error);
 
         setStatus(
             "🔴 " + error.message,
             "error"
+        );
+
+        return;
+
+    }
+
+
+    if(data.session){
+
+        currentUser =
+            data.session.user;
+
+        await showApp();
+
+    }
+
+    else{
+
+        $("authScreen").classList.remove(
+            "hidden"
+        );
+
+        $("app").classList.add(
+            "hidden"
         );
 
     }
@@ -782,7 +1127,37 @@ async function connect(){
 
 
 /* =========================================================
-   LOAD ALL DATA
+   AUTH STATE CHANGE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+    async (event,session) => {
+
+        console.log(
+            "Auth event:",
+            event
+        );
+
+
+        if(session){
+
+            currentUser =
+                session.user;
+
+        }
+
+        else{
+
+            currentUser = null;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOAD EVERYTHING
 ========================================================= */
 
 async function loadAll(){
@@ -804,7 +1179,9 @@ async function loadAll(){
 
 async function loadTasks(){
 
-    if(!currentUser) return;
+    if(!currentUser){
+        return;
+    }
 
 
     const {
@@ -887,11 +1264,10 @@ async function loadTasks(){
 
         checkbox.addEventListener(
             "change",
-            () =>
-                toggleTask(
-                    task.id,
-                    checkbox.checked
-                )
+            () => toggleTask(
+                task.id,
+                checkbox.checked
+            )
         );
 
 
@@ -906,10 +1282,7 @@ async function loadTasks(){
 
 
         deleteButton.onclick =
-            () =>
-                deleteTask(
-                    task.id
-                );
+            () => deleteTask(task.id);
 
 
         li.appendChild(checkbox);
@@ -938,7 +1311,7 @@ async function addTask(){
     if(!currentUser){
 
         $("taskMessage").textContent =
-            "⏳ Still connecting to cloud storage...";
+            "⏳ Please login first.";
 
         return;
 
@@ -978,9 +1351,16 @@ async function addTask(){
     await supabaseClient
         .from("tasks")
         .insert({
-            user_id:currentUser.id,
-            task:task,
-            completed:false
+
+            user_id:
+                currentUser.id,
+
+            task:
+                task,
+
+            completed:
+                false
+
         });
 
 
@@ -992,417 +1372,4 @@ async function addTask(){
         console.error(error);
 
         $("taskMessage").textContent =
-            "❌ " + error.message;
-
-        return;
-
-    }
-
-
-    input.value = "";
-
-
-    $("taskMessage").textContent =
-        "✅ Task saved permanently.";
-
-
-    await loadTasks();
-
-    updateDashboard();
-
-}
-
-
-/* =========================================================
-   TASKS - UPDATE
-========================================================= */
-
-async function toggleTask(
-    id,
-    completed
-){
-
-    if(!currentUser) return;
-
-
-    const {
-        error
-    } =
-    await supabaseClient
-        .from("tasks")
-        .update({
-            completed:completed
-        })
-        .eq("id",id)
-        .eq(
-            "user_id",
-            currentUser.id
-        );
-
-
-    if(error){
-
-        alert(
-            "Could not update task:\n" +
-            error.message
-        );
-
-        await loadTasks();
-
-        return;
-
-    }
-
-
-    await loadTasks();
-
-}
-
-
-/* =========================================================
-   TASKS - DELETE
-========================================================= */
-
-async function deleteTask(id){
-
-    if(!currentUser) return;
-
-
-    if(!confirm(
-        "Delete this task permanently?"
-    )){
-
-        return;
-
-    }
-
-
-    const {
-        error
-    } =
-    await supabaseClient
-        .from("tasks")
-        .delete()
-        .eq("id",id)
-        .eq(
-            "user_id",
-            currentUser.id
-        );
-
-
-    if(error){
-
-        alert(
-            "Could not delete task:\n" +
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    await loadTasks();
-
-    updateDashboard();
-
-}
-
-
-/* =========================================================
-   NOTES - LOAD
-========================================================= */
-
-async function loadNotes(){
-
-    if(!currentUser) return;
-
-
-    const {
-        data,
-        error
-    } =
-    await supabaseClient
-        .from("notes")
-        .select("*")
-        .eq(
-            "user_id",
-            currentUser.id
-        )
-        .order(
-            "created_at",
-            {
-                ascending:false
-            }
-        );
-
-
-    if(error){
-
-        console.error(error);
-
-        $("savedNote").textContent =
-            "❌ " + error.message;
-
-        return;
-
-    }
-
-
-    const container =
-        $("notesList");
-
-    container.innerHTML = "";
-
-
-    data.forEach(note => {
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "item";
-
-
-        const header =
-            document.createElement("div");
-
-        header.className =
-            "item-header";
-
-
-        const title =
-            document.createElement("strong");
-
-        title.textContent =
-            "📒 Note";
-
-
-        const deleteButton =
-            document.createElement("button");
-
-        deleteButton.className =
-            "delete";
-
-        deleteButton.textContent =
-            "🗑️ Delete";
-
-
-        deleteButton.onclick =
-            () =>
-                deleteNote(
-                    note.id
-                );
-
-
-        header.appendChild(title);
-
-        header.appendChild(deleteButton);
-
-
-        const content =
-            document.createElement("div");
-
-        content.className =
-            "note-content";
-
-        content.textContent =
-            note.content;
-
-
-        const date =
-            document.createElement("div");
-
-        date.className =
-            "item-date";
-
-        date.textContent =
-            "Saved: " +
-            formatDate(
-                note.created_at
-            );
-
-
-        item.appendChild(header);
-
-        item.appendChild(content);
-
-        item.appendChild(date);
-
-        container.appendChild(item);
-
-    });
-
-
-    $("noteCount").textContent =
-        data.length;
-
-}
-
-
-/* =========================================================
-   NOTES - SAVE
-========================================================= */
-
-async function saveNote(){
-
-    if(!currentUser){
-
-        $("savedNote").textContent =
-            "⏳ Still connecting...";
-
-        return;
-
-    }
-
-
-    const textarea =
-        $("note");
-
-    const content =
-        textarea.value.trim();
-
-
-    if(!content){
-
-        $("savedNote").textContent =
-            "⚠️ Write something first.";
-
-        return;
-
-    }
-
-
-    const button =
-        $("saveNoteButton");
-
-    button.disabled = true;
-
-
-    $("savedNote").textContent =
-        "⏳ Saving note...";
-
-
-    const {
-        error
-    } =
-    await supabaseClient
-        .from("notes")
-        .insert({
-            user_id:currentUser.id,
-            content:content
-        });
-
-
-    button.disabled = false;
-
-
-    if(error){
-
-        console.error(error);
-
-        $("savedNote").textContent =
-            "❌ " + error.message;
-
-        return;
-
-    }
-
-
-    textarea.value = "";
-
-
-    $("savedNote").textContent =
-        "✅ Note saved permanently.";
-
-
-    await loadNotes();
-
-    updateDashboard();
-
-}
-
-
-/* =========================================================
-   NOTES - DELETE
-========================================================= */
-
-async function deleteNote(id){
-
-    if(!currentUser) return;
-
-
-    if(!confirm(
-        "Delete this note permanently?"
-    )){
-
-        return;
-
-    }
-
-
-    const {
-        error
-    } =
-    await supabaseClient
-        .from("notes")
-        .delete()
-        .eq("id",id)
-        .eq(
-            "user_id",
-            currentUser.id
-        );
-
-
-    if(error){
-
-        alert(
-            "Could not delete note:\n" +
-            error.message
-        );
-
-        return;
-
-    }
-
-
-    await loadNotes();
-
-    updateDashboard();
-
-}
-
-
-/* =========================================================
-   EXPENSES - LOAD
-========================================================= */
-
-async function loadExpenses(){
-
-    if(!currentUser) return;
-
-
-    const {
-        data,
-        error
-    } =
-    await supabaseClient
-        .from("expenses")
-        .select("*")
-        .eq(
-            "user_id",
-            currentUser.id
-        )
-        .order(
-            "created_at",
-            {
-                ascending:false
-            }
-        );
-
-
-    if(error){
-
-        console.error(error);
-
-        $("expenseMessage").textC
+         
